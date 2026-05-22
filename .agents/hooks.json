@@ -34,7 +34,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "node .agents/scripts/run-static-analysis.js",
+                        "command": "npx tsx .agents/scripts/run-static-analysis.ts",
                         "timeout": 30
                     }
                 ]
@@ -49,7 +49,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "node .agents/scripts/enforce-strategy-lock.js",
+                        "command": "npx tsx .agents/scripts/enforce-strategy-lock.ts",
                         "timeout": 5
                     }
                 ]
@@ -64,7 +64,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "node .agents/scripts/enforce-svelte-runes.js",
+                        "command": "npx tsx .agents/scripts/enforce-svelte-runes.ts",
                         "timeout": 5
                     }
                 ]

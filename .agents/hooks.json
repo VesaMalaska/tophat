@@ -1,0 +1,74 @@
+{
+    "context-io-gate": {
+        "enabled": true,
+        "PreToolUse": [
+            {
+                "matcher": "replace_file_content|multi_replace_file_content|write_to_file",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "mkdir -p .git/locks && lockfile-create --use-pid --retry 3 .git/locks/antigravity.lock > /dev/null 2>&1 && echo '{\"decision\": \"allow\", \"reason\": \"File system lock verified\"}' || echo '{\"decision\": \"deny\", \"reason\": \"File system locked by another agent\"}'",
+                        "timeout": 5
+                    }
+                ]
+            }
+        ],
+        "PostToolUse": [
+            {
+                "matcher": "replace_file_content|multi_replace_file_content|write_to_file",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "lockfile-remove .git/locks/antigravity.lock > /dev/null 2>&1; echo '{}'",
+                        "timeout": 5
+                    }
+                ]
+            }
+        ]
+    },
+    "static-analysis-gate": {
+        "enabled": true,
+        "PostToolUse": [
+            {
+                "matcher": "replace_file_content|multi_replace_file_content|write_to_file",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "node .agents/scripts/run-static-analysis.js",
+                        "timeout": 30
+                    }
+                ]
+            }
+        ]
+    },
+    "protect-strategy-memory": {
+        "enabled": true,
+        "PreToolUse": [
+            {
+                "matcher": "replace_file_content|multi_replace_file_content|write_to_file",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "node .agents/scripts/enforce-strategy-lock.js",
+                        "timeout": 5
+                    }
+                ]
+            }
+        ]
+    },
+    "enforce-svelte-runes": {
+        "enabled": true,
+        "PreToolUse": [
+            {
+                "matcher": "replace_file_content|multi_replace_file_content|write_to_file",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "node .agents/scripts/enforce-svelte-runes.js",
+                        "timeout": 5
+                    }
+                ]
+            }
+        ]
+    }
+}

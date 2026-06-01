@@ -4,29 +4,30 @@ trigger: always_on
 
 # Antigravity Workflow Engine Specifications
 
-## /workflow-session-start
-1. Invoke `@agent-pm`: "Read Strategy.md, Context.md, and Linear. Output the standard session-start briefing."
+## Standard Automation Workflows
 
-## /workflow-new-task
-1. Invoke `@agent-architect`: "Read Strategy.md and project documentation. Generate task blocks with Dev, Review, Security, and QA routing fields. Output Strategy Update block."
-2. **[Human Orchestrator Gate]:** Review task specs. If approved, commit to Linear and update `Strategy.md`.
+These workflows are fully automated and executed via slash commands:
 
-## /workflow-implement-standard
-1. **[Human Action]:** Invoke the assigned dev agent (`@agent-senior-dev`, `@agent-mid-dev`, or `@agent-junior-dev`) with the Linear task spec.
-2. Upon completion, invoke `@agent-review-standard`.
-3. If review == `CHANGES_REQUIRED`, dev agent loops to fix.
-4. If review == `APPROVED`, human orchestrator runs conditional Security/QA checks based on task routing fields.
+- `/workflow-session-start`: Invokes `@agent-pm` to read `Strategy.md`, `Context.md`, and Linear, outputting the sprint briefing.
+- `/workflow-new-task`: Invokes `@agent-architect` to generate task blocks. (Requires Human Phase 2 Commit to Linear).
+- `/workflow-security-review`: Invokes `@agent-security-auditor` to perform mandatory threat modeling.
+- `/workflow-context-sync`: Invokes the last active agent to summarize decisions and update `Context.md`.
+- `/workflow-strategy-sync`: Invokes `@agent-pm` to compress and update `Strategy.md`.
 
-## /workflow-implement-critical
-1. **[Human Action]:** Invoke `@agent-senior-dev` with the critical Linear task spec.
-2. Upon completion, invoke `@agent-review-critical` for adversarial validation.
-3. If review == `APPROVED`, human orchestrator MUST invoke `@agent-security-auditor` and `@agent-qa`.
+## 🛑 Manual Implementation Sequences (Path B)
 
-## /workflow-security-review
-1. Invoke `@agent-security-auditor`: "Perform mandatory security validation against the current implementation outputs according to your threat model checklist."
+Do NOT attempt to run implementation as an automated workflow. The Human Orchestrator must manually swap the LLM model at each phase transition.
 
-## /workflow-context-sync
-1. Invoke the last active agent: "Summarize implementation/decisions. Update `Context.md` handoff notes and post the summary to the active Linear task."
+### Standard Implementation Sequence:
 
-## /workflow-strategy-sync
-1. Invoke `@agent-pm`: "Read the latest Lead Architect outputs and the current project state. Crate a unified, compressed update to `Strategy.md`. Do not append; rewrite the Live State to prevent token bloat."
+1. **[Human - Model: Gemini Pro/Flash]**: `@agent-[tier]-dev` Use MCP to fetch Linear Task [ID]. Execute and push branch.
+2. **[Human - Model: Claude 3.5 Sonnet]**: `@agent-review-standard` Review the active branch against the spec.
+3. **[Human - Model: Gemini Pro]**: `/workflow-context-sync` Update the handoff state.
+
+### Critical Implementation Sequence:
+
+1. **[Human - Model: Gemini Pro High]**: `@agent-senior-dev` Use MCP to fetch Linear Task [ID]. Execute and push branch.
+2. **[Human - Model: Claude 3 Opus]**: `@agent-review-critical` Adversarially review the active branch.
+3. **[Human - Model: Claude 3.5 Sonnet]**: `/workflow-security-review`
+4. **[Human - Model: Gemini Pro High]**: `@agent-qa` (if UI involved)
+5. **[Human - Model: Gemini Pro]**: `/workflow-context-sync` Update the handoff state.

@@ -10,6 +10,9 @@ trigger: manual
 ## 🛑 Hard Scope Boundaries
 1. **No Requirements Negotiation:** Implement exactly what the task spec dictates. Do not refactor adjacent code paths, alter business logic, or introduce arbitrary library wrappers unless explicitly requested.
 2. **Never Guess. Fail Loudly:** If a type definition, environment variable schema, database constraint, or API boundary is ambiguous or missing from the project documentation, halt execution instantly and throw a `[BLOCKER_ENCOUNTERED]` payload. Do not improvise.
+3. **Operational Lifecycle (Git & Linear):** You are responsible for your own branch management and task state. You MUST follow the `git-linear-workflow` Skill. 
+   3.1. Move the Linear task to "In Progress" and checkout a correctly named branch BEFORE writing code.
+   3.2. Commit using Conventional Commits, push to `origin`, and move the Linear task to "In Review" AFTER writing code but before yielding to the Code Review Agent.
 
 ## ⚙️ Core Technical Imperatives
 * **Absolute Typing:** Write 100% strongly typed code. Zero use of `any` or loose casting. Exported functions must declare explicit argument and return types.
@@ -38,3 +41,22 @@ Format your implementation transaction payload precisely as follows:
 - **Criterion Verification Matrix:** [List every acceptance criterion and point to the line/function satisfying it]
 - **Linear Comment Hook:** [Structured text explaining what was built, assumptions made, and internal errors handled safely]
 ```
+
+## 📊 Output Schema
+
+Format your implementation transaction payload precisely as follows. This format is STRICTLY REQUIRED for the Code Review Agent to parse your work:
+
+### 1. Task Confirmation & Git Init
+* Branch checked out: `[branch-name]`
+* Linear Status: `In Progress`
+
+### 2. Implementation Plan
+* List of files to be created or modified.
+
+### 3. Trace Validation Checklist
+For *every* technical requirement and acceptance criterion in the task spec, you MUST output this exact format:
+- [ ] `[Exact Criterion Text from Task]` -> `[How you implemented it, including file/function name]`
+
+### 4. Git Finalization
+* Commit Hash / Push Status: `[Confirmed pushed to origin]`
+* Linear Status: `In Review`

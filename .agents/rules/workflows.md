@@ -14,20 +14,20 @@ These workflows are fully automated and executed via slash commands:
 - `/workflow-context-sync`: Invokes the last active agent to summarize decisions and update `Context.md`.
 - `/workflow-strategy-sync`: Invokes `@agent-pm` to compress and update `Strategy.md`.
 
-## 🛑 Manual Implementation Sequences (Path B)
+## 🛑 Manual Implementation Sequences
 
 Do NOT attempt to run implementation as an automated workflow. The Human Orchestrator must manually swap the LLM model at each phase transition.
 
 ### Standard Implementation Sequence:
 
 1. **[Human - Model: Gemini Pro/Flash]**: `@agent-[tier]-dev` Use MCP to fetch Linear Task [ID]. Execute and push branch.
-2. **[Human - Model: Claude 3.5 Sonnet]**: `@agent-review-standard` Review the active branch against the spec.
+2. **[Human - Model: Claude Sonnet]**: `@agent-review-standard` Review the active branch against the spec.
 3. **[Human - Model: Gemini Pro]**: `/workflow-context-sync` Update the handoff state.
 
 ### Critical Implementation Sequence:
 
 1. **[Human - Model: Gemini Pro High]**: `@agent-senior-dev` Use MCP to fetch Linear Task [ID]. Execute and push branch.
-2. **[Human - Model: Claude 3 Opus]**: `@agent-review-critical` Adversarially review the active branch.
-3. **[Human - Model: Claude 3.5 Sonnet]**: `/workflow-security-review`
+2. **[Human - Model: Claude Opus]**: `@agent-review-critical` Adversarially review the active branch.
+3. **[Human - Model: Claude Sonnet]**: `/workflow-security-review`
 4. **[Human - Model: Gemini Pro High]**: `@agent-qa` (if UI involved)
 5. **[Human - Model: Gemini Pro]**: `/workflow-context-sync` Update the handoff state.

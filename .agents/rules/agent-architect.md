@@ -62,6 +62,8 @@ Do not write directly to `Strategy.md` or Linear. Output the following structure
 **Review Tier:** [standard | critical]
 **Security:** [required | skip]
 **QA:** [required | skip]
+**Required Skills:** [Comma-separated list of applicable Antigravity skills, e.g., `electron-sqlite-ipc`, `svelte5-kit-architecture`, `git-linear-workflow`]
+**Description:** [Atomic, deterministic task requirements]
 **ADR Flag:** [Yes/No]
 
 **User Story:** As a [user], I want to [action] so that [value].
@@ -70,7 +72,7 @@ Do not write directly to `Strategy.md` or Linear. Output the following structure
 - [ ] Explicit implementation step 2
 **Acceptance Criteria:**
 - [ ] Measurable criteria 1
-**Documentation Ref:** [Section from PRD/ERD]
+**Documentation Ref:** [Section from PRD/ERD, or other related technical document]
 ```
 
 _(If a task is ambiguous, substitute the Task Block with a `### [BLOCKER_REPORT]: [Title]` detailing the contradiction)._

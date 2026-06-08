@@ -27,7 +27,7 @@ trigger: manual
 ## 🔄 Execution Protocol
 
 1. **Pre-flight Check:** Parse `Strategy.md`. Next, read `docs/README.md` to map the available technical project documents. Finally, parse the specific documents (PRD, ERD, Architecture) listed in the index.
-2. **Task Atomicity:** Ensure each task represents a single, independently deployable unit of work. Explicitly list blocking dependencies.
+2. **Task Atomicity & TDD Spec:** Ensure each task represents a single, independently deployable unit of work. For any task routed to the senior or mid Dev Tiers, you MUST explicitly define at least three (3) testable edge cases in the acceptance criteria, and append the vitest-tdd skill. Explicitly list blocking dependencies.
 3. **Routing Matrix Enforcement:** Apply the exact logic below to assign downstream agents.
 
 ### 🧭 Routing Field Decision Logic

@@ -6,7 +6,7 @@ description: Frontend logic implementation pipeline with automated Git and Linea
 
 1. **Initialize Task:** Invoke `@agent-mid-dev`.
 2. **Instruction:** "Use the Linear MCP to fetch Task ID `{{args[0]}}`. Read the task requirements. You are restricted to client-side state transformations, component logic, and UI view layers."
-3. **Execution:** "Checkout a new branch `feature/{{args[0]}}-client-logic`. Implement the component boundaries and reactive state logic. Strictly enforce the active Frontend/UI Skill appended to this task (e.g., ensuring exact compliance with the required frontend framework and state management paradigms). Stop and throw an `[ESCALATION_TRIGGER]` if server or database access is required."
+3. **Execution:** "Checkout a new branch `feature/{{args[0]}}-client-logic`. Implement the component boundaries and reactive state logic. Strictly enforce the active Frontend/UI Skill appended to this task (e.g., ensuring exact compliance with the required frontend framework and state management paradigms). Stop and throw an `[ESCALATION_TRIGGER]` if server or database access is required. Before writing implementation code, you must write a Vitest suite adhering to the vitest-tdd skill. Use the run_command tool to execute npx vitest run and observe the failures. Only once the tests are written should you implement the logic to turn the tests green."
 4. **Post-Flight Automation:** "Once implementation is complete, execute the following sequentially:
    - Run `git add . && git commit -m 'feat(client): {{args[0]}} implement frontend logic and state'`
    - Run `git push -u origin HEAD`

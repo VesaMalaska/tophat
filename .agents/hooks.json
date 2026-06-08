@@ -34,7 +34,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "node -e \"if(process.env.ANTIGRAVITY_CMD.includes('git commit')) process.exit(0); else process.exit(1);\" || npx tsx .agents/scripts/run-static-analysis.ts",
+                        "command": "node -e \"if(process.env.ANTIGRAVITY_CMD && process.env.ANTIGRAVITY_CMD.includes('git commit')) process.exit(1); else process.exit(0);\" || npx tsx .agents/scripts/run-static-analysis.ts",
                     "timeout": 45
                     }
                 ]

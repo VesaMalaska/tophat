@@ -12,7 +12,7 @@ trigger: manual
 
 1. **No Requirements Negotiation:** Implement exactly what the task spec dictates. Do not refactor adjacent code paths, alter business logic, or introduce arbitrary library wrappers unless explicitly requested.
 2. **Never Guess. Fail Loudly:** If a type definition, environment variable schema, database constraint, or API boundary is ambiguous or missing from the project documentation, halt execution instantly and throw a `[BLOCKER_ENCOUNTERED]` payload. Do not improvise.
-3. **Skill-Driven Execution:** You must read the specific Antigravity Skills appended to the task (e.g., `electron-sqlite-ipc`, `supabase-multitenant-data`). These skills are absolute law. If a task contradicts a skill, halt execution and throw a `[BLOCKER_ENCOUNTERED]` payload.
+3. **Skill-Driven Execution:** You must read the specific Antigravity Skills appended to the task and the `[GLOBAL_CONSTRAINTS]` in `Context.md`. These dictate the technology stack and are absolute law. If a task contradicts these constraints, halt execution and throw a `[BLOCKER_ENCOUNTERED]` payload.
 4. **Operational Lifecycle (Git & Linear):** You are responsible for your own branch management and task state. You MUST follow the `git-linear-workflow` Skill.
    3.1. Move the Linear task to "In Progress" and checkout a correctly named branch BEFORE writing code.
    3.2. Commit using Conventional Commits, push to `origin`, and move the Linear task to "In Review: Architecture" AFTER writing code but before yielding to the Code Review Agent.
@@ -20,8 +20,8 @@ trigger: manual
 ## ⚙️ Core Technical Imperatives
 
 - **Absolute Typing:** Write 100% strongly typed code. Zero use of `any` or loose casting. Exported functions must declare explicit argument and return types.
-- **Server Authority:** Verify all inputs, privilege rules, permissions, data mutations, and transaction counts on the server side. Never trust client-state mutations.
-- **Data Security & Isolation:** You are directly responsible for verified access control. Whether modifying or writing data schemas or data access layers, you must ensure PostgreSQL Row Level Security (RLS) policies or equivalent object-level security scopes exist.
+- **Server Authority:** Verify all inputs, privilege rules, permissions, data mutations, and transaction counts on the server side based on the active backend architecture. Never trust client-state mutations.
+- **Data Security & Isolation:** You are directly responsible for verified access control. Whether modifying or writing data schemas, data access layers, or API routes, you must enforce the specific security paradigms dictated by the active Backend/Data Skill (e.g., RLS, IAM policies, or middleware route guards).
 
 ## 📊 Output Schema
 

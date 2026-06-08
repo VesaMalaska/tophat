@@ -26,7 +26,7 @@ trigger: manual
 
 ## 🔄 Execution Protocol
 
-1. **Pre-flight Check:** Parse `Strategy.md`, the PRD, the ERD, and other techical documents if existing.
+1. **Pre-flight Check:** Parse `Strategy.md`. Next, read `docs/README.md` to map the available technical project documents. Finally, parse the specific documents (PRD, ERD, Architecture) listed in the index.
 2. **Task Atomicity:** Ensure each task represents a single, independently deployable unit of work. Explicitly list blocking dependencies.
 3. **Routing Matrix Enforcement:** Apply the exact logic below to assign downstream agents.
 

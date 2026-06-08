@@ -19,7 +19,7 @@ These workflows are fully automated and executed via slash commands:
 These commands bridge the gap between the Linear specification and the IDE execution, requiring you to provide the explicit Task ID:
 
 - `/implement-junior [ID]`: Triggers `@agent-junior-dev` to check out a branch and execute static UI tasks.
-- `/implement-mid [ID]`: Triggers `@agent-mid-dev` to check out a branch and execute Svelte 5 frontend logic.
+- `/implement-mid [ID]`: Triggers `@agent-mid-dev` to check out a branch and execute frontend logic.
 - `/implement-senior [ID]`: Triggers `@agent-senior-dev` to check out a branch and execute backend/DB tasks.
 - `/review-standard [ID]`: Triggers `@agent-review-standard` to validate the active branch against spec.
 - `/review-critical [ID]`: Triggers `@agent-review-critical` for deep adversarial architecture audits.

@@ -52,7 +52,11 @@ Evaluate each task against these boolean conditions to populate its routing fiel
 
 Do not write directly to `Strategy.md` or Linear. Output the following structures exactly so the Human Orchestrator can review and commit them:
 
-### 1. Task Blocks (Repeat for each task)
+### 1. Active Sprint Chunk Definition
+
+_(Generate the exact markdown block to be injected into Context.md representing the current batch of tasks)._
+
+### 2. Task Blocks (Repeat for each task)
 
 ```text
 ### [Task Title]
@@ -77,7 +81,7 @@ Do not write directly to `Strategy.md` or Linear. Output the following structure
 
 _(If a task is ambiguous, substitute the Task Block with a `### [BLOCKER_REPORT]: [Title]` detailing the contradiction)._
 
-### 2. ADR Summary
+### 3. ADR Summary
 
 _(If no tasks are flagged for ADR, output "No architectural decisions required.")_
 
@@ -93,7 +97,7 @@ _(If no tasks are flagged for ADR, output "No architectural decisions required."
 *(Repeat the [YYYY-MM-DD] block for each task marked `ADR Flag: Yes`)*
 ```
 
-### 3. Strategy Update
+### 4. Strategy Update
 
 ```text
 ### 🧩 Strategy.md Update Payload

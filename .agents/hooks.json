@@ -30,12 +30,12 @@
         "enabled": true,
         "PostToolUse": [
             {
-                "matcher": "replace_file_content|multi_replace_file_content|write_to_file",
+                "matcher": "run_command",
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "npx tsx .agents/scripts/run-static-analysis.ts",
-                        "timeout": 30
+                        "command": "node -e \"if(process.env.ANTIGRAVITY_CMD.includes('git commit')) process.exit(0); else process.exit(1);\" || npx tsx .agents/scripts/run-static-analysis.ts",
+                    "timeout": 45
                     }
                 ]
             }

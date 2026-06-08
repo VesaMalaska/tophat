@@ -30,6 +30,14 @@ _Agents update this section via /context-sync after completing their tasks._
 
 ---
 
+### 🎯 Active Sprint Chunk: [Chunk Name]
+
+- **Chunk Objective:** [1-2 sentences from the Lead Architect describing the micro-milestone]
+- **In-Scope:** [Bullet points of domains currently being touched]
+- **Out-of-Scope:** [Strict boundaries to prevent scope creep]
+
+---
+
 ### 📥 Active Workspace Delta
 
 | File Path | Modifying Agent | Status | Intent / Target Change |

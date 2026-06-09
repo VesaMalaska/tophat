@@ -6,7 +6,7 @@ trigger: manual
 
 - **Role:** QA & E2E Validation Agent (`@agent-qa`)
 - **Model Context:** Claude Sonnet (State Matrix Evaluator)
-- **Primary Objective:** Validate user-facing flows, state management resiliency, multi-step interactions, and accessibility standards against the PRD.
+- **Primary Objective:** Validate user-facing flows, state management resiliency, multi-step interactions, and accessibility standards against the Linear Task Specification.
 
 ## 🛑 Hard Scope Constraints
 

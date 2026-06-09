@@ -58,30 +58,57 @@ _(Generate the exact markdown block to be injected into Context.md representing 
 
 ### 2. Task Blocks (Repeat for each task)
 
-```text
-**Title:** [Epic] - [Feature]
-**Priority:** [Critical | High | Medium | Low]
-**Dependencies:** [Task IDs or "None"]
-**Dev Tier:** [junior | mid | senior]
-**Review Tier:** [standard | critical]
-**Security:** [required | skip]
-**QA:** [required | skip]
-**Required Skills:** [Comma-separated list of applicable Antigravity skills, e.g., `electron-sqlite-ipc`, `svelte5-kit-architecture`, `git-linear-workflow`]
-**ADR Flag:** [Yes/No]
+_(Output this exact structure so the human can review the routing metadata separately from the exact Markdown description that will be pushed to Linear)._
 
-**Description:** [Task objective]
+**-- LINEAR METADATA --**
 
-**User Story:** As a [user], I want to [action] so that [value].
-**Technical Checklist:**
+- **Title:** [Epic] - [Feature]
+- **Priority:** [Critical | High | Medium | Low]
+- **Dev Tier:** [junior | mid | senior]
+- **Review Tier:** [standard | critical]
+- **Security:** [yes | no]
+- **QA:** [yes | no]
+- **Required Skills Labels:** [e.g., electron-sqlite-ipc, svelte5-kit-architecture]
+- **ADR Flag:** [Yes | No]
+
+**-- LINEAR DESCRIPTION (MARKDOWN) --**
+
+````markdown
+### 🎯 Objective
+
+[1-2 sentence deterministic summary of the task]
+
+### 👤 User Story
+
+As a [user], I want to [action] so that [value].
+
+### 📋 Technical Checklist
+
 - [ ] Explicit implementation step 1
 - [ ] Explicit implementation step 2
-**Acceptance Criteria:** [Checklist format]
-**Technical Data Contract (JIT Context):** [Explicitly paste the exact subset of the ERD, DB tables, or API JSON payloads required for this task. Do not summarize; use the exact field names and types from the source docs.]
-**Edge Cases:** [3 minimum for mid | senior dev tiers]
-**Routing Fields:** [Tier, Security, QA]
-```
 
-_(If a task is ambiguous, substitute the Task Block with a `### [BLOCKER_REPORT]: [Title]` detailing the contradiction)._
+### ✅ Acceptance Criteria
+
+- [ ] [Explicit requirement 1]
+- [ ] [Explicit requirement 2]
+
+### 🧪 Edge Cases (TDD Requirements)
+
+_(Minimum 3 required for mid/senior tasks. Omit for junior tasks)._
+
+- [ ] [Edge Case 1]
+- [ ] [Edge Case 2]
+- [ ] [Edge Case 3]
+
+### 🧱 Technical Data Contract (JIT Context)
+
+_(Extracted from: [Source Document Name])_
+
+```typescript
+// EXPLICIT SCHEMA, API PAYLOADS, OR INTERFACES GO HERE.
+// NO SUMMARIZATION.
+```
+````
 
 ### 3. ADR Summary
 
@@ -89,9 +116,9 @@ _(If no tasks are flagged for ADR, output "No architectural decisions required."
 
 ```text
 ### 🏗️ ADR Drafts for DECISIONS.md
-**Human Orchestrator:** The following tasks encode load-bearing architectural decisions. Upon successful implementation and merge, copy/paste these blocks directly into your `DECISIONS.md` file.
+**Human Orchestrator:** The following tasks encode load-bearing architectural decisions. Upon successful implementation and merge, swap `[Task ID]` with the real Linear ID and copy/paste these blocks into your `DECISIONS.md` file.
 
-**[Task ID]: [Task Title]**
+**Proposed Task: [Task Title]**
 ### [YYYY-MM-DD] - [Task ID]: [Task Title]
 **Context:** [1-2 sentences explaining the architectural requirement or constraint dictated by the PRD/ERD]
 **Decision:** [1-2 sentences detailing the specific technical decision or boundary enforced in this task]

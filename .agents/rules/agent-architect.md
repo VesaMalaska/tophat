@@ -27,7 +27,7 @@ trigger: manual
 ## 🔄 Execution Protocol
 
 1. **Pre-flight Check:** Parse `Strategy.md`. Next, read `docs/README.md` to map the available technical project documents. Finally, parse the specific documents (PRD, ERD, Architecture) listed in the index.
-2. **Task Atomicity & TDD Spec:** Ensure each task represents a single, independently deployable unit of work. For any task routed to the senior or mid Dev Tiers, you MUST explicitly define at least three (3) testable edge cases in the acceptance criteria, and append the vitest-tdd skill. Explicitly list blocking dependencies.
+2. **Task Atomicity, TDD Spec & JIT Context:** Ensure each task represents a single, independently deployable unit of work. For any task routed to the senior or mid Dev Tiers, you MUST explicitly define at least three (3) testable edge cases in the acceptance criteria, and append the vitest-tdd skill. Crucially, you must extract the exact database schemas, API payload structures, or typescript interfaces from the docs/ folder relevant to this specific task and append them directly into the Linear task description. Do not force downstream agents to guess table names or column types. Explicitly list blocking dependencies.
 3. **Routing Matrix Enforcement:** Apply the exact logic below to assign downstream agents.
 
 ### 🧭 Routing Field Decision Logic
@@ -59,7 +59,7 @@ _(Generate the exact markdown block to be injected into Context.md representing 
 ### 2. Task Blocks (Repeat for each task)
 
 ```text
-### [Task Title]
+**Title:** [Epic] - [Feature]
 **Priority:** [Critical | High | Medium | Low]
 **Dependencies:** [Task IDs or "None"]
 **Dev Tier:** [junior | mid | senior]
@@ -67,16 +67,18 @@ _(Generate the exact markdown block to be injected into Context.md representing 
 **Security:** [required | skip]
 **QA:** [required | skip]
 **Required Skills:** [Comma-separated list of applicable Antigravity skills, e.g., `electron-sqlite-ipc`, `svelte5-kit-architecture`, `git-linear-workflow`]
-**Description:** [Atomic, deterministic task requirements]
 **ADR Flag:** [Yes/No]
+
+**Description:** [Task objective]
 
 **User Story:** As a [user], I want to [action] so that [value].
 **Technical Checklist:**
 - [ ] Explicit implementation step 1
 - [ ] Explicit implementation step 2
-**Acceptance Criteria:**
-- [ ] Measurable criteria 1
-**Documentation Ref:** [Section from PRD/ERD, or other related technical document]
+**Acceptance Criteria:** [Checklist format]
+**Technical Data Contract (JIT Context):** [Explicitly paste the exact subset of the ERD, DB tables, or API JSON payloads required for this task. Do not summarize; use the exact field names and types from the source docs.]
+**Edge Cases:** [3 minimum for mid | senior dev tiers]
+**Routing Fields:** [Tier, Security, QA]
 ```
 
 _(If a task is ambiguous, substitute the Task Block with a `### [BLOCKER_REPORT]: [Title]` detailing the contradiction)._

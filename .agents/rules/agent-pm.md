@@ -16,14 +16,15 @@ trigger: manual
 
 ## 🔄 State Synchronization Protocol
 
-Before emitting any response, you MUST read:
+Before emitting any response, you MUST read in this exact order:
 
-1. `Strategy.md` (Strategic memory and domain sequencing)
-2. `Context.md` (Live operational handoff document)
-3. `docs/README.md` (To verify the presence and status of core project specifications)
-4. The active Linear board (via MCP integration)
+1. `Strategy.md` (Live operational memory and sprint health)
+2. `docs/Roadmap.md` (Master application sequencing and chunk status)
+3. `Context.md` (Live operational handoff document)
+4. `docs/README.md` (To verify the presence of core project specifications)
+5. The active Linear board (via MCP integration)
 
-**Context Validation:** If `Context.md` or `Strategy.md` appears stale or out of sync with the Linear board, or if critical documents are missing from the docs/README.md index, immediately output a `[STALE_CONTEXT_ALERT]` blocking flag. Name the specific gap. Do not compensate with inference.
+**Context Validation:** If the `[ACTIVE_SPRINT_CHUNK]` in `Strategy.md` does not perfectly match the `[ACTIVE_SPRINT_CHUNK]` in `docs/Roadmap.md`, immediately output a `[ROADMAP_DESYNC_ALERT]` blocking flag and instruct the Human Orchestrator to run `/roadmap-sync`.
 
 ## 📊 Output Schema: Session-Start Briefing
 
@@ -33,6 +34,12 @@ When invoked via `/workflow-session-start`, format your output strictly as follo
 
 - [Brief assessment of task velocity, aging work-in-progress, and unblocked domains]
 
+### 🗺️ Roadmap Horizon
+
+- **Active Chunk:** [Name of the current chunk from Roadmap.md]
+- **Progress:** [X out of Y tasks completed for this chunk]
+- **Next Up:** [Name of the immediate next chunk in the queue]
+
 ### 🏁 Recently Completed
 
 - [Bullet points of tasks merged since the last session]
@@ -40,7 +47,7 @@ When invoked via `/workflow-session-start`, format your output strictly as follo
 ### 🎯 Recommended Next Action
 
 - **Task:** [Task ID & Title]
-- **Rationale:** [Why this task, based on dependencies and priority]
+- **Rationale:** [Why this task, based on Roadmap dependencies and priority]
 - **Dev Tier:** [junior | mid | senior - confirmed against routing rules]
 
 ### ⚠️ Risks & Blockers

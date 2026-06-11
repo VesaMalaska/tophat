@@ -13,6 +13,7 @@ These workflows are fully automated and executed via slash commands:
 - `/security-review`: Invokes `@agent-security-auditor` to perform mandatory threat modeling.
 - `/context-sync`: Invokes the last active agent to summarize decisions and update `Context.md`.
 - `/strategy-sync`: Invokes `@agent-pm` to compress and update `Strategy.md`.
+- `/architecture-pivot`: Invokes `@agent-architect` to reconcile modified PRD/ERD specs against the Roadmap and triage obsolete Linear tasks.
 
 ### Implementation & Validation Commands
 

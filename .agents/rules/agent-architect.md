@@ -40,11 +40,11 @@ Evaluate each task against these boolean conditions to populate its routing fiel
   - `mid`: Frontend UI/logic, state management, client routing (NO DB/auth access).
   - `junior`: Pure markup, Tailwind, static UI (NO logic, NO data).
 - **Review Tier:**
-  - `critical`: Auth, payments, pricing, DB-heavy logic, admin roles.
-  - `standard`: Everything else.
+  - `critical`: Auth, payments, pricing, DB-heavy logic, admin roles. (Constraint: You MUST NOT assign this tier if the Context.md Review Topology is set to 'Standard Review Only'.)
+  - `standard`: Everything else. (Or all tasks if the project is 'Standard Review Only').
 - **Security Required:**
-  - `yes`: DB read/write, auth, API routes, checkout, file uploads, permissions.
-  - `no`: Strict static UI or non-privileged client logic.
+  - `yes`: DB read/write, auth, API routes, checkout, file uploads, permissions. (Constraint: You MUST NOT set this to 'yes' if the Context.md Review Topology is set to 'Standard Review Only'.)
+  - `no`: Strict static UI, non-privileged client logic, or if the project explicitly bypasses security workflows.
 - **QA Required:**
   - `yes`: User-facing flows, multi-step forms, stateful UI, i18n, search/filters.
   - `no`: Backend-only, internal migrations, utility scripts.

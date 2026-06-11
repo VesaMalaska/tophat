@@ -12,11 +12,11 @@ description: Strict deterministic environment validation followed by Lead Archit
 6.  **PRD Validation Check:** "Verify the existence of the `docs/` directory and `docs/PRD.md`. If `PRD.md` is absent, halt and instruct the human to provide the foundational documentation."
 7.  **Cognitive Handoff:** Invoke @agent-architect.
 8.  **Architect Instruction:** "Parse `docs/PRD.md` and any existing ERDs or Architecture docs. Validate the documentation against the Four Mandatory Declarations:
-    8.1. **Execution Stack:** Are the frontend, backend, and native frameworks explicitly defined? Do these frameworks map exactly to the `.md` files present in the attached Antigravity Skills?
+    8.1. **Execution Stack:** Are the frontend, backend, and native frameworks explicitly defined?
     8.2. **State & Storage:** Is the method of data persistence explicitly defined (e.g., PostgreSQL, SQLite, Local JSON, or 'In-Memory Only')?
     8.3. **Identity Strategy:** Is the authentication model defined (e.g., Supabase Auth, Custom JWT, or explicitly 'None/Local Application')?
     8.4. **Scope Boundaries:** Are the high-level Epics listed, and are the 'Out of Scope' boundaries clearly defined?
-    Execution Constraint: If any of these four declarations are vague, omitted, or request a framework lacking a valid Antigravity Skill, HALT execution. Output a `[PRD_REJECTION]` payload detailing exactly which categorical declarations the Human Orchestrator must amend."
+    Execution Constraint: If any of these six declarations are vague or omitted, HALT execution. Output a `[PRD_REJECTION]` payload detailing exactly which categorical declarations the Human Orchestrator must amend."
 9.  **Roadmap Generation:** "If the PRD passes validation, generate `docs/Roadmap.md`. Operate as a living master blueprint. Break the total application scope into high-level 'Phases', and slice those phases into deterministic 'Sprint Chunks'. Provide detailed descriptions of the deliverables for each chunk."
 10. **Memory Seeding:** "Create or update `docs/README.md` to index the available documents. Inject the validated Tech Stack frameworks into the `[GLOBAL_CONSTRAINTS]` block of `Context.md`. Seed `Strategy.md` with the Phase 1 and Sprint Chunk 1 definitions from the new Roadmap."
 11. **Completion:** "Output a confirmation summary of the initial Roadmap. Advise the Human Orchestrator that workspace initialization is complete and they may now trigger `/session-start` or `/new-task` to begin development."

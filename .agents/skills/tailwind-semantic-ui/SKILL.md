@@ -16,4 +16,9 @@ When building view layers, adhere to these structural constraints:
 
 - Utilize utility classes exclusively; ban the creation of custom CSS classes unless handling complex 2.5D parallax or specific mesh-weighting animations.
 - Maintain responsive design hierarchies using `sm:`, `md:`, and `lg:` prefixes reliably.
-- Do not hardcode localized display text. Wrap user-facing strings in appropriate i18n placeholders.
+
+## 3. Text & Localization
+
+- Before adding text to the UI, explicitly check the Localization setting in the `[GLOBAL_CONSTRAINTS]` of `Context.md`.
+- **If set to i18n Required:** Do not hardcode localized display text. Wrap user-facing strings in appropriate i18n placeholders.
+- **If set to Hardcoded UI Authorized:** You may write hardcoded UI copy directly into the markup.

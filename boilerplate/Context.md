@@ -5,8 +5,10 @@
 _This section is immutable for execution agents. It dictates the architectural boundaries._
 
 - Frontend: [e.g., Svelte 5, Tailwind CSS]
-- Backend/Data: [e.g., Supabase RLS / Node.js Express / AWS Lambda / Firebase / SQLite]
+- Backend/Data: [e.g., Supabase RLS / Firebase Firestore / SQLite]
 - Desktop/Native: [e.g., Electron IPC]
+- Localization: [e.g., i18n Required | Hardcoded UI Authorized]
+- Review Topology: [e.g., Full Critical Path | Standard Review Only]
 - Active Antigravity Skills: [List the attached .md skill files here]
 
 ---

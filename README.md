@@ -1,74 +1,179 @@
-# Multi-Agent Development Workflow
+# Antigravity Multi-Agent Workflow
 
-This repository contains a comprehensive configuration for orchestrating a multi-agent AI development workflow. It establishes a structured environment where distinct AI agents with specialized roles collaborate, guided by strict operational rules, state-tracking documents, and file system hooks.
+This repository utilizes a highly deterministic, AI-Driven Development (AIDD) multi-agent swarm native to the Google Antigravity IDE. This workflow is designed to execute complex, scalable software architecture by strictly isolating agent context, enforcing Test-Driven Development (TDD), and automating the git/PR lifecycle via Linear.
 
-## Overview
+## 1. System Architecture & Philosophy
 
-The core of this workflow resides in the `.agents/` directory, which defines:
-- **Agent Personas/Roles:** Specialized prompts and responsibilities for different agents (e.g., PM, Architect, Devs, Reviewers, QA).
-- **Workflows:** Formalized pipelines for task routing, implementation, review, and handoff.
-- **Rules:** Strict protocols for context synchronization and domain isolation to prevent cross-agent amnesia and token bloat.
-- **Skills:** Domain-specific knowledge packages to enforce coding standards (e.g., Svelte 5, Tailwind, Supabase, Electron).
-- **Hooks:** Pre- and Post-tool execution gates to ensure safety, formatting, and file system locks.
+This workflow abandons the "chat-and-pray" model of standard AI coding. It operates on three core principles:
 
-## Agent Roles
+- **Contextual Starvation:** Execution agents (Developers) are intentionally "blind." They cannot read the master roadmap or adjacent feature code. They are given highly targeted, Just-In-Time (JIT) task specifications containing only the exact schemas required to complete their current file targets.
 
-The workflow divides responsibilities among specialized agents located in `.agents/rules/`:
+- **Hierarchical Orchestration:** The swarm is divided into Strategic, Execution, and Validation tiers. Agents do not brainstorm together; they execute strict handoffs via the `Context.md` state file.
 
-### Management & Planning
-- **`@agent-pm`**: Owns strategy and session initiation. Reads `Strategy.md` and `Context.md`.
-- **`@agent-architect`**: Breaks down strategy into concrete tasks and routes them to the appropriate developers.
+- **Deterministic Validation:** Code is not merged based on agent confidence. It is gated by strict tool-use interception (`hooks.json`) that enforces Vitest/Lint passes and mandatory adversarial security reviews.
 
-### Development
-- **`@agent-senior-dev`**: Handles critical task implementation.
-- **`@agent-mid-dev` & `@agent-junior-dev`**: Handle standard task implementation based on routing.
+## 2. The Agentic Hierarchy (The Swarm)
 
-### Quality & Security
-- **`@agent-review-standard`**: Performs standard code review on non-critical tasks.
-- **`@agent-review-critical`**: Performs adversarial validation on load-bearing system code.
-- **`@agent-security-auditor`**: Conducts mandatory security validations against threat models.
-- **`@agent-qa`**: Validates multi-step user flows and end-to-end (E2E) testing.
+The swarm is divided into specific roles with impenetrable scope boundaries:
 
-## Workflows
+**Strategic & Management Tier**
 
-The repository defines strict pipelines in `.agents/workflows/`:
-1. **`/workflow-session-start`**: Initializes a session with strategic orientation and risk assessment.
-2. **`/workflow-new-task`**: Triggers the Architect to compile task blocks and route them.
-3. **`/workflow-implement-standard`**: Execution pipeline for standard dev tasks, including implementation and standard review.
-4. **`/workflow-implement-critical`**: Mandatory execution pipeline for load-bearing code (e.g., Auth, Payments). Requires critical review, security audit, and QA.
-5. **`/workflow-security-review`**: Triggers the Security Auditor to perform validation.
-6. **`/workflow-context-sync`**: Updates the `Context.md` handoff document to prevent context loss between agents.
-7. **`/workflow-strategy-sync`**: Compresses and updates `Strategy.md` to prevent token bloat.
+- `@agent-architect`** (Claude Opus):** The only agent allowed to read the PRD/ERD. Compiles JIT task batches and dictates architectural boundaries.
 
-## State Management Documents
+- `@agent-pm`**:** Your session guide. Reads the active Linear board and `Strategy.md` to recommend the optimal next task and monitor sprint health.
 
-The workflow relies on two primary state documents (expected at the root of the workspace):
+**Execution Tier**
 
-- **`Strategy.md`**: The long-term strategic plan, backlog, and architectural sequence. **Access is strictly gated**—only `@agent-pm` and `@agent-architect` are authorized to read/write this file.
-- **`Context.md`**: The live operational handoff document detailing the current phase, completed steps, and blockers. **All agents must read this before execution** to align their internal state.
+- `@agent-senior-dev`** (Gemini Pro High):** Handles server-authoritative logic, data mutations, database schemas, and security boundaries.
 
-## Hooks & Gates
+- `@agent-mid-dev`** (Gemini Pro Low):** Handles client-side state transformations, component logic, and UI view layers.
 
-Defined in `.agents/hooks.json`, these gates intercept tool usage to enforce project integrity:
-- **`context-io-gate`**: Implements file system locking (`.git/locks/antigravity.lock`) to prevent race conditions during file edits.
-- **`static-analysis-gate`**: Runs static analysis post-file edits.
-- **`protect-strategy-memory`**: Enforces strict domain isolation for `Strategy.md`.
-- **`enforce-svelte-runes`**: Validates Svelte 5 syntax correctness.
+- `@agent-junior-dev`** (Gemini Flash):** Restricted entirely to structural markup (HTML) and styling (Tailwind).
 
-## Skills
+**Review & Validation Tier**
 
-The `.agents/skills/` directory equips agents with specific technical directives:
-- `electron-sqlite-ipc`: Standards for Electron IPC bridging and fast SQLite caching.
-- `owasp-top-10`: Security validation against common vulnerabilities.
-- `playwright-qa-flows`: E2E testing directives.
-- `supabase-multitenant-data`: Row Level Security (RLS) and PostgreSQL data isolation.
-- `svelte5-kit-architecture`: SvelteKit server-authoritative data loading and Svelte 5 Runes.
-- `tailwind-semantic-ui`: Utility-class styling and semantic markup rules.
+- `@agent-review-standard`** (Claude Sonnet):** Validates stateless UI and frontend code against project specifications.
 
-## Getting Started
+- `@agent-review-critical`** (Claude Opus):** Adversarially audits load-bearing backend code for race conditions and data leaks.
 
-To utilize this workflow:
-1. Ensure your AI environment supports `@agent` mentions and custom workflows.
-2. Run `/workflow-session-start` to initialize your project state.
-3. Follow the generated instructions to populate `Strategy.md` and `Context.md`.
-4. Trigger `/workflow-new-task` to begin development.
+- `@agent-security-auditor`**:** Enforces OWASP Top 10 mitigation and strict Row Level Security (RLS) constraints.
+
+- `@agent-qa`**:** Executes Playwright E2E tests, verifying edge cases, error states, and accessibility standards.
+
+## 3. State Management & Memory Boundaries
+
+The swarm's memory is isolated into specific operational files:
+
+- `docs/Roadmap.md`** & **`Strategy.md`** (Long-term Memory):** The master application sequencing. Read/Write access is strictly locked to the Architect and PM agents.
+
+- `Context.md`** (Short-term Working Memory):** The live operational handoff document. It tracks the active phase and immediate blockers. Updated by agents after every completed task.
+
+- `.agents/`** (The Vault):** The directory containing the active Skills (`SKILL-*.md`), Rules (`RULE-*.md`), Workflows (`WORKFLOW-*.md`), and tool interception scripts.
+
+## 4. The Daily Execution Loop (The Grind)
+
+Once the workspace is initialized, the human orchestrator drives the swarm through this deterministic loop:
+
+1. `/workspace-init`: Bootstraps the environment and verifies all dependencies and mandatory PRD declarations.
+
+2. `/generate-sprint-tasks`: The Architect JIT-compiles a batch of Linear-ready tasks for the active sprint chunk (Requires a human "APPROVED" phase-2 commit).
+
+3. `/session-start`: The PM Agent briefs you on sprint health and assigns the optimal Task ID to begin.
+
+4. `/implement-[tier] [ID]`: The assigned Dev Agent checks out a branch, writes tests, implements the code, commits, pushes, and updates Linear.
+
+5. `/review-[tier] [ID]`: Routes the branch through the designated code review and security pipelines.
+
+6. `/context-sync`: Updates `Context.md` with the newly realized state.
+
+7. `/publish-pr [ID]`: Generates the final pull request after all automated audits pass.
+
+_(Note: If a task fails review, invoke _`/remediate-task [ID]`_ to surgically fix the specific lines flagged by the Review Agent)._
+
+### **Handling Mid-Flight Pivots (The Emergency Brake)**
+
+The Antigravity swarm is intentionally deterministic and does not waste tokens polling your file system for background changes. If you manually alter the core specifications (`docs/PRD.md` or `docs/ERD.md`) mid-sprint, the Execution agents will remain completely blind to the changes.
+
+To safely pivot the architecture without desyncing the swarm, you must execute the following sequence:
+
+1. **Mutate the Core:** Update `docs/PRD.md` or `docs/ERD.md` with your new requirements (e.g., swapping from REST to GraphQL).
+
+2. **Halt & Reconcile:** Run the `/architecture-pivot` command.
+
+3. **Triage:** The Architect will ingest the new specs, update the master `Roadmap.md`, and output a hit-list of active Linear tasks that are now structurally obsolete.
+
+4. **Execute & Replace:** Manually cancel the obsolete tasks in Linear, then run `/generate-sprint-tasks` to fill the gap with new, architecturally sound tasks.
+
+## 5. Active Tool Guardrails (`hooks.json`)
+
+To prevent agent hallucination and race conditions, the IDE's tool-calling capabilities are intercepted by strict system scripts:
+
+- `context-io-gate`**:** Uses `lockfile-create` to prevent multiple agents from writing to `Context.md` simultaneously.
+
+- `static-analysis-gate`**:** Intercepts `git commit` commands. Forces a `pnpm vitest run` and `pnpm lint` pass. If tests fail, the agent is blocked from committing and forced to fix the code.
+
+- `protect-strategy-memory`**:** Blocks execution agents from accidentally modifying or deleting the `[ACTIVE_SPRINT_CHUNK]` in your memory files.
+
+## 6. Prerequisites & Setup
+
+To deploy this workflow on a fresh repository, ensure your local environment and project structure meet the following strict requirements:
+
+### System Requirements
+
+- **Node.js:** `>= 22.0.0`
+
+- **Package Manager:** `pnpm`
+
+- **Antigravity IDE:** Linear MCP Extension must be installed and authenticated.
+
+### Workspace Scaffolding
+
+Before running `/workspace-init`, your root directory must contain the following structure:
+
+Plaintext
+
+```
+├── .agents/
+│   ├── rules/       (RULE-*.md files)
+│   ├── skills/      (SKILL-*.md files)
+│   ├── workflows/   (WORKFLOW-*.md files)
+│   ├── scripts/     (hooks.ts scripts)
+│   └── hooks.json
+├── docs/
+│   ├── README.md    (Pre-flight instructions and doc index)
+│   ├── PRD.md       (Must contain the Antigravity Mandatory Declarations block)
+│   ├── ERD.md       (Database schemas and relationships)
+│   └── Roadmap.md   (Empty boilerplate containing [ACTIVE_SPRINT_CHUNK] tags)
+├── Context.md       (Empty boilerplate initialized with [GLOBAL_CONSTRAINTS] header)
+├── Strategy.md      (Empty boilerplate initialized with phase headers)
+└── DECISIONS.md     (Updated by Human Orchestrator to log ADRs)
+
+```
+
+### **Linear Team Configuration (Mandatory)**
+
+The Antigravity swarm does not have admin privileges to create workflow states in your Linear workspace. For the automated handoffs to function, you **must** manually configure your Linear Team's workflow to include these exact custom statuses (case-sensitive):
+
+**Unstarted**
+
+- `Todo`
+
+**Started**
+
+- `In Progress`
+
+- `In Review: Architecture` _(Triggered post-implementation)_
+
+- `In Review: Security` _(Triggered post-critical review)_
+
+- `In Review: QA` _(Triggered post-standard/security review)_
+
+- `Ready for PR` _(Triggered when all audits pass)_
+
+- `In Review: Orchestrator` _(Triggered after PR generation)_
+
+**Completed / Canceled**
+
+- `Done`
+
+- `Canceled`
+
+- `Duplicate`
+
+_(Note: If these exact strings are not present in your Linear workflow settings, the agents will fail when attempting to transition tasks, halting the automated pipeline)._
+
+### `.gitignore` Recommendations (Optional Privacy)
+
+If you wish to keep the existence of this multi-agent workflow hidden from public repositories or client deliverables, you can add the swarm mechanics to your `.gitignore`.
+
+_Architect's Warning: Gitignoring these files will lock your swarm's execution state to your current physical machine. If you clone the repo elsewhere, the automated workflow will not function until the files are manually restored._
+
+```
+# Antigravity Multi-Agent Workflow Files
+.agents/
+Context.md
+Strategy.md
+docs/
+DECISIONS.md
+
+```

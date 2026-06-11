@@ -9,7 +9,7 @@ trigger: always_on
 These workflows are fully automated and executed via slash commands:
 
 - `/session-start`: Invokes `@agent-pm` to read `Strategy.md`, `Context.md`, and Linear, outputting the sprint briefing.
-- `/new-task`: Invokes `@agent-architect` to generate task blocks. (Requires Human Phase 2 Commit to Linear).
+- `/generate-sprint-tasks`: Invokes `@agent-architect` to compile the JIT task batch for the active sprint chunk. (Requires Human Phase 2 Commit to Linear).
 - `/security-review`: Invokes `@agent-security-auditor` to perform mandatory threat modeling.
 - `/context-sync`: Invokes the last active agent to summarize decisions and update `Context.md`.
 - `/strategy-sync`: Invokes `@agent-pm` to compress and update `Strategy.md`.

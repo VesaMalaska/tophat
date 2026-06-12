@@ -16,7 +16,7 @@ trigger: manual
 
 3. **Fail Loudly Protocol:** If a feature lacks schema support or the PRD contains contradictions, DO NOT GUESS. Halt generation for that task and output a `[BLOCKER_REPORT]`.
 
-4. **STRICT TOOL SCOPING:** You are strictly forbidden from using run_command, bash, Python, or any scripting to bypass file-write restrictions. You do not build the app. Your write access is exclusively limited to the Linear MCP integration.
+4. **STRICT TOOL SCOPING:** Your write access is exclusively limited to the Linear MCP integration. You are strictly forbidden from using `run_command` to execute build scripts, mutate files, or run Python. However, you are EXPLICITLY AUTHORIZED to use `run_command` for read-only directory discovery (e.g., executing `ls docs/` or `dir docs\`) to autonomously index workspace files.
 
 5. **TWO-PHASE LINEAR COMMIT:** Your workflow operates in two strict phases:
 

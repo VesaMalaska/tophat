@@ -44,7 +44,7 @@ The swarm's memory is isolated into specific operational files:
 
 - `docs/Roadmap.md`** & **`Strategy.md`** (Long-term Memory):** The master application sequencing. Read/Write access is strictly locked to the Architect and PM agents.
 - `Context.md`** (Short-term Working Memory):** The live operational handoff document. It tracks the active phase and immediate blockers. Updated by agents after every completed task.
-- `.agents/`** (The Vault):** The directory containing the active Skills (`SKILL-*.md`), Rules (`RULE-*.md`), Workflows (`WORKFLOW-*.md`), and tool interception scripts.
+- `.agents/`** (The Vault):** The directory containing the active Skills (`.agents/skills/skill-1-name/SKILL.md`), Rules (`.agents/rules/*.md`), Workflows (`.agents/workflows/*.md`), and tool interception scripts.
 
 ---
 
@@ -101,19 +101,24 @@ Before running `/workspace-init`, your root directory must contain the following
 
 ```
 ├── .agents/
-│   ├── rules/       (RULE-*.md files)
-│   ├── skills/      (SKILL-*.md files)
-│   ├── workflows/   (WORKFLOW-*.md files)
-│   ├── scripts/     (hooks.ts scripts)
+│   ├── rules/                (*.md files)
+│   ├── skills/
+│   │   ├── skill-1-name/
+│   │   │   └── SKILL.md
+│   │   ├── skill-2-name/
+│   │   │   └── SKILL.md
+│   │   └── skill-3-name/
+│   │   │   └── SKILL.md
+│   ├── workflows/            (*.md files)
+│   ├── scripts/              (hooks.ts scripts)
 │   └── hooks.json
 ├── docs/
-│   ├── README.md    (Pre-flight instructions and doc index)
-│   ├── PRD.md       (Must contain the Antigravity Mandatory Declarations block)
-│   ├── ERD.md       (Database schemas and relationships)
-│   └── Roadmap.md   (Empty boilerplate containing [ACTIVE_SPRINT_CHUNK] tags)
-├── Context.md       (Empty boilerplate initialized with [GLOBAL_CONSTRAINTS] header)
-├── Strategy.md      (Empty boilerplate initialized with phase headers)
-└── DECISIONS.md     (Updated by Human Orchestrator to log ADRs)
+│   ├── PRD.md                (Must contain the Antigravity Mandatory Declarations block)
+│   ├── ERD.md                (Database schemas and relationships)
+│   └── Roadmap.md            (Empty boilerplate containing [ACTIVE_SPRINT_CHUNK] tags)
+├── Context.md                (Empty boilerplate initialized with [GLOBAL_CONSTRAINTS] header)
+├── Strategy.md               (Empty boilerplate initialized with phase headers)
+└── DECISIONS.md              (Updated and Read by Human Orchestrator to log ADRs)
 
 ```
 

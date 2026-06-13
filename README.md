@@ -140,24 +140,29 @@ _"Multi-agent Development Workflow" structure:_
 
 The Antigravity swarm does not have admin privileges to create workflow states in your Linear workspace. For the automated handoffs to function, you **must** manually configure your Linear Team's workflow to include these exact custom statuses (case-sensitive):
 
+**Backlog**
+
+- `Backlog` _( Manual holding zone for human-logged technical debt, out-of-band feature requests, or suspended tasks not currently in the Active Sprint Chunk. )_
+
 **Unstarted**
 
-- `Todo`
+- `Todo` **Default** _( JIT-compiled tasks for the Active Sprint Chunk. Verified by Architect and ready for Dev Tier branch checkout. )_
 
 **Started**
 
-- `In Progress`
+- `In Progress` _( Issues currently being actively developed or worked on )_
 - `In Review: Architecture` _(Triggered post-implementation)_
 - `In Review: Security` _(Triggered post-critical review)_
 - `In Review: QA` _(Triggered post-standard/security review)_
 - `Ready for PR` _(Triggered when all audits pass)_
 - `In Review: Orchestrator` _(Triggered after PR generation)_
+- `Changes Requested` _( Code failed Review/QA/Security and awaits remediation )_
 
 **Completed / Canceled**
 
-- `Done`
-- `Canceled`
-- `Duplicate`
+- `Done` _( Issues that have been successfully completed )_
+- `Canceled` _( Issues that have been abandoned or are no longer relevant )_
+- `Duplicate` _( Issues that replicate an existing item and will not be tracked separately )_
 
 _(Note: If these exact strings are not present in your Linear workflow settings, the agents will fail when attempting to transition tasks, halting the automated pipeline)._
 

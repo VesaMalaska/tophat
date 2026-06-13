@@ -142,27 +142,40 @@ The Antigravity swarm does not have admin privileges to create workflow states i
 
 **Backlog**
 
-- `Backlog` _( Manual holding zone for human-logged technical debt, out-of-band feature requests, or suspended tasks not currently in the Active Sprint Chunk. )_
+- `Backlog`
+  - **description:** Manual holding zone for human-logged technical debt, out-of-band feature requests, or suspended tasks not currently in the Active Sprint Chunk.
 
 **Unstarted**
 
-- `Todo` **Default** _( JIT-compiled tasks for the Active Sprint Chunk. Verified by Architect and ready for Dev Tier branch checkout. )_
+- `Todo`
+  - **description:** JIT-compiled tasks for the Active Sprint Chunk. Verified by Architect and ready for Dev Tier branch checkout.
 
 **Started**
 
-- `In Progress` _( Issues currently being actively developed or worked on )_
-- `In Review: Architecture` _(Triggered post-implementation)_
-- `In Review: Security` _(Triggered post-critical review)_
-- `In Review: QA` _(Triggered post-standard/security review)_
-- `Ready for PR` _(Triggered when all audits pass)_
-- `In Review: Orchestrator` _(Triggered after PR generation)_
-- `Changes Requested` _( Code failed Review/QA/Security and awaits remediation )_
+- `In Progress`
+  - **description:** Issues currently being actively developed or worked on
+  - **type:** Workspace Default
+- `In Review: Architecture`
+  - **description:** Triggered post-implementation
+- `In Review: Security`
+  - **description:** Triggered post-critical review
+- `In Review: QA`
+  - **description:** Triggered post-standard/security review
+- `Ready for PR`
+  - **description:** Triggered when all audits pass
+- `In Review: Orchestrator`
+  - **description:** Triggered after PR generation
+- `Changes Requested`
+  - **description:** Code failed Review/QA/Security and awaits remediation
 
 **Completed / Canceled**
 
-- `Done` _( Issues that have been successfully completed )_
-- `Canceled` _( Issues that have been abandoned or are no longer relevant )_
-- `Duplicate` _( Issues that replicate an existing item and will not be tracked separately )_
+- `Done`
+  - **description:** Issues that have been successfully completed
+- `Canceled`
+  - **description:** Issues that have been abandoned or are no longer relevant
+- `Duplicate`
+  - **description:** Issues that replicate an existing item and will not be tracked separately
 
 _(Note: If these exact strings are not present in your Linear workflow settings, the agents will fail when attempting to transition tasks, halting the automated pipeline)._
 

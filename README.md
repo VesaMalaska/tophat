@@ -94,10 +94,24 @@ To deploy this workflow on a fresh repository, ensure your local environment and
 - **Node.js:** `>= 22.0.0`
 - **Package Manager:** `pnpm`
 - **Antigravity IDE:** Linear MCP Extension must be installed and authenticated.
+- **GitHub CLI:** GitHub CLI must be installed and authenticated for PR creations.
+
+### Phase 0: Human Orchestrator Initialization (MANDATORY)
+
+The Antigravity swarm does not initialize package managers or install base frameworks. **Before running `/workspace-init`**, the Human Orchestrator must manually bootstrap the execution stack.
+
+1. **Initialize the Framework:** Generate your base application scaffolding (e.g., SvelteKit, Vite, Electron).
+2. **Install Core Tooling:** You must install the dependencies required by the Antigravity `hooks.json` interception scripts. Run the following command:
+   ```bash
+   pnpm add -D typescript vitest @playwright/test tsx
+   ```
+3. **Verify Lockfile:** Ensure `package.json` and `pnpm-lock.yaml` are present at the workspace root.
 
 ### Workspace Scaffolding
 
-Before running `/workspace-init`, your root directory must contain the following structure:
+Once Phase 0 is complete, ensure your root directory contains the Antigravity .agents/ vault and the docs/ directory.
+
+_"Multi-agent Development Workflow" structure:_
 
 ```
 ├── .agents/
@@ -110,7 +124,7 @@ Before running `/workspace-init`, your root directory must contain the following
 │   │   └── skill-3-name/
 │   │   │   └── SKILL.md
 │   ├── workflows/            (*.md files)
-│   ├── scripts/              (hooks.ts scripts)
+│   ├── scripts/              (ts scripts triggered from hooks.json)
 │   └── hooks.json
 ├── docs/
 │   ├── PRD.md                (Must contain the Antigravity Mandatory Declarations block)

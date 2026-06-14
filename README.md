@@ -153,29 +153,31 @@ The TopHat swarm does not have admin privileges to create workflow states in you
 **Started**
 
 - `In Progress`
-  - **description:** Issues currently being actively developed or worked on
+  - **description:** Issues currently being actively developed or worked on.
   - **type:** Workspace Default
+- `Blocked`
+  - **description:** Execution halted due to missing schemas, structural blockers, or pending dependencies. Requires Architect or Human intervention.
 - `In Review: Architecture`
-  - **description:** Triggered post-implementation
+  - **description:** Triggered post-implementation.
 - `In Review: Security`
-  - **description:** Triggered post-critical review
+  - **description:** Triggered post-critical review.
 - `In Review: QA`
-  - **description:** Triggered post-standard/security review
+  - **description:** Triggered post-standard/security review.
 - `Ready for PR`
-  - **description:** Triggered when all audits pass
+  - **description:** Triggered when all audits pass.
 - `In Review: Orchestrator`
-  - **description:** Triggered after PR generation
+  - **description:** Triggered after PR generation.
 - `Changes Requested`
-  - **description:** Code failed Review/QA/Security and awaits remediation
+  - **description:** Code failed Review/QA/Security and awaits remediation.
 
 **Completed / Canceled**
 
 - `Done`
-  - **description:** Issues that have been successfully completed
+  - **description:** Issues that have been successfully completed.
 - `Canceled`
-  - **description:** Issues that have been abandoned or are no longer relevant
+  - **description:** Issues that have been abandoned or are no longer relevant.
 - `Duplicate`
-  - **description:** Issues that replicate an existing item and will not be tracked separately
+  - **description:** Issues that replicate an existing item and will not be tracked separately.
 
 _(Note: If these exact strings are not present in your Linear workflow settings, the agents will fail when attempting to transition tasks, halting the automated pipeline)._
 

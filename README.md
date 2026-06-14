@@ -1,4 +1,4 @@
-# Antigravity Multi-Agent Workflow
+# TopHat Multi-Agent Workflow
 
 This repository utilizes a highly deterministic, AI-Driven Development (AIDD) multi-agent swarm native to the Google Antigravity IDE. This workflow is designed to execute complex, scalable software architecture by strictly isolating agent context, enforcing Test-Driven Development (TDD), and automating the git/PR lifecycle via Linear.
 
@@ -64,7 +64,7 @@ _(Note: If a task fails review, invoke _`/remediate-task [ID]`_ to surgically fi
 
 ### **Handling Mid-Flight Pivots (The Emergency Brake)**
 
-The Antigravity swarm is intentionally deterministic and does not waste tokens polling your file system for background changes. If you manually alter the core specifications (`docs/PRD.md` or `docs/ERD.md`) mid-sprint, the Execution agents will remain completely blind to the changes.
+The TopHat swarm is intentionally deterministic and does not waste tokens polling your file system for background changes. If you manually alter the core specifications (`docs/PRD.md` or `docs/ERD.md`) mid-sprint, the Execution agents will remain completely blind to the changes.
 
 To safely pivot the architecture without desyncing the swarm, you must execute the following sequence:
 
@@ -98,7 +98,7 @@ To deploy this workflow on a fresh repository, ensure your local environment and
 
 ### Phase 0: Human Orchestrator Initialization (MANDATORY)
 
-The Antigravity swarm does not initialize package managers or install base frameworks. **Before running `/workspace-init`**, the Human Orchestrator must manually bootstrap the execution stack.
+The TopHat swarm does not initialize package managers or install base frameworks. **Before running `/workspace-init`**, the Human Orchestrator must manually bootstrap the execution stack.
 
 1. **Initialize the Framework:** Generate your base application scaffolding (e.g., SvelteKit, Vite, Electron).
 2. **Install Core Tooling:** You must install the dependencies required by the Antigravity `hooks.json` interception scripts. Run the following command:
@@ -127,7 +127,7 @@ _"Multi-agent Development Workflow" structure:_
 │   ├── scripts/              (ts scripts triggered from hooks.json)
 │   └── hooks.json
 ├── docs/
-│   ├── PRD.md                (Must contain the Antigravity Mandatory Declarations block)
+│   ├── PRD.md                (Must contain the TopHat Mandatory Declarations block)
 │   ├── ERD.md                (Database schemas and relationships)
 │   └── Roadmap.md            (Empty boilerplate containing [ACTIVE_SPRINT_CHUNK] tags)
 ├── Context.md                (Empty boilerplate initialized with [GLOBAL_CONSTRAINTS] header)
@@ -138,7 +138,7 @@ _"Multi-agent Development Workflow" structure:_
 
 ### **Linear Team Configuration (Mandatory)**
 
-The Antigravity swarm does not have admin privileges to create workflow states in your Linear workspace. For the automated handoffs to function, you **must** manually configure your Linear Team's workflow to include these exact custom statuses (case-sensitive):
+The TopHat swarm does not have admin privileges to create workflow states in your Linear workspace. For the automated handoffs to function, you **must** manually configure your Linear Team's workflow to include these exact custom statuses (case-sensitive):
 
 **Backlog**
 
@@ -186,7 +186,7 @@ If you wish to keep the existence of this multi-agent workflow hidden from publi
 _Architect's Warning: Gitignoring these files will lock your swarm's execution state to your current physical machine. If you clone the repo elsewhere, the automated workflow will not function until the files are manually restored._
 
 ```
-# Antigravity Multi-Agent Workflow Files
+# TopHat Multi-Agent Workflow Files
 .agents/
 Context.md
 Strategy.md

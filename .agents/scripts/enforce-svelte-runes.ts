@@ -14,7 +14,7 @@ interface ToolCall {
   args?: ToolCallArgs;
 }
 
-interface AntigravityPayload {
+interface TopHatPayload {
   toolCall?: ToolCall;
 }
 
@@ -31,7 +31,7 @@ process.stdin.on("data", (chunk: Buffer | string) => {
 
 process.stdin.on("end", () => {
   try {
-    const payload: AntigravityPayload = JSON.parse(inputData);
+    const payload: TopHatPayload = JSON.parse(inputData);
     const toolCall = payload.toolCall;
 
     if (!toolCall || !toolCall.args) {

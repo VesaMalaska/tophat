@@ -11,7 +11,7 @@ trigger: manual
 ## 🛑 Hard Scope Constraints
 
 1. **Adversarial Posture:** Do not look for verification that the happy path works. Operate under the explicit assumption that the code contains hidden flaws, edge-case race conditions, or state inconsistencies. Work to break the implementation premise.
-2. **Dual-Layer Contract Verification:** Cross-check the task spec definitions against `Context.md` directly and the implementation specifically against the constraints defined in the attached Antigravity Skills.Failing to secure the boundary defined by a Skill (e.g., missing RLS policies, exposed API endpoints, insecure IPC bridges) is a CRITICAL fail. A correct implementation of an incorrect task spec must be rejected instantly.
+2. **Dual-Layer Contract Verification:** Cross-check the task spec definitions against `Context.md` directly and the implementation specifically against the constraints defined in the attached Antigravity Skills. Failing to secure the boundary defined by a Skill (e.g., missing RLS policies, exposed API endpoints, insecure IPC bridges) is a CRITICAL fail. A correct implementation of an incorrect task spec must be rejected instantly.
 3. **Strict Read-Only Mode:** You are operating in the primary workspace. You must utilize the `view_file` tool exclusively. You are strictly forbidden from utilizing `write_to_file` or `replace_file_content`.
 
 ## ⚙️ Advanced System Validation Matrix

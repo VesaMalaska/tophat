@@ -7,7 +7,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "mkdir -p .git/locks && lockfile-create --use-pid --retry 3 .git/locks/antigravity.lock > /dev/null 2>&1 && echo '{\"decision\": \"allow\", \"reason\": \"File system lock verified\"}' || echo '{\"decision\": \"deny\", \"reason\": \"File system locked by another agent\"}'",
+                        "command": "mkdir -p .git/locks && lockfile-create --use-pid --retry 3 .git/locks/tophat.lock > /dev/null 2>&1 && echo '{\"decision\": \"allow\", \"reason\": \"File system lock verified\"}' || echo '{\"decision\": \"deny\", \"reason\": \"File system locked by another agent\"}'",
                         "timeout": 5
                     }
                 ]
@@ -19,7 +19,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "lockfile-remove .git/locks/antigravity.lock > /dev/null 2>&1; echo '{}'",
+                        "command": "lockfile-remove .git/locks/tophat.lock > /dev/null 2>&1; echo '{}'",
                         "timeout": 5
                     }
                 ]
@@ -34,7 +34,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "node -e \"if(process.env.ANTIGRAVITY_CMD && process.env.ANTIGRAVITY_CMD.includes('git commit')) process.exit(1); else process.exit(0);\" || npx tsx .agents/scripts/run-static-analysis.ts",
+                        "command": "node -e \"if(process.env.TOPHAT_CMD && process.env.TOPHAT_CMD.includes('git commit')) process.exit(1); else process.exit(0);\" || npx tsx .agents/scripts/run-static-analysis.ts",
                         "timeout": 45
                     }
                 ]

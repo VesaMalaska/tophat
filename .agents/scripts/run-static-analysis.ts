@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 
-interface AntigravityPayload {
+interface TopHatPayload {
   workspacePaths?: string[];
 }
 
@@ -17,7 +17,7 @@ process.stdin.on("data", (chunk: Buffer | string) => {
 
 process.stdin.on("end", () => {
   try {
-    const payload: AntigravityPayload = JSON.parse(inputData);
+    const payload: TopHatPayload = JSON.parse(inputData);
 
     const workspace =
       payload.workspacePaths && payload.workspacePaths.length > 0
@@ -47,7 +47,7 @@ process.stdin.on("end", () => {
       };
 
       // Return the structured rejection to the IDE, but exit cleanly (Code 0)
-      // so the Antigravity Orchestrator parses the JSON rather than throwing a raw system error.
+      // so the TopHat Orchestrator parses the JSON rather than throwing a raw system error.
       console.log(JSON.stringify(rejection));
     }
   } catch (e) {

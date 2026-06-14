@@ -2,7 +2,7 @@
 trigger: always_on
 ---
 
-# Antigravity Workflow Engine Specifications
+# TopHat Workflow Engine Specifications
 
 ## Standard Automation Workflows
 

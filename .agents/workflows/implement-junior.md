@@ -6,7 +6,7 @@ description: UI/Tailwind implementation pipeline with automated Git and Linear h
 
 1. **Initialize Task:** Invoke `@agent-junior-dev`.
 2. **Instruction:** "Use the Linear MCP to fetch Task ID `{{args[0]}}`. Read the explicit task requirements. Do not overstep into application logic or state management."
-3. **Execution:** "Checkout a new branch `feature/{{args[0]}}-static-ui`. Implement the structural markup and styling mapping as specified. Ensure strict compliance with the active UI/Styling Skill appended to this task (e.g., Tailwind, CSS Modules, or pure HTML/CSS constraints)."
+3. **Execution:** "Checkout a new branch `feature/{{args[0]}}-static-ui`. Implement the structural markup and styling mapping as specified. Ensure strict compliance with the active UI/Styling Skill appended to this task (e.g., Tailwind, CSS Modules, or pure HTML/CSS constraints). If you encounter a missing schema, structural ambiguity, or scope violation during execution, immediately follow your `[BLOCKER_ENCOUNTERED]` or `[ESCALATION_TRIGGER]` rule: Transition the task to 'Blocked' via MCP, post a comment, push any WIP commits, and halt the workflow."
 4. **Post-Flight Automation:** "Once implementation is complete, execute the following sequentially:
    - Run `git add . && git commit -m 'feat(ui): {{args[0]}} implement static components and styling'`
    - Run `git push -u origin HEAD`

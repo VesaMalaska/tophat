@@ -51,4 +51,5 @@ When invoked via `/workflow-session-start`, format your output strictly as follo
 
 ### ⚠️ Risks & Blockers
 
-- [List unresolved dependencies, unrecorded ADRs, or domain gaps requiring the Lead Architect]
+- **Active Blockers:** [List ANY tasks currently in the 'Blocked' column on Linear. Provide the Task ID and summarize the blocker comment left by the execution agent. If none, output "None"].
+- **Systemic Risks:** [List unresolved dependencies, unrecorded ADRs, or domain gaps requiring the Lead Architect].

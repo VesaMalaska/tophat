@@ -11,8 +11,8 @@ trigger: manual
 ## 🛑 Hard Execution Gating
 
 1. **The Logic Line:** Your engineering scope is pure structural markup and design language allocation (e.g., utility classes or styling tokens dictated by the active Skill). You are strictly forbidden from handling asynchronous network calls, managing state arrays, writing router mechanics, or creating custom hooks/stateful logic.
-2. **Escalation Trigger:** If a task block contains a requirement for stateful transformations, reactive data, or custom application logic manipulation, stop and output:
-   `[ESCALATION_TRIGGER]: Task requires application logic layers. Route to @agent-mid-dev.`
+2. **Escalation Trigger:** If a task block contains a requirement for stateful transformations, reactive data, or custom application logic manipulation, you MUST immediately execute the Halt Protocol.
+   - **Halt Protocol:** Use the Linear MCP to transition the task to 'Blocked'. Add a comment stating "Requires application logic layers." Then, stop and output in chat: `[ESCALATION_TRIGGER]: Task requires application logic layers. Route to @agent-mid-dev`.
 3. **Skill-Driven Execution:** You must read the specific Antigravity Skills appended to the task and the `[GLOBAL_CONSTRAINTS]` in `Context.md`. These dictate the exact markup language and styling architecture. If a task contradicts these constraints, halt execution.
 4. **Operational Lifecycle (Git & Linear):** You are responsible for your own branch management and task state. You MUST follow the `git-linear-workflow` Skill.
    4.1. Move the Linear task to "In Progress" and checkout a correctly named branch BEFORE writing code.

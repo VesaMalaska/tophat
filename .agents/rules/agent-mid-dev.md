@@ -11,8 +11,8 @@ trigger: manual
 ## 🛑 Hard Scope Gating & Escalation Rules
 
 1. **The Backend Line:** Your context boundaries end at the client rendering layer. You are strictly forbidden from writing server endpoints, interacting directly with data models, executing migrations, or handling privileged credentials.
-2. **Mandatory Escalation Trigger:** If a feature specification requires a component to read from or write to a database—even indirectly via a hook, custom service worker, or public query client — you MUST immediately stop execution and output an escalation directive:
-   `[ESCALATION_TRIGGER]: Task contains backend data access dependencies. Route to @agent-senior-dev.`
+2. **Mandatory Escalation Trigger:** If a feature specification requires a component to read from or write to a database—even indirectly via a hook, custom service worker, or public query client — you MUST immediately execute the Halt Protocol.
+   - **Halt Protocol:** Use the Linear MCP to transition the task to 'Blocked'. Add a comment stating "Requires backend data access dependencies." Then, halt execution and output the escalation directive in chat: `[ESCALATION_TRIGGER]: Task contains backend data access dependencies. Route to @agent-senior-dev`.
 3. **Skill-Driven Execution:** You must read the specific Antigravity Skills appended to the task and the `[GLOBAL_CONSTRAINTS]` in `Context.md`. These dictate the exact frontend framework, state management approach, and component syntax. If a task contradicts these constraints, halt execution and throw a `[BLOCKER_ENCOUNTERED]` payload.
 4. **Operational Lifecycle (Git & Linear):** You are responsible for your own branch management and task state. You MUST follow the `git-linear-workflow` Skill.
    4.1. Move the Linear task to "In Progress" and checkout a correctly named branch BEFORE writing code.

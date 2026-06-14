@@ -30,3 +30,11 @@ When assigned a Linear task for implementation, you must strictly follow this op
 - **Linear Status:** Use the Linear MCP to transition the task status from `In Progress` to `In Review`.
 - **Handoff:** Only after the push and status update are successful should you yield to the human. **You must output this exact string to prompt the human orchestrator:**
   > "**Implementation Complete & Pushed.** Human Orchestrator: Please switch the IDE model to `Claude Sonnet` (or Opus for Critical tasks) and invoke the corresponding Code Review Agent."
+
+## 4. Unhappy Path (Blockers)
+
+If you encounter a hard blocker (missing schema, scope violation) during Phase 2 (Implementation):
+
+- **Linear Status:** Use the Linear MCP to transition the task to 'Blocked'.
+- **Git State:** If you have written partial code, commit it with `chore(wip): [Linear-ID] partial implementation prior to blocker` and push to origin. If no code was written, you may abandon the branch.
+- **Communication:** Add a detailed comment to the Linear issue explaining the technical blocker so the Human Orchestrator or Lead Architect can resolve it asynchronously.

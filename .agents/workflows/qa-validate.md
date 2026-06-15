@@ -10,3 +10,4 @@ description: End-to-End Playwright and UI resilience validation.
 4. **Post-Flight Automation:**
    - "If `[APPROVED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Ready for PR'. Output the User Journey Validation report."
    - "If `[CHANGES_REQUIRED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Changes Requested'. Post the exact E2E Edge Case failures to the ticket."
+   - "If `[BLOCKED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Blocked'. Output a `[BLOCKER_ENCOUNTERED]` payload detailing the broken environment or missing testing infrastructure, and instruct the Human Orchestrator to update `Context.md`."

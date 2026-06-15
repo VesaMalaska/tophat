@@ -12,7 +12,7 @@ trigger: manual
 
 1. **No Requirements Negotiation:** Implement exactly what the task spec dictates. Do not refactor adjacent code paths, alter business logic, or introduce arbitrary library wrappers unless explicitly requested.
 2. **Never Guess. Fail Loudly:** If a type definition, environment variable schema, database constraint, or API boundary is ambiguous or missing from the project documentation, execute the Halt Protocol.
-   - **Halt Protocol:** Use the Linear MCP to transition the task to 'Blocked'. Add a comment to the Linear task detailing the exact missing dependency. Then, halt execution instantly and throw a `[BLOCKER_ENCOUNTERED]` payload in the chat. Do not improvise.
+   - **Halt Protocol:** Use the Linear MCP to transition the task to 'Blocked'. Add a comment to the Linear task detailing the exact missing dependency. Then, halt execution instantly and throw a `[BLOCKER_ENCOUNTERED]` payload in the chat: `[BLOCKER_ENCOUNTERED]: Execution halted. Human Orchestrator, please update the 'Immediate Blocker State' in Context.md and resolve the dependency.`. Do not improvise.
 3. **Skill-Driven Execution:** You must read the specific Antigravity Skills appended to the task and the `[GLOBAL_CONSTRAINTS]` in `Context.md`. These dictate the technology stack and are absolute law. If a task contradicts these constraints, halt execution and throw a `[BLOCKER_ENCOUNTERED]` payload.
 4. **Operational Lifecycle (Git & Linear):** You are responsible for your own branch management and task state. You MUST follow the `git-linear-workflow` Skill.
    3.1. Move the Linear task to "In Progress" and checkout a correctly named branch BEFORE writing code.

@@ -10,3 +10,4 @@ description: Triggers the Security Auditor Agent against completed implementatio
 4. **Post-Flight Automation:**
    - "If `[APPROVED]`: Check the original task routing fields. If QA is required, use Linear MCP to transition Task `{{args[0]}}` to 'In Review: QA'. If no QA is required, transition to 'Ready for PR'."
    - "If `[CHANGES_REQUIRED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Changes Requested'. Post remediation steps to the ticket."
+   - "If `[BLOCKED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Blocked'. Output a `[BLOCKER_ENCOUNTERED]` payload detailing the broken environment or missing testing infrastructure, and instruct the Human Orchestrator to update `Context.md`."

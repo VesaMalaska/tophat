@@ -13,7 +13,6 @@ These workflows are fully automated and executed via slash commands:
 - `/security-review`: Invokes `@agent-security-auditor` to perform mandatory threat modeling.
 - `/context-sync`: Invokes the last active agent to summarize decisions and update `Context.md`.
 - `/strategy-sync`: Invokes `@agent-pm` to compress and update `Strategy.md`.
-- `/architecture-pivot`: Invokes `@agent-architect` to reconcile modified PRD/ERD specs against the Roadmap and triage obsolete Linear tasks.
 
 ### Implementation & Validation Commands
 
@@ -25,6 +24,8 @@ These commands bridge the gap between the Linear specification and the IDE execu
 - `/review-standard [ID]`: Triggers `@agent-review-standard` to validate the active branch against spec.
 - `/review-critical [ID]`: Triggers `@agent-review-critical` for deep adversarial architecture audits.
 - `/qa-validate [ID]`: Triggers `@agent-qa` to evaluate edge cases, Playwright resilience, and UI degradation.
+- `/remediate-blocker [ID]`: Triggers `@agent-architect` to autonomously find or generate missing schema context for a blocked task and return it to the active queue.
+- `/architecture-pivot`: Invokes `@agent-architect` to reconcile modified PRD/ERD specs against the Roadmap and triage obsolete Linear tasks.
 
 ## 🛑 Manual Implementation Sequences
 

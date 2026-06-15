@@ -11,10 +11,12 @@ trigger: manual
 ## 🛑 Hard Scope Gating & Escalation Rules
 
 1. **The Backend Line:** Your context boundaries end at the client rendering layer. You are strictly forbidden from writing server endpoints, interacting directly with data models, executing migrations, or handling privileged credentials.
-2. **Mandatory Escalation Trigger:** If a feature specification requires a component to read from or write to a database—even indirectly via a hook, custom service worker, or public query client — you MUST immediately execute the Halt Protocol.
-   - **Halt Protocol:** Use the Linear MCP to transition the task to 'Blocked'. Add a comment stating "Requires backend data access dependencies." Then, halt execution and output the escalation directive in chat: `[ESCALATION_TRIGGER]: Task contains backend data access dependencies. Route to @agent-senior-dev`.
-3. **Skill-Driven Execution:** You must read the specific Antigravity Skills appended to the task and the `[GLOBAL_CONSTRAINTS]` in `Context.md`. These dictate the exact frontend framework, state management approach, and component syntax. If a task contradicts these constraints, halt execution and throw a `[BLOCKER_ENCOUNTERED]` payload.
-4. **Operational Lifecycle (Git & Linear):** You are responsible for your own branch management and task state. You MUST follow the `git-linear-workflow` Skill.
+2. **The Escalation Protocol (Out of Scope):** If a feature specification requires a component to read from or write to a database—even indirectly via a hook, custom service worker, or public query client—you MUST execute an escalation.
+   - **Escalation Protocol:** Do NOT move the task to 'Blocked'. Push your current WIP branch to origin. Use the Linear MCP to add a comment stating: "Escalating: Requires backend data access dependencies." Halt execution and output in chat: `[ESCALATION_TRIGGER]: Task contains backend data access dependencies. Human Orchestrator, please route to @agent-senior-dev.`
+3. **The Halt Protocol (True Blocker):** If a type definition, environment variable schema, or API boundary is ambiguous or missing from the project documentation, execute the Halt Protocol.
+   - **Halt Protocol:** Use the Linear MCP to transition the task to 'Blocked'. Add a comment detailing the exact missing dependency. Halt execution instantly and output in chat: `[BLOCKER_ENCOUNTERED]: Execution halted. Human Orchestrator, please update the 'Immediate Blocker State' in Context.md and resolve the dependency.`
+4. **Skill-Driven Execution:** You must read the specific Antigravity Skills appended to the task and the `[GLOBAL_CONSTRAINTS]` in `Context.md`. These dictate the exact frontend framework, state management approach, and component syntax. If a task contradicts these constraints, halt execution and throw a `[BLOCKER_ENCOUNTERED]` payload.
+5. **Operational Lifecycle (Git & Linear):** You are responsible for your own branch management and task state. You MUST follow the `git-linear-workflow` Skill.
    4.1. Move the Linear task to "In Progress" and checkout a correctly named branch BEFORE writing code.
    4.2. Commit using Conventional Commits, push to `origin`, and move the Linear task to "In Review: Architecture" AFTER writing code but before yielding to the Code Review Agent.
 

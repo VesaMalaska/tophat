@@ -62,16 +62,25 @@ Once the workspace is initialized, the human orchestrator drives the swarm throu
 
 _(Note: If a task fails review, invoke _`/remediate-task [ID]`_ to surgically fix the specific lines flagged by the Review Agent)._
 
-### **Handling Mid-Flight Pivots (The Emergency Brake)**
+### **4.1. Handling Blockers & Mid-Flight Pivots (The Emergency Brakes)**
 
-The TopHat swarm is intentionally deterministic and does not waste tokens polling your file system for background changes. If you manually alter the core specifications (`docs/PRD.md` or `docs/ERD.md`) mid-sprint, the Execution agents will remain completely blind to the changes.
+The TopHat swarm is intentionally deterministic and does not waste tokens polling your file system for background changes. When an execution agent encounters a missing dependency, missing schema, or architectural contradiction, it will throw a [BLOCKER_ENCOUNTERED] payload, transition the task to Blocked in Linear, and halt.
 
-To safely pivot the architecture without desyncing the swarm, you must execute the following sequence:
+Depending on the severity of the missing context, the Human Orchestrator must execute one of two recovery workflows:
 
-1. **Mutate the Core:** Update `docs/PRD.md` or `docs/ERD.md` with your new requirements (e.g., swapping from REST to GraphQL).
-2. **Halt & Reconcile:** Run the `/architecture-pivot` command.
-3. **Triage:** The Architect will ingest the new specs, update the master `Roadmap.md`, and output a hit-list of active Linear tasks that are now structurally obsolete.
-4. **Execute & Replace:** Manually cancel the obsolete tasks in Linear, then run `/generate-sprint-tasks` to fill the gap with new, architecturally sound tasks.
+#### 4.1.1. **The Micro-Patch:** `/remediate-blocker [ID]`
+
+Use this when the overall architecture is sound, but a specific blueprint is missing a measurement (e.g., a missing TypeScript interface, an undefined database column, or an unstated business rule).
+
+- **Action:** Run `/remediate-blocker [Linear ID]`.
+- **Execution:** The Lead Architect fetches the blocked ticket, reads the developer's error, parses the `docs/ folder` for the missing context, and injects the schema directly into the Linear task description. It then returns the ticket to Todo for immediate execution.
+
+#### 4.1.2. **The Macro-Reset:** `/architecture-pivot`
+
+Use this only when the fundamental architecture has shifted (e.g., swapping from a REST API to GraphQL, or migrating from SQLite to PostgreSQL). This is computationally expensive and alters the master timeline.
+
+- **Action:** First, manually mutate `docs/PRD.md` or `docs/ERD.md` with the new core requirements. Then, run `/architecture-pivot`.
+- **Execution:** The Lead Architect halts the swarm, recalculates the entire `Roadmap.md`, and outputs a triage hit-list of active Linear tasks (including tasks with 'Blocked' status) that are now structurally obsolete. You must manually cancel obsolete tasks and run `/generate-sprint-tasks` to fill the gaps.
 
 ---
 
@@ -89,14 +98,14 @@ To prevent agent hallucination and race conditions, the IDE's tool-calling capab
 
 To deploy this workflow on a fresh repository, ensure your local environment and project structure meet the following strict requirements:
 
-### System Requirements
+### 6.1. System Requirements
 
 - **Node.js:** `>= 22.0.0`
 - **Package Manager:** `pnpm`
 - **Antigravity IDE:** Linear MCP Extension must be installed and authenticated.
 - **GitHub CLI:** GitHub CLI must be installed and authenticated for PR creations.
 
-### Phase 0: Human Orchestrator Initialization (MANDATORY)
+### 6.2. Phase 0: Human Orchestrator Initialization (MANDATORY)
 
 The TopHat swarm does not initialize package managers or install base frameworks. **Before running `/workspace-init`**, the Human Orchestrator must manually bootstrap the execution stack.
 
@@ -107,7 +116,7 @@ The TopHat swarm does not initialize package managers or install base frameworks
    ```
 3. **Verify Lockfile:** Ensure `package.json` and `pnpm-lock.yaml` are present at the workspace root.
 
-### Workspace Scaffolding
+### 6.3. Workspace Scaffolding
 
 Once Phase 0 is complete, ensure your root directory contains the Antigravity .agents/ vault and the docs/ directory.
 
@@ -136,7 +145,7 @@ _"Multi-agent Development Workflow" structure:_
 
 ```
 
-### **Linear Team Configuration (Mandatory)**
+### 6.4. **Linear Team Configuration (Mandatory)**
 
 The TopHat swarm does not have admin privileges to create workflow states in your Linear workspace. For the automated handoffs to function, you **must** manually configure your Linear Team's workflow to include these exact custom statuses (case-sensitive):
 
@@ -181,7 +190,7 @@ The TopHat swarm does not have admin privileges to create workflow states in you
 
 _(Note: If these exact strings are not present in your Linear workflow settings, the agents will fail when attempting to transition tasks, halting the automated pipeline)._
 
-### `.gitignore` Recommendations (Optional Privacy)
+### 6.5. `.gitignore` Recommendations (Optional Privacy)
 
 If you wish to keep the existence of this multi-agent workflow hidden from public repositories or client deliverables, you can add the swarm mechanics to your `.gitignore`.
 

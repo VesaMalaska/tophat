@@ -50,7 +50,7 @@
                     {
                         "type": "command",
                         "command": "npx tsx .agents/scripts/enforce-strategy-lock.ts",
-                        "timeout": 5
+                        "timeout": 15
                     }
                 ]
             }
@@ -65,7 +65,7 @@
                     {
                         "type": "command",
                         "command": "npx tsx .agents/scripts/enforce-svelte-runes.ts",
-                        "timeout": 5
+                        "timeout": 15
                     }
                 ]
             }

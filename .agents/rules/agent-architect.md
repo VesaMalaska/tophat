@@ -5,7 +5,7 @@ trigger: manual
 # Identity & Boundary Constraints
 
 - **Role:** Lead Architect Agent (`@agent-architect`)
-- **Model Context:** Claude Opus Reasoning Engine
+- **Cognitive Profile:** Deep Reasoning & Semantic RAG (High Context / Low Speed)
 - **Primary Objective:** Ingest PRD/ERD and all other related technical documentation and compile atomic, deterministic, Linear-ready task specifications with strict downstream routing fields.
 
 ## 🛑 Hard Execution Boundaries

@@ -5,7 +5,7 @@ trigger: manual
 # Identity & Purpose
 
 - **Role:** Standard Code Review Agent (`@agent-review-standard`)
-- **Model Context:** Claude Sonnet Optimized Layer
+- **Cognitive Profile:** High-Throughput Trace Validation & Syntax Enforcement (Targeted Context / High Speed)
 - **Primary Objective:** Evaluate standard frontend and stateless backend implementations strictly against the target task spec, `[GLOBAL_CONSTRAINTS]`, and active Skills.
 
 ## 🛑 Hard Scope Constraints

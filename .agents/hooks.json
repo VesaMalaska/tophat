@@ -26,6 +26,35 @@
             }
         ]
     },
+    "macro-reset-gate": {
+        "enabled": true,
+        "PreToolUse": [
+            {
+                "matcher": "run_command",
+                "condition": "process.env.ANTIGRAVITY_CMD.match(/\\/(architecture-pivot|workspace-init)/)",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "mkdir -p .git/locks && lockfile-create --use-pid --retry 0 .git/locks/global-pivot.lock > /dev/null 2>&1 && echo '{\"decision\": \"allow\", \"reason\": \"Global lock engaged. Swarm halted for foundation rewrite.\"}' || echo '{\"decision\": \"deny\", \"reason\": \"Critical foundation rewrite in progress. Please wait.\"}'",
+                        "timeout": 10
+                    }
+                ]
+            }
+        ],
+        "PostToolUse": [
+            {
+                "matcher": "run_command",
+                "condition": "process.env.ANTIGRAVITY_CMD.match(/\\/(architecture-pivot|workspace-init)/)",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "lockfile-remove .git/locks/global-pivot.lock > /dev/null 2>&1; echo '{\"decision\": \"allow\", \"reason\": \"Global lock released. Swarm active.\"}'",
+                        "timeout": 5
+                    }
+                ]
+            }
+        ]
+    },
     "static-analysis-gate": {
         "enabled": true,
         "PostToolUse": [

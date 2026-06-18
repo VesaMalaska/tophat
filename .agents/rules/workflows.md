@@ -4,32 +4,54 @@ trigger: always_on
 
 # TopHat Workflow Engine Specifications
 
-## Standard Automation Workflows
+## 🛑 GLOBAL ORCHESTRATION MANDATE
 
-These workflows are fully automated and executed via slash commands:
+Whenever you suggest a subsequent slash command or assign a downstream task to another agent, you MUST explicitly state the Recommended LLM Model required to execute that command, referencing the mappings defined below.
+_Format Output:_ `[Next Action: /command-name] -> [Recommended Model: Model Name]`
 
-- `/session-start`: Invokes `@agent-pm` to read `Strategy.md`, `Context.md`, and Linear, outputting the sprint briefing.
-- `/generate-sprint-tasks`: Invokes `@agent-architect` to compile the JIT task batch for the active sprint chunk. (Requires Human Phase 2 Commit to Linear).
-- `/security-review`: Invokes `@agent-security-auditor` to perform mandatory threat modeling.
-- `/context-sync`: Invokes the last active agent to summarize decisions and update `Context.md`.
-- `/strategy-sync`: Invokes `@agent-pm` to compress and update `Strategy.md`.
+## TopHat Workflow Commands for Orchestrating the Engine Flow
 
-### Implementation & Validation Commands
+### Phase 0: Foundational Commands
 
-These commands bridge the gap between the Linear specification and the IDE execution, requiring you to provide the explicit Task ID:
+- `/workspace-init`: Bootstraps environment, verifies Tech Stack constraints, generates initial Roadmap.md.
+  - **Recommended Model:** Claude Opus (Requires zero-shot semantic mapping of entire PRD).
+- `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
+  - **Recommended Model:** Claude Opus (Requires high adversarial precision to prevent data loss).
 
-- `/implement-junior [ID]`: Triggers `@agent-junior-dev` to check out a branch and execute static UI tasks.
-- `/implement-mid [ID]`: Triggers `@agent-mid-dev` to check out a branch and execute frontend logic.
-- `/implement-senior [ID]`: Triggers `@agent-senior-dev` to check out a branch and execute backend/DB tasks.
-- `/review-standard [ID]`: Triggers `@agent-review-standard` to validate the active branch against spec.
-- `/review-critical [ID]`: Triggers `@agent-review-critical` for deep adversarial architecture audits.
-- `/qa-validate [ID]`: Triggers `@agent-qa` to evaluate edge cases, Playwright resilience, and UI degradation.
-- `/remediate-blocker [ID]`: Triggers `@agent-architect` to autonomously find or generate missing schema context for a blocked task and return it to the active queue.
-- `/architecture-pivot`: Invokes `@agent-architect` to reconcile modified PRD/ERD specs against the Roadmap and triage obsolete Linear tasks.
+### Standard Automation Workflows
+
+- `/session-start`: Invokes @agent-pm to output the sprint briefing.
+  - **Recommended Model:** Gemini Flash High (Optimized for fast state-checking).
+- `/generate-sprint-tasks`: Invokes @agent-architect to JIT-compile the active sprint chunk.
+  - **Recommended Model:** Gemini Pro High (Optimized for massive context window / directory RAG).
+- `/roadmap-sync`: Synchronizes master timeline based on completed chunks.
+  - **Recommended Model:** Gemini Pro High (Requires deep context alignment).
+- `/context-sync` & `/strategy-sync`: Summarizes decisions and compresses state memory.
+  - **Recommended Model:** Gemini Flash Medium (Optimized for token compression).
+
+### Implementation & Remediation Commands
+
+- `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
+  - **Recommended Model:** Gemini Pro High (Directory RAG across docs/).
+- `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
+  - **Recommended Model:** Gemini Pro High (Requires cross-referencing PRD with audit failures).
+
+### Validation & Pipeline Commands
+
+- `/review-standard [ID]`: Validates stateless UI and frontend code against project specifications.
+  - **Recommended Model:** Claude Sonnet (Cross-model validation against Gemini implementations).
+- `/review-critical [ID]`: Adversarially audits load-bearing backend code for race conditions.
+  - **Recommended Model:** Claude Sonnet (Cross-model validation against Gemini implementations).
+- `/security-review [ID]`: Enforces OWASP Top 10 mitigation and strict RLS constraints.
+  - **Recommended Model:** Claude Sonnet (Adversarial security posture).
+- `/qa-validate [ID]`: Evaluates edge cases, Playwright resilience, and UI degradation.
+  - **Recommended Model:** Gemini Pro Low (Requires Vision-enabled UI analysis).
+- `/publish-pr [ID]`: Generates final PR and merges approved work.
+  - **Recommended Model:** Gemini Flash Medium (Lightweight API/CLI execution).
 
 ## 🛑 Manual Implementation Sequences
 
-Do NOT attempt to run implementation as an automated workflow. The Human Orchestrator must manually swap the LLM model at each phase transition.
+Do NOT attempt to run implementation as an automated workflow. The Human Orchestrator must manually swap the LLM model at each phase transition to enforce Heterogeneous Model Validation.
 
 ### Standard Implementation Sequence:
 
@@ -40,7 +62,7 @@ Do NOT attempt to run implementation as an automated workflow. The Human Orchest
 ### Critical Implementation Sequence:
 
 1. **[Human - Model: Gemini Pro High]**: `/implement-senior [ID]` Use MCP to fetch Linear Task [ID]. Execute and push branch. (Auto-moves to `In Review: Architecture`)
-2. **[Human - Model: Claude Opus]**: `/review-critical [ID]` Adversarially review the active branch. (Auto-moves to `In Review: Security`)
+2. **[Human - Model: Claude Sonnet]**: `/review-critical [ID]` Adversarially review the active branch. (Auto-moves to `In Review: Security`)
 3. **[Human - Model: Claude Sonnet]**: `/security-review [ID]` Execute threat model. (Auto-moves to `In Review: QA` or `Ready for PR`)
 4. **[Human - Model: Gemini Pro High]**: `/qa-validate [ID]` (if UI involved). Validate Playwright flows. (Auto-moves to `Ready for PR`)
 5. **[Human - Model: Gemini Pro]**: `/context-sync` Update the handoff state.

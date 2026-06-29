@@ -11,7 +11,8 @@ description: Surgical remediation pipeline for tasks rejected by Review, Securit
     - If you are `@agent-mid-dev` or `@agent-senior-dev`: You MUST re-run Vitest (via the vitest-tdd skill) to ensure your logic changes have not broken existing architectural constraints.
     - If you are `@agent-junior-dev`: Do not attempt to run Vitest. Instead, statically verify your structural markup and ensure your fixes strictly align with the `tailwind-semantic-ui` constraints."
 5.  **Post-Flight Automation:**
-    - Run `git add . && git commit -m 'fix: {{args[0]}} address review feedback'`
+    - Run `git add .`
+    - Run `git commit -m 'fix: {{args[0]}} address review feedback'`
     - Run `git push origin HEAD`
     - Use the Linear MCP to transition Task `{{args[0]}}` to 'In Review: Architecture'.
     - Use the Linear MCP to add a comment detailing exactly how the critical/major findings were resolved.

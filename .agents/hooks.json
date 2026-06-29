@@ -7,7 +7,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "mkdir -p .git/locks && lockfile-create --use-pid --retry 3 .git/locks/tophat.lock > /dev/null 2>&1 && echo '{\"decision\": \"allow\", \"reason\": \"File system lock verified\"}' || echo '{\"decision\": \"deny\", \"reason\": \"File system locked by another agent\"}'",
+                        "command": "npx tsx .agents/scripts/swarm-lock.ts acquire tophat",
                         "timeout": 5
                     }
                 ]
@@ -19,7 +19,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "lockfile-remove .git/locks/tophat.lock > /dev/null 2>&1; echo '{}'",
+                        "command": "npx tsx .agents/scripts/swarm-lock.ts release tophat",
                         "timeout": 5
                     }
                 ]
@@ -35,7 +35,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "mkdir -p .git/locks && lockfile-create --use-pid --retry 0 .git/locks/global-pivot.lock > /dev/null 2>&1 && echo '{\"decision\": \"allow\", \"reason\": \"Global lock engaged. Swarm halted for foundation rewrite.\"}' || echo '{\"decision\": \"deny\", \"reason\": \"Critical foundation rewrite in progress. Please wait.\"}'",
+                        "command": "npx tsx .agents/scripts/swarm-lock.ts acquire global-pivot",
                         "timeout": 10
                     }
                 ]
@@ -48,7 +48,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "lockfile-remove .git/locks/global-pivot.lock > /dev/null 2>&1; echo '{\"decision\": \"allow\", \"reason\": \"Global lock released. Swarm active.\"}'",
+                        "command": "npx tsx .agents/scripts/swarm-lock.ts release global-pivot",
                         "timeout": 5
                     }
                 ]

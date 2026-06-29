@@ -10,10 +10,12 @@ When assigned a Linear task for implementation, you must strictly follow this op
 ## 1. Task Initialization (Before coding)
 
 - **Linear Status:** Use the Linear MCP to transition the assigned task status from `Todo` to `In Progress`.
-- **Git Branching:** Use `run_command` to create and checkout a new branch from `main` (or the active sprint branch).
-  - **Naming Convention:** `[type]/[linear-issue-id]-[short-description]`
-  - **Types:** `feature/`, `bugfix/`, `chore/`, `refactor/`
-  - **Example:** `feature/ENG-142-electron-sqlite-init`
+- **Git Sync & Branching (CRITICAL):** You must synchronize with the remote source of truth to prevent Git Drift. Execute this exact sequence using the `run_command` tool:
+  1.  **Fetch:** Execute `git fetch origin main`.
+  2.  **Checkout/Recover:** Attempt to execute `git checkout [type]/[linear-issue-id]-[short-description]`.
+  3.  **Branch Creation:** If step 2 throws an error (e.g., pathspec did not match), execute `git checkout -b [type]/[linear-issue-id]-[short-description] origin/main` to cleanly branch from the remote.
+      - **Types:** `feature/`, `bugfix/`, `chore/`, `refactor/`
+      - **Example:** `feature/ENG-142-electron-sqlite-init`
 
 ## 2. Implementation & Committing (During coding)
 

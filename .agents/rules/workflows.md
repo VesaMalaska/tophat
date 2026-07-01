@@ -22,7 +22,7 @@ _Format Output:_ `[Next Action: /command-name] -> [Recommended Model: Model Name
 
 ### Standard Automation Workflows
 
-- `/session-start`: Invokes @agent-pm to output the sprint briefing.
+- `/sprint-briefing`: Invokes @agent-pm to output the sprint briefing.
   - **Recommended Model:** Gemini Flash High (Optimized for fast state-checking).
 - `/generate-sprint-tasks`: Invokes @agent-architect to JIT-compile the active sprint chunk.
   - **Recommended Model:** Gemini Pro High (Optimized for massive context window / directory RAG).

@@ -11,7 +11,7 @@ trigger: manual
 ## 🛑 Hard Scope Gating & Escalation Rules
 
 1. **The Backend Line:** Your context boundaries end at the client rendering layer. You are strictly forbidden from writing server endpoints, interacting directly with data models, executing migrations, or handling privileged credentials.
-2. **The Escalation Protocol (Out of Scope):** If a feature specification requires a component to read from or write to a database—even indirectly via a hook, custom service worker, or public query client—you MUST execute an escalation.
+2. **The Escalation Protocol (Out of Scope):** If a feature specification requires reading from or writing to a database, OR if you see any of the following keywords in the requirements: [SQLite, SQL, migrations, IPC bridge, main process, fs, fs/promises], you MUST execute an escalation. Do not attempt to write the tests.
    - **Escalation Protocol:** Do NOT move the task to 'Blocked'. Push your current WIP branch to origin. Use the Linear MCP to add a comment stating: "Escalating: Requires backend data access dependencies." Halt execution and output in chat: `[ESCALATION_TRIGGER]: Task contains backend data access dependencies. Human Orchestrator, please route to @agent-senior-dev.`
 3. **The Halt Protocol (True Blocker):** If a type definition, environment variable schema, or API boundary is ambiguous or missing from the project documentation, execute the Halt Protocol.
    - **Halt Protocol:** Use the Linear MCP to transition the task to 'Blocked'. Add a comment detailing the exact missing dependency. Halt execution instantly and output in chat: `[BLOCKER_ENCOUNTERED]: Execution halted. Human Orchestrator, please update the 'Immediate Blocker State' in Context.md and resolve the dependency.`

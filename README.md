@@ -53,7 +53,7 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
 
 ### Standard Automation Workflows
 
-- `/session-start`: Invokes @agent-pm to output the sprint briefing.
+- `/sprint-briefing`: Invokes @agent-pm to output the sprint briefing.
   - **Recommended Model:** Gemini Flash High (Optimized for fast state-checking).
 - `/generate-sprint-tasks`: Invokes @agent-architect to JIT-compile the active sprint chunk.
   - **Recommended Model:** Gemini Pro High (Optimized for massive context window / directory RAG).
@@ -118,7 +118,7 @@ This is the core iterative loop for chewing through the backlog. It begins with 
 **A. Session Prep (Run at the start of a sprint chunk or daily session)**
 
 1. `/generate-sprint-tasks`: The Architect JIT-compiles a batch of Linear-ready tasks for the active sprint chunk (Requires a human "APPROVED" phase-2 commit).
-2. `/session-start`: The PM Agent briefs you on sprint health and assigns the optimal Task ID to begin.
+2. `/sprint-briefing`: The PM Agent briefs you on sprint health and assigns the optimal Task ID to begin.
 
 **B. The Standard Route (UI, Layouts, Client State)**
 For tasks routed to `@agent-junior-dev` or `@agent-mid-dev`.

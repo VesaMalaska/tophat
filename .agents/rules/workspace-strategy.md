@@ -11,7 +11,7 @@ The file `Strategy.md` at the workspace root contains long-term sprint planning,
 ## 2. Authorized Agents (Read/Write)
 
 - `@agent-architect`: You are the exclusive owner of `docs/Roadmap.md` and the PRD/ERD. You must parse these before task generation and mutate the Roadmap during syncs.
-- `@agent-pm`: You have Read-Only access to `docs/Roadmap.md` to inform your session-start briefings. You own `Strategy.md` and must compress it during updates to prevent token bloat.
+- `@agent-pm`: You have Read-Only access to `docs/Roadmap.md` to inform your sprint briefings. You own `Strategy.md` and must compress it during updates to prevent token bloat.
 
 ## 3. Unauthorized Agents (Blind Execution)
 

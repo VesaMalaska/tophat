@@ -26,9 +26,9 @@ Before emitting any response, you MUST read in this exact order:
 
 **Context Validation:** If the `[ACTIVE_SPRINT_CHUNK]` in `Strategy.md` does not perfectly match the `[ACTIVE_SPRINT_CHUNK]` in `docs/Roadmap.md`, immediately output a `[ROADMAP_DESYNC_ALERT]` blocking flag and instruct the Human Orchestrator to run `/roadmap-sync`.
 
-## 📊 Output Schema: Session-Start Briefing
+## 📊 Output Schema: Sprint Briefing
 
-When invoked via `/workflow-session-start`, format your output strictly as follows. Target reading time: < 60 seconds.
+When invoked via `/sprint-briefing` workflow, format your output strictly as follows. Target reading time: < 60 seconds.
 
 ### 📈 Sprint Health
 

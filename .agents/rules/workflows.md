@@ -17,6 +17,8 @@ _Format Output:_ `[Next Action: /command-name] -> [Recommended Model: Model Name
   - **Recommended Model:** Claude Opus (Requires zero-shot semantic mapping of entire PRD).
 - `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
   - **Recommended Model:** Claude Opus (Requires high adversarial precision to prevent data loss).
+- `/generate-readme`: Invokes Architect to execute multi-document semantic synthesis across specs and ERDs to generate the master README.md template.
+  - **Recommended Model**: Gemini Pro High (Required for advanced cross-referencing and rigid template adherence).
 
 ### Standard Automation Workflows
 
@@ -31,6 +33,12 @@ _Format Output:_ `[Next Action: /command-name] -> [Recommended Model: Model Name
 
 ### Implementation & Remediation Commands
 
+- `/implement-senior [ID]`: Invokes @agent-senior-dev to execute backend, database, or security tasks.
+  - **Recommended Model:** Gemini Pro High (Optimized for deep reasoning and severe constraint adherence).
+- `/implement-mid [ID]`: Invokes @agent-mid-dev to execute reactive frontend logic and client state transformations.
+  - **Recommended Model:** Gemini Flash High (Optimized for rapid instruction following and sub-second TDD cycles).
+- `/implement-junior [ID]`: Invokes @agent-junior-dev to execute raw structural layouts and Tailwind styling passes.
+  - **Recommended Model:** Gemini Flash Low (Optimized for high-speed, low-cost deterministic layout compilation).
 - `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
   - **Recommended Model:** Gemini Pro High (Directory RAG across docs/).
 - `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.

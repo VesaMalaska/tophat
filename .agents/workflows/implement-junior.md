@@ -13,4 +13,4 @@ description: UI/Tailwind implementation pipeline with automated Git and Linear h
    - Run `git push -u origin HEAD`
    - Use the Linear MCP to transition Task `{{args[0]}}` to 'In Review: Architecture'.
    - Use the Linear MCP to add a comment to Task `{{args[0]}}` containing your formatted Trace Validation Checklist and the final Git commit hash.
-   - Output the final status confirmation for the Human Orchestrator."
+5. **Handoff Resolution:** "Output exactly: `[Next Action: /review-standard {{args[0]}}]`."

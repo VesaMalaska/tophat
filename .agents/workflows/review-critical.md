@@ -11,3 +11,4 @@ description: Adversarial architecture audit pipeline with automated Linear routi
    - "If `[APPROVED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'In Review: Security'. Use the Linear MCP to post your Adversarial Failure Analysis and Validation Matrix as a comment on the ticket."
    - "If `[CHANGES_REQUIRED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Changes Requested'. Use the Linear MCP to post your Threat Scenario and required changes to the ticket."
    - "If `[BLOCKED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Blocked'. Output a `[BLOCKER_ENCOUNTERED]` payload detailing the broken environment or missing testing infrastructure, and instruct the Human Orchestrator to update `Context.md`."
+5. **Handoff Resolution:** "If `[APPROVED]`, output exactly: `[Next Action: /security-review {{args[0]}}]`."

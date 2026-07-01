@@ -11,3 +11,6 @@ description: Triggers the Security Auditor Agent against completed implementatio
    - "If `[APPROVED]`: Check the original task routing fields. If QA is required, use Linear MCP to transition Task `{{args[0]}}` to 'In Review: QA'. If no QA is required, transition to 'Ready for PR'."
    - "If `[CHANGES_REQUIRED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Changes Requested'. Post remediation steps to the ticket."
    - "If `[BLOCKED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Blocked'. Output a `[BLOCKER_ENCOUNTERED]` payload detailing the broken environment or missing testing infrastructure, and instruct the Human Orchestrator to update `Context.md`."
+5. **Handoff Resolution:** "If `[APPROVED]`, look up the 'QA Required' metadata field on the active Linear Task.
+   - If QA is 'yes', use Linear MCP to transition to 'In Review: QA'. Output exactly: `[Next Action: /qa-validate {{args[0]}}]`.
+   - If QA is 'no', use Linear MCP to transition to 'Ready for PR'. Output exactly: `[Next Action: /publish-pr {{args[0]}}]`."

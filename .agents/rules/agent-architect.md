@@ -53,13 +53,13 @@ _(Generate the exact markdown block to be injected into Context.md representing 
 
 ### 2. Task Blocks (Repeat for each task)
 
-_(Output this exact structure so the human can review the routing metadata separately from the exact Markdown description that will be pushed to Linear)._
+_(Output this exact structure. You MUST NOT provide multiple options for routing fields. Pick exactly one.)_
 
 **-- LINEAR METADATA --**
 
 - **Title:** [Epic] - [Feature]
 - **Priority:** [Critical | High | Medium | Low]
-- **Dev Tier:** [junior | mid | senior]
+- **Dev Tier:** [junior | mid | senior] _(CONSTRAINT: Pick exactly ONE based on the routing logic. NEVER output "mid / senior")_
 - **Review Tier:** [standard | critical]
 - **Security:** [yes | no]
 - **QA:** [yes | no]
@@ -67,43 +67,39 @@ _(Output this exact structure so the human can review the routing metadata separ
 - **ADR Flag:** [Yes | No]
 
 **-- LINEAR DESCRIPTION (MARKDOWN) --**
+_(CONSTRAINT: You MUST use the following structural template for the description body. Do not skip sections. Do NOT use triple-backticks inside this description block as it breaks the system parser; use 4-space indentation for any code blocks or schemas)._
 
-````markdown
-### 🎯 Objective
+**Description**
+[1-2 sentences defining the core objective of this specific task. Zero Agile fluff. Focus on the system architecture.]
 
-[1-2 sentence deterministic summary of the task]
+**Sprint Chunk**
+[Name of the Active Sprint Chunk]
 
-### 👤 User Story
+**Embedded JIT Schema & Context**
+[Extract and inject the EXACT schemas, TypeScript interfaces, file paths, or database tables from the docs/ folder required for this task. The developer relies entirely on this block. Use 4-space indentation for code schemas].
 
-As a [user], I want to [action] so that [value].
+**Implementation Requirements**
 
-### 📋 Technical Checklist
+- [Specific file to create/modify] -> [Exact function/logic to implement]
+- [Specific file to create/modify] -> [Exact function/logic to implement]
 
-- [ ] Explicit implementation step 1
-- [ ] Explicit implementation step 2
+**Mandatory Skill Adherence**
+_(CONSTRAINT: You MUST explicitly list the exact names of the relevant .md skill files from the .agents/skills/ directory that apply to this task)._
 
-### ✅ Acceptance Criteria
+- [Skill Name 1] — [Brief reason for inclusion]
+- [Skill Name 2] — [Brief reason for inclusion]
 
-- [ ] [Explicit requirement 1]
-- [ ] [Explicit requirement 2]
+**Validation Mapping**
 
-### 🧪 Edge Cases (TDD Requirements)
+- [Validation Type, e.g., TDD: vitest-tdd] — [What exactly needs to be tested to prove the logic works]
 
-_(Minimum 3 required for mid/senior tasks. Omit for junior tasks)._
+**Acceptance Criteria**
 
-- [ ] [Edge Case 1]
-- [ ] [Edge Case 2]
-- [ ] [Edge Case 3]
-
-### 🧱 Technical Data Contract (JIT Context)
-
-_(Extracted from: [Source Document Name])_
-
-```typescript
-// EXPLICIT SCHEMA, API PAYLOADS, OR INTERFACES GO HERE.
-// NO SUMMARIZATION.
-```
-````
+- [ ] [Testable outcome 1]
+- [ ] [Testable outcome 2]
+- [ ] Edge Case 1: [Specific edge case to handle]
+- [ ] Edge Case 2: [Specific edge case to handle]
+- [ ] Edge Case 3: [Specific edge case to handle]
 
 ### 3. ADR Summary
 
@@ -130,4 +126,4 @@ _(If no tasks are flagged for ADR, output "No architectural decisions required."
 ```
 
 After outputting the Strategy Update, append the following exact string to prompt the human:
-"**Phase 1 Complete.** Please review the tasks above. If they are correct, reply with **'APPROVED, PUSH TO LINEAR'** to authorize ticket creation. If changes are needed, please specify."
+"**Phase 1 Complete.** Please review the tasks above. If they are correct, reply with **'APPROVED'** to authorize ticket creation. If changes are needed, please specify."

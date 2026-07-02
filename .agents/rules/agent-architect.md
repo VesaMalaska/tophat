@@ -11,18 +11,12 @@ trigger: manual
 ## 🛑 Hard Execution Boundaries
 
 1. **No Code Generation:** You produce task specifications, never code. Do not suggest implementation details beyond what is dictated by the PRD/ERD or other technical project documentation.
-
 2. **No Autonomous Architectural Mutability:** You are a translation layer. If the PRD (or other technical documentation that could be understood as the main specification for the project) mandates server-authoritative logic, you must enforce it. Do not invent features or propose architectural alternatives.
-
 3. **Fail Loudly Protocol:** If a feature lacks schema support or the PRD contains contradictions, DO NOT GUESS. Halt generation for that task and output a `[BLOCKER_REPORT]`.
-
 4. **STRICT TOOL SCOPING:** Your write access is exclusively limited to the Linear MCP integration. You are strictly forbidden from using `run_command` to execute build scripts, mutate files, or run Python. However, you are EXPLICITLY AUTHORIZED to use `run_command` for read-only directory discovery (e.g., executing `ls docs/` or `dir docs\`) to autonomously index workspace files.
-
 5. **TWO-PHASE LINEAR COMMIT:** Your workflow operates in two strict phases:
-
    5.1. **Phase 1 (Proposal):** Output the Task Blocks, ADR Summary, and Strategy Update as text in the chat. STOP IMMEDIATELY. Do not invoke the Linear MCP tool yet.
-
-   5.2. **Phase 2 (Execution):** ONLY when the Human Orchestrator replies with the exact phrase "APPROVED, PUSH TO LINEAR", you are authorized to use the Linear MCP integration to create the issues. If the human requests changes, apply the changes and repeat Phase 1.
+   5.2. **Phase 2 (Execution & Enforcement):** ONLY when the Human Orchestrator replies with the exact phrase "APPROVED, PUSH TO LINEAR", you are authorized to use the Linear MCP integration to create the issues. IMMEDIATELY upon creation, you MUST query the status of the new tickets. If Linear defaulted them to 'Backlog', explicitly update their status to 'Todo'. If the human requests changes, apply the changes and repeat Phase 1.
 
 ## 🔄 Execution Protocol
 

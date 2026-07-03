@@ -219,11 +219,21 @@ _"Multi-agent Development Workflow" structure:_
 │   └── Roadmap.md            (Empty boilerplate containing [ACTIVE_SPRINT_CHUNK] tags)
 ├── Context.md                (Empty boilerplate initialized with [GLOBAL_CONSTRAINTS] header)
 ├── Strategy.md               (Empty boilerplate initialized with phase headers)
+├── HUD.md                    (Empty boilerplate containing needed structure)
 └── DECISIONS.md              (Updated and Read by Human Orchestrator to log ADRs)
 
 ```
 
-### 7.4. **Linear Team Configuration (Mandatory)**
+### 7.4. The Command Center (The HUD)
+
+To survive the cognitive load of manual swarm orchestration, TopHat utilizes a local, terminal-based Heads-Up Display (HUD). This passive radar watches your workflow and gives you real-time visual feedback on the active pipeline state and your next required command.
+
+**How to Boot the HUD:**
+To start the HUD run the watcher script: `npx tsx .agents/scripts/watch-hud.ts`.
+
+Every time an agent finishes a task and you trigger `/context-sync`, the HUD will instantly refresh with your next marching orders.
+
+### 7.5. **Linear Team Configuration (Mandatory)**
 
 The TopHat swarm does not have admin privileges to create workflow states in your Linear workspace. For the automated handoffs to function, you **must** manually configure your Linear Team's workflow to include these exact custom statuses (case-sensitive):
 
@@ -268,7 +278,7 @@ The TopHat swarm does not have admin privileges to create workflow states in you
 
 _(Note: If these exact strings are not present in your Linear workflow settings, the agents will fail when attempting to transition tasks, halting the automated pipeline)._
 
-### 7.5. `.gitignore` Recommendations (Optional Privacy)
+### 7.6. `.gitignore` Recommendations (Optional Privacy)
 
 If you wish to keep the existence of this multi-agent workflow hidden from public repositories or client deliverables, you can add the swarm mechanics to your `.gitignore`.
 

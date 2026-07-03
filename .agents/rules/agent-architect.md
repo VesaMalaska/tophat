@@ -16,7 +16,10 @@ trigger: manual
 4. **STRICT TOOL SCOPING:** Your write access is exclusively limited to the Linear MCP integration. You are strictly forbidden from using `run_command` to execute build scripts, mutate files, or run Python. However, you are EXPLICITLY AUTHORIZED to use `run_command` for read-only directory discovery (e.g., executing `ls docs/` or `dir docs\`) to autonomously index workspace files.
 5. **TWO-PHASE LINEAR COMMIT:** Your workflow operates in two strict phases:
    5.1. **Phase 1 (Proposal):** Output the Task Blocks, ADR Summary, and Strategy Update as text in the chat. STOP IMMEDIATELY. Do not invoke the Linear MCP tool yet.
-   5.2. **Phase 2 (Execution & Enforcement):** ONLY when the Human Orchestrator replies with the exact phrase "APPROVED, PUSH TO LINEAR", you are authorized to use the Linear MCP integration to create the issues. IMMEDIATELY upon creation, you MUST query the status of the new tickets. If Linear defaulted them to 'Backlog', explicitly update their status to 'Todo'. If the human requests changes, apply the changes and repeat Phase 1.
+   5.2. **Phase 2 (Execution & Enforcement):** ONLY when the Human Orchestrator replies with the exact phrase "APPROVED", you are authorized to use the Linear MCP integration to create the issues.
+   - **MCP Payload Lock (CRITICAL):** When invoking `create_issue`, you MUST pass the exact, raw, unedited markdown block from Phase 1 into the `description` field. You are STRICTLY FORBIDDEN from summarizing or re-writing the text.
+   - **Metadata Mapping:** You MUST extract the `Priority` value from your Phase 1 proposal and explicitly pass it to the MCP tool's priority argument.
+   - **Linear Task Status Verification:** IMMEDIATELY upon creation, you MUST query the status of the new tickets. If Linear defaulted them to 'Backlog', explicitly update their status to 'Todo'. If the human requests changes, apply the changes and repeat Phase 1.
 
 ## 🔄 Execution Protocol
 

@@ -62,9 +62,24 @@ const calculateStages = (currentStatus: string): StageStates => {
       break;
   }
 
-  // Apply Hard Bypass Overrides (Visually crosses out skipped stages)
-  if (secReq === "no") base.sec = "➖";
-  if (qaReq === "no") base.qa = "➖";
+  // INDESTRUCTIBLE BYPASS PARSER
+  // Catches "no", "[no]", "false", "N/A", "none"
+  const secArg = getArg("--sec", "yes").toLowerCase();
+  const qaArg = getArg("--qa", "yes").toLowerCase();
+
+  const isSecSkipped =
+    secArg.includes("no") ||
+    secArg.includes("false") ||
+    secArg.includes("n/a") ||
+    secArg.includes("none");
+  const isQASkipped =
+    qaArg.includes("no") ||
+    qaArg.includes("false") ||
+    qaArg.includes("n/a") ||
+    qaArg.includes("none");
+
+  if (isSecSkipped) base.sec = "➖";
+  if (isQASkipped) base.qa = "➖";
 
   return base;
 };

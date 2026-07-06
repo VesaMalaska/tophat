@@ -16,8 +16,12 @@ const nextCmd = getArg("--next", "/sprint-briefing");
 const model = getArg("--model", "Gemini Flash High");
 const blocker = getArg("--blocker", "None. Workspace is clean and ready.");
 
+// New Bypass Flags (Default to 'yes' for backward compatibility)
+const secReq = getArg("--sec", "yes").toLowerCase();
+const qaReq = getArg("--qa", "yes").toLowerCase();
+
 // Deterministic State Machine: Map Linear Status to HUD Emojis
-type Emojis = "🟢" | "🟡" | "⚪" | "🔴";
+type Emojis = "🟢" | "🟡" | "⚪" | "🔴" | "➖";
 interface StageStates {
   impl: Emojis;
   rev: Emojis;
@@ -27,27 +31,42 @@ interface StageStates {
 }
 
 const calculateStages = (currentStatus: string): StageStates => {
+  let base: StageStates;
   switch (currentStatus) {
     case "Todo":
     case "In Progress":
-      return { impl: "🟡", rev: "⚪", sec: "⚪", qa: "⚪", pr: "⚪" };
+      base = { impl: "🟡", rev: "⚪", sec: "⚪", qa: "⚪", pr: "⚪" };
+      break;
     case "In Review: Architecture":
-      return { impl: "🟢", rev: "🟡", sec: "⚪", qa: "⚪", pr: "⚪" };
+      base = { impl: "🟢", rev: "🟡", sec: "⚪", qa: "⚪", pr: "⚪" };
+      break;
     case "In Review: Security":
-      return { impl: "🟢", rev: "🟢", sec: "🟡", qa: "⚪", pr: "⚪" };
+      base = { impl: "🟢", rev: "🟢", sec: "🟡", qa: "⚪", pr: "⚪" };
+      break;
     case "In Review: QA":
-      return { impl: "🟢", rev: "🟢", sec: "🟢", qa: "🟡", pr: "⚪" };
+      base = { impl: "🟢", rev: "🟢", sec: "🟢", qa: "🟡", pr: "⚪" };
+      break;
     case "Ready for PR":
-      return { impl: "🟢", rev: "🟢", sec: "🟢", qa: "🟢", pr: "🟡" };
+      base = { impl: "🟢", rev: "🟢", sec: "🟢", qa: "🟢", pr: "🟡" };
+      break;
     case "In Review: Orchestrator":
     case "Done":
-      return { impl: "🟢", rev: "🟢", sec: "🟢", qa: "🟢", pr: "🟢" };
+      base = { impl: "🟢", rev: "🟢", sec: "🟢", qa: "🟢", pr: "🟢" };
+      break;
     case "Blocked":
     case "Changes Requested":
-      return { impl: "🔴", rev: "🔴", sec: "⚪", qa: "⚪", pr: "⚪" };
+      base = { impl: "🔴", rev: "🔴", sec: "⚪", qa: "⚪", pr: "⚪" };
+      break;
     default:
-      return { impl: "🟡", rev: "⚪", sec: "⚪", qa: "⚪", pr: "⚪" };
+      base = { impl: "🟡", rev: "⚪", sec: "⚪", qa: "⚪", pr: "⚪" };
+      break;
   }
+
+  // Apply Hard Bypass Overrides (Visually crosses out skipped stages)
+  if (secReq === "no") base.sec = "➖";
+  if (qaReq === "no") base.qa = "➖";
+
+  return base;
 };
 
 const stages = calculateStages(status);

@@ -43,6 +43,8 @@ _Format Output:_ `[Next Action: /command-name] -> [Recommended Model: Model Name
   - **Recommended Model:** Gemini Pro High (Directory RAG across docs/).
 - `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
   - **Recommended Model:** Gemini Pro High (Requires cross-referencing PRD with audit failures).
+- `/triage-bug [Error Description / Log]`: Invokes @agent-architect for a multi-turn analytical diagnostic interview to isolate root causes before generating a Linear bug ticket.
+  - **Recommended Model:** Claude Sonnet (Optimized for deep conversational reasoning, diagnostic inquiry, and strict phase gating).
 
 ### Validation & Pipeline Commands
 

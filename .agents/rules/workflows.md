@@ -13,18 +13,18 @@ _Format Output:_ `[Next Action: /command-name] -> [Recommended Model: Model Name
 
 ### Phase 0: Foundational Commands
 
-- `/workspace-init`: Bootstraps environment, verifies Tech Stack constraints, generates initial Roadmap.md.
+- `/workspace-init`: Bootstraps environment, verifies Tech Stack constraints, generates initial `Roadmap.md`.
   - **Recommended Model:** Claude Opus (Requires zero-shot semantic mapping of entire PRD).
 - `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
   - **Recommended Model:** Claude Opus (Requires high adversarial precision to prevent data loss).
-- `/generate-readme`: Invokes Architect to execute multi-document semantic synthesis across specs and ERDs to generate the master README.md template.
+- `/generate-readme`: Invokes `@agent-architect` to execute multi-document semantic synthesis across specs and ERDs to generate the master `README.md` template.
   - **Recommended Model**: Gemini Pro High (Required for advanced cross-referencing and rigid template adherence).
 
 ### Standard Automation Workflows
 
-- `/sprint-briefing`: Invokes @agent-pm to output the sprint briefing.
+- `/sprint-briefing`: Invokes `@agent-pm` to output the sprint briefing.
   - **Recommended Model:** Gemini Flash High (Optimized for fast state-checking).
-- `/generate-sprint-tasks`: Invokes @agent-architect to JIT-compile the active sprint chunk.
+- `/generate-sprint-tasks`: Invokes `@agent-architect` to JIT-compile the active sprint chunk.
   - **Recommended Model:** Gemini Pro High (Optimized for massive context window / directory RAG).
 - `/roadmap-sync`: Synchronizes master timeline based on completed chunks.
   - **Recommended Model:** Gemini Pro High (Requires deep context alignment).
@@ -33,17 +33,17 @@ _Format Output:_ `[Next Action: /command-name] -> [Recommended Model: Model Name
 
 ### Implementation & Remediation Commands
 
-- `/implement-senior [ID]`: Invokes @agent-senior-dev to execute backend, database, or security tasks.
+- `/implement-senior [ID]`: Invokes `@agent-senior-dev` to execute backend, database, or security tasks.
   - **Recommended Model:** Gemini Pro High (Optimized for deep reasoning and severe constraint adherence).
-- `/implement-mid [ID]`: Invokes @agent-mid-dev to execute reactive frontend logic and client state transformations.
+- `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute reactive frontend logic and client state transformations.
   - **Recommended Model:** Gemini Flash High (Optimized for rapid instruction following and sub-second TDD cycles).
-- `/implement-junior [ID]`: Invokes @agent-junior-dev to execute raw structural layouts and Tailwind styling passes.
+- `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute raw structural layouts and Tailwind styling passes.
   - **Recommended Model:** Gemini Flash Low (Optimized for high-speed, low-cost deterministic layout compilation).
 - `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
-  - **Recommended Model:** Gemini Pro High (Directory RAG across docs/).
+  - **Recommended Model:** Gemini Pro High (Directory RAG across `docs/`).
 - `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
   - **Recommended Model:** Gemini Pro High (Requires cross-referencing PRD with audit failures).
-- `/triage-bug [Error Description / Log]`: Invokes @agent-architect for a multi-turn analytical diagnostic interview to isolate root causes before generating a Linear bug ticket.
+- `/triage-bug [Error Description / Log]`: Invokes `@agent-architect` for a multi-turn analytical diagnostic interview to isolate root causes before generating a Linear bug ticket.
   - **Recommended Model:** Claude Sonnet (Optimized for deep conversational reasoning, diagnostic inquiry, and strict phase gating).
 
 ### Validation & Pipeline Commands

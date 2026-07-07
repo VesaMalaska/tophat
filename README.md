@@ -53,22 +53,24 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
 
 ### Standard Automation Workflows
 
-- `/sprint-briefing`: Invokes @agent-pm to output the sprint briefing.
+- `/sprint-briefing`: Invokes `@agent-pm` to output the sprint briefing.
   - **Recommended Model:** Gemini Flash High (Optimized for fast state-checking).
-- `/generate-sprint-tasks`: Invokes @agent-architect to JIT-compile the active sprint chunk.
+- `/generate-sprint-tasks`: Invokes `@agent-architect` to JIT-compile the active sprint chunk.
   - **Recommended Model:** Gemini Pro High (Optimized for massive context window / directory RAG).
 - `/roadmap-sync`: Synchronizes master timeline based on completed chunks.
   - **Recommended Model:** Gemini Pro High (Requires deep context alignment).
 - `/context-sync` & `/strategy-sync`: Summarizes decisions and compresses state memory.
   - **Recommended Model:** Gemini Flash Medium (Optimized for token compression).
+- `/triage-bug [Log/Description]`: Invokes `@agent-architect` for a multi-turn diagnostic interview to forensically isolate root causes before generating a Linear bug ticket.
+  - **Recommended Model:** Claude Sonnet (Optimized for deep conversational reasoning, diagnostic inquiry, and strict phase gating).
 
 ### Implementation & Remediation Commands
 
-- `/implement-senior [ID]`: Invokes @agent-senior-dev to execute backend, database, or security tasks.
+- `/implement-senior [ID]`: Invokes `@agent-senior-dev` to execute backend, database, or security tasks.
   - **Recommended Model:** Gemini Pro High (Optimized for deep reasoning and severe constraint adherence).
-- `/implement-mid [ID]`: Invokes @agent-mid-dev to execute reactive frontend logic and client state transformations.
+- `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute reactive frontend logic and client state transformations.
   - **Recommended Model:** Gemini Flash High (Optimized for rapid instruction following and sub-second TDD cycles).
-- `/implement-junior [ID]`: Invokes @agent-junior-dev to execute raw structural layouts and Tailwind styling passes.
+- `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute raw structural layouts and Tailwind styling passes.
   - **Recommended Model:** Gemini Flash Low (Optimized for high-speed, low-cost deterministic layout compilation).
 - `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
   - **Recommended Model:** Gemini Pro High (Directory RAG across docs/).
@@ -159,6 +161,19 @@ Use this only when the fundamental architecture has shifted (e.g., swapping from
 
 - **Action:** First, manually mutate `docs/PRD.md` or `docs/ERD.md` with the new core requirements. Then, run `/architecture-pivot`.
 - **Execution:** The Lead Architect halts the swarm, recalculates the entire `Roadmap.md`, and outputs a triage hit-list of active Linear tasks (including tasks with 'Blocked' status) that are now structurally obsolete. You must manually cancel obsolete tasks and run `/generate-sprint-tasks` to fill the gaps.
+
+#### 5.3.3. The Diagnostic Emergency Brake: `/triage-bug`
+
+When an execution agent fails, an E2E Playwright test violently crashes, or an unhandled native OS exception halts the application, **do not attempt to manually edit code or hack a fix locally.** Doing so breaks Contextual Starvation and introduces Git drift.
+
+Instead, pull the diagnostic emergency brake by initiating `/triage-bug`. This transitions the Lead Architect (`@agent-architect`) into a forensic investigator role.
+
+**The Diagnostic Choreography:**
+
+1. **The Interview Loop:** Route the chat to **Claude Sonnet** and pass the raw error log, stack trace, or behavioral description to `/triage-bug`. The Architect will not immediately guess a solution or write a task. It will analyze the compiled artifacts, check system boundaries (e.g., IPC bridges, ESM/CJS compilation layers), and ask you targeted clarifying questions across multiple conversational turns.
+2. **The Synthesis Trigger:** Answer the Architect's questions to narrow down the blast radius. Once you and the Architect have forensically confirmed the root cause, reply with the exact command **`GENERATE BUGFIX`**.
+3. **The Authorization Gate:** The Architect will compile a standalone, highly defensive Linear bug specification complete with mandatory Vitest regression criteria. Review the task block and reply **`APPROVED`** to push the ticket to your Linear Todo column.
+4. **Execution Handoff:** Once the ticket is on the board, route it to the appropriate Dev Tier (e.g., `/implement-mid [BUG-ID]` or `/implement-senior [BUG-ID]`) to let the swarm self-heal under automated CI/CD enforcement.
 
 ---
 

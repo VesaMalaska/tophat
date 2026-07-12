@@ -1,6 +1,6 @@
 ---
 name: sqlite-high-performance
-description: Enforces high-throughput local SQLite configuration, caching strategies, and strict transactional integrity.
+description: Enforces high-throughput local SQLite configuration, caching strategies, and strict transactional integrity. This skill is aimed for projects that are built on Vite or Rolldown and require high-performance local SQLite interactions.
 ---
 
 # SQLite Performance & Data Integrity Skill
@@ -20,3 +20,8 @@ When interacting with a local SQLite database, enforce these performance configu
 
 - Utilize Prepared Statements for all repeated queries to bypass the query planner overhead and implicitly prevent SQL injection attacks.
 - Return exact, minimized column projections (e.g., `SELECT id, name`) rather than generic wildcards (`SELECT *`) to reduce serialization latency across the IPC bridge.
+
+## 4. Build & Bundling Constraints (Vite / Rolldown)
+
+- **Strict Externalization:** When modifying build configurations (like `vite.config.ts`), native C++ dependencies such as `better-sqlite3` MUST be explicitly added to the `server.deps.external` and `build.rollupOptions.external` arrays. Do not allow the bundler to inline native C++ bindings into the ESM output.
+- **Test Environment Isolation:** When configuring Vitest for SQLite, you must preserve existing frontend testing configurations. Ensure `resolve.conditions: ['browser']` is strictly maintained for UI framework component tests, while keeping `better-sqlite3` externalized.

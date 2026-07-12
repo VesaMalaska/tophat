@@ -49,7 +49,7 @@ _Format Output:_ `[Next Action: /command-name] -> [Recommended Model: Model Name
 ### Validation & Pipeline Commands
 
 - `/review-standard [ID]`: Validates stateless UI and frontend code against project specifications.
-  - **Recommended Model:** Claude Sonnet (Cross-model validation against Gemini implementations).
+  - **Recommended Model:** Gemini Pro High (Optimized for deep trace validation and high-throughput acceptance criteria checking).
 - `/review-critical [ID]`: Adversarially audits load-bearing backend code for race conditions.
   - **Recommended Model:** Claude Sonnet (Cross-model validation against Gemini implementations).
 - `/security-review [ID]`: Enforces OWASP Top 10 mitigation and strict RLS constraints.

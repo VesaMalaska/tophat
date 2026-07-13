@@ -13,7 +13,7 @@ description: Secure data and server-authoritative logic implementation pipeline.
    - Run `git push -u origin HEAD`
    - Use the Linear MCP to transition Task `{{args[0]}}` to 'In Review: Architecture'.
    - Use the Linear MCP to add a comment to Task `{{args[0]}}` containing your formatted Trace Validation Checklist and the final Git commit hash.
-   - **HUD Radar Broadcast:** Execute `npx tsx .agents/scripts/update-hud.ts --task "{{args[0]}}" --title "[Fetched Task Title]" --tier "senior" --sec "[yes or no]" --qa "[yes or no]" --status "In Review: Architecture" --next "[/review-critical {{args[0]}} OR /review-standard {{args[0]}} based on Topology]" --model "Claude Sonnet"` via `run_command` to instantly update the visual Orchestrator HUD.
+   - **HUD Radar Broadcast:** Execute `npx tsx .agents/scripts/update-hud.ts --task "{{args[0]}}" --title "[Fetched Task Title]" --tier "senior" --sec "[yes or no]" --qa "[yes or no]" --status "In Review: Architecture" --next "[/review-critical {{args[0]}} OR /review-standard {{args[0]}} based on Topology]" --model "[Recommended Next Model]"` via `run_command` to instantly update the visual Orchestrator HUD.
 5. **Handoff Resolution:** "Determine the correct validation pipeline by reading the 'Review Topology' value defined within the `[GLOBAL_CONSTRAINTS]` section of `Context.md`.
    - If the topology is 'Full Critical & Security Path', output exactly: `[Next Action: /review-critical {{args[0]}}]`.
    - If the topology is 'Standard Review Only', output exactly: `[Next Action: /review-standard {{args[0]}}]`."

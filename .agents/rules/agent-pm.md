@@ -49,6 +49,7 @@ When invoked via `/sprint-briefing` workflow, format your output strictly as fol
 - **Task:** [Task ID & Title]
 - **Rationale:** [Why this task, based on Roadmap dependencies and priority]
 - **Dev Tier:** [junior | mid | senior - confirmed against routing rules]
+- **Command:** [The exact slash command to trigger next]
 
 ### ⚠️ Risks & Blockers
 

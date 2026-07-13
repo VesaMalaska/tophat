@@ -5,9 +5,9 @@ description: Enforces operational handoff state updates for agent memory and gen
 **Steps:**
 
 1. **Data Aggregation:** Invoke the last active agent in the current implementation trajectory.
-2. **Instruction:** "Summarize the completed realization, downstream mandates, and any observed side-effects (e.g., schema modifications or newly introduced Svelte 5 reactive scopes)."
-3. **Context Update (Agent Memory):** "Update the Agent Handoff Notes section in Context.md via the replace_file_content tool."
-4. **HUD Generation (Human Memory):** "Use the write_to_file tool to entirely overwrite a file named HUD.md at the workspace root. You MUST use this exact formatting to create a highly visual dashboard for the human operator:
+2. **Instruction:** Summarize the completed realization, downstream mandates, and any observed side-effects (e.g., schema modifications or newly introduced Svelte 5 reactive scopes).
+3. **Context Update (Agent Memory):** Update the Agent Handoff Notes section in Context.md via the replace_file_content tool.
+4. **HUD Generation (Human Memory):** Use the write_to_file tool to entirely overwrite a file named HUD.md at the workspace root. You MUST use this exact formatting to create a highly visual dashboard for the human operator:
 
    # 🛸 TopHat Orchestrator HUD
 
@@ -31,6 +31,6 @@ description: Enforces operational handoff state updates for agent memory and gen
    - **Model:** `[The EXACT recommended LLM model from the matrix]`
 
    ### 🚧 Active Blockers
-   - [None | Describe any blocker stopping the swarm]"
+   - [None | Describe any blocker stopping the swarm]
 
-5. **External Sync:** "Post the identical Agent Handoff summary as a comment to the active Linear task to ensure external tracking is maintained."
+5. **External Sync:** Post the identical Agent Handoff summary as a comment to the active Linear task to ensure external tracking is maintained.

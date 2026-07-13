@@ -1,0 +1,22 @@
+{
+  "routingMatrix": {
+    "/workspace-init": "Claude Opus",
+    "/architecture-pivot": "Claude Opus",
+    "/generate-readme": "Gemini Pro High",
+    "/sprint-briefing": "Gemini Flash High",
+    "/generate-sprint-tasks": "Gemini Pro High",
+    "/roadmap-sync": "Gemini Pro High",
+    "/strategy-sync": "Gemini Flash High",
+    "/context-sync": "Gemini Pro High",
+    "/remediate-blocker": "Gemini Pro High",
+    "/implement-junior": "Gemini Flash High",
+    "/implement-mid": "Gemini Flash High",
+    "/implement-senior": "Gemini Pro High",
+    "/review-standard": "Claude Sonnet",
+    "/review-critical": "Claude Sonnet",
+    "/security-review": "Claude Sonnet",
+    "/qa-validate": "Gemini Pro High",
+    "/remediate-task": "Gemini Flash High",
+    "/publish-pr": "Gemini Flash Medium"
+  }
+}

@@ -13,14 +13,32 @@ const title = getArg("--title", "Task Execution");
 const tier = getArg("--tier", "mid");
 const status = getArg("--status", "In Progress");
 const nextCmd = getArg("--next", "/sprint-briefing");
-const model = getArg("--model", "Gemini Flash High");
-const blocker = getArg("--blocker", "None. Workspace is clean and ready.");
 
-// New Bypass Flags (Default to 'yes' for backward compatibility)
+// Read the Single Source of Truth Config
+let resolvedModel = "Fallback Model";
+try {
+  const configPath = path.join(process.cwd(), ".agents", "tophat.config.json");
+  if (fs.existsSync(configPath)) {
+    const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+
+    // Extract the base command (e.g., "/review-standard JAC-30" -> "/review-standard")
+    // We handle the edge case where the agent might pass multiple commands like "[/review-critical OR /review-standard]"
+    const baseCmdMatch = nextCmd.match(/(\/[a-zA-Z0-9-]+)/);
+    if (baseCmdMatch && baseCmdMatch[1]) {
+      resolvedModel =
+        config.routingMatrix[baseCmdMatch[1]] || "Unknown Model in Config";
+    }
+  } else {
+    resolvedModel = "Missing tophat.config.json";
+  }
+} catch (err) {
+  resolvedModel = "Config Parse Error";
+}
+
+// New Bypass Flags
 const secReq = getArg("--sec", "yes").toLowerCase();
 const qaReq = getArg("--qa", "yes").toLowerCase();
 
-// Deterministic State Machine: Map Linear Status to HUD Emojis
 type Emojis = "🟢" | "🟡" | "⚪" | "🔴" | "➖";
 interface StageStates {
   impl: Emojis;
@@ -49,11 +67,6 @@ const calculateStages = (currentStatus: string): StageStates => {
     case "Ready for PR":
       base = { impl: "🟢", rev: "🟢", sec: "🟢", qa: "🟢", pr: "🟡" };
       break;
-    case "In Review: Orchestrator":
-    case "Done":
-      base = { impl: "🟢", rev: "🟢", sec: "🟢", qa: "🟢", pr: "🟢" };
-      break;
-    case "Blocked":
     case "Changes Requested":
       base = { impl: "🔴", rev: "🔴", sec: "⚪", qa: "⚪", pr: "⚪" };
       break;
@@ -63,20 +76,16 @@ const calculateStages = (currentStatus: string): StageStates => {
   }
 
   // INDESTRUCTIBLE BYPASS PARSER
-  // Catches "no", "[no]", "false", "N/A", "none"
-  const secArg = getArg("--sec", "yes").toLowerCase();
-  const qaArg = getArg("--qa", "yes").toLowerCase();
-
   const isSecSkipped =
-    secArg.includes("no") ||
-    secArg.includes("false") ||
-    secArg.includes("n/a") ||
-    secArg.includes("none");
+    secReq.includes("no") ||
+    secReq.includes("false") ||
+    secReq.includes("n/a") ||
+    secReq.includes("none");
   const isQASkipped =
-    qaArg.includes("no") ||
-    qaArg.includes("false") ||
-    qaArg.includes("n/a") ||
-    qaArg.includes("none");
+    qaReq.includes("no") ||
+    qaReq.includes("false") ||
+    qaReq.includes("n/a") ||
+    qaReq.includes("none");
 
   if (isSecSkipped) base.sec = "➖";
   if (isQASkipped) base.qa = "➖";
@@ -103,15 +112,16 @@ Last Updated: ${timestamp}
   - [${stages.pr}] PR Generation
 
 🚀 Immediate Next Action
-  - Command: ${nextCmd}
-  - Model: ${model}
+  - Command: \`${nextCmd}\`
+  - Model: \`${resolvedModel}\`
 
 🚧 Active Blockers
-  - ${blocker}
-`;
+  - None. Workspace is clean and ready.`;
 
-const hudPath = path.join(process.cwd(), "HUD.md");
-fs.writeFileSync(hudPath, hudContent, { encoding: "utf-8" });
+fs.writeFileSync(path.join(process.cwd(), "HUD.md"), hudContent);
 console.log(
-  `[TOPHAT_HUD]: Successfully broadcasted state for ${task} (${status}) to HUD.md`,
+  JSON.stringify({
+    status: "HUD Updated Successfully",
+    next_model: resolvedModel,
+  }),
 );

@@ -19,7 +19,7 @@ description: Lead Architect task compilation targeting the Active Sprint Chunk, 
    - **Security:** [yes | no]
    - **QA:** [yes | no]
    - **Required Skills Labels:** [e.g., electron-sqlite-ipc, vitest-tdd]
-   - **ADR Flag:** [Yes | No]
+   - **ADR Flag:** [Yes | No - STRICT CONSTRAINT: Only flag 'Yes' for irreversible technical paradigms (e.g., security boundaries, database structures, UI constraints). Do NOT flag standard task generation, dev routing, or sprint counts as ADRs.]
 
    **-- LINEAR DESCRIPTION (MARKDOWN) --**
    **Description**

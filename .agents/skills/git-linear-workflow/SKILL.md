@@ -7,13 +7,16 @@ description: Enforces strict Git branching, commit conventions, and Linear task 
 
 When assigned a Linear task for implementation, you must strictly follow this operational lifecycle. Do not skip steps or defer them to the human orchestrator.
 
-## 1. Task Initialization (Before coding)
+## 1. Task Initialization & Dependency Pre-Flight (Before coding)
 
-- **Linear Status:** Use the Linear MCP to transition the assigned task status from `Todo` to `In Progress`.
+- **Linear Relation Check and status transition:** Use the Linear MCP to fetch the full task details for `{{args[0]}}`. Parse the description text for the `Blocked By` field (e.g., `Blocked By: JAC-35`). Transition the task status from `Todo` to `In Progress`.
+- **PR Baseline Check (Deterministic):** Use the `run_command` tool to execute `gh pr list --state open --json number,title,headRefName`.
+  - **Hard Stop Condition:** If the `Blocked By` field specifies a task ID (e.g., `JAC-35`) and `gh pr list` shows an open PR for a branch containing that ID (or if that prerequisite task is not in status 'Done'), HALT execution immediately.
+  - **Blocker Payload:** Output `[BLOCKER_ENCOUNTERED]: Cannot start implementation. Prerequisite task [Insert ID] has an open PR that is not yet merged to main. Please merge the PR to synchronize the repository state.`
 - **Git Sync & Branching (CRITICAL):** You must synchronize with the remote source of truth to prevent Git Drift. Execute this exact sequence using the `run_command` tool:
   1.  **Fetch:** Execute `git fetch origin main`.
   2.  **Checkout/Recover:** Attempt to execute `git checkout [type]/[linear-issue-id]-[short-description]`.
-  3.  **Branch Creation:** If step 2 throws an error (e.g., pathspec did not match), execute `git checkout -b [type]/[linear-issue-id]-[short-description] origin/main` to cleanly branch from the remote.
+  3.  **Branch Creation:** If step 2 ('Checkout/Recover') throws an error (e.g., pathspec did not match), execute `git checkout -b [type]/[linear-issue-id]-[short-description] origin/main` to cleanly branch from the remote.
       - **Types:** `feature/`, `bugfix/`, `chore/`, `refactor/`
       - **Example:** `feature/ENG-142-electron-sqlite-init`
 

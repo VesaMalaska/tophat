@@ -18,6 +18,7 @@ description: Lead Architect task compilation targeting the Active Sprint Chunk, 
    - **Review Tier:** [standard | critical]
    - **Security:** [yes | no]
    - **QA:** [yes | no]
+   - **Dependencies:** [e.g., JAC-35 | None]
    - **Required Skills Labels:** [e.g., electron-sqlite-ipc, vitest-tdd]
    - **ADR Flag:** [Yes | No - STRICT CONSTRAINT: Only flag 'Yes' for irreversible technical paradigms (e.g., security boundaries, database structures, UI constraints). Do NOT flag standard task generation, dev routing, or sprint counts as ADRs.]
 
@@ -27,6 +28,9 @@ description: Lead Architect task compilation targeting the Active Sprint Chunk, 
 
    **Sprint Chunk**
    [Name of the Active Sprint Chunk]
+
+   **Blocked By**
+   [Insert prerequisite Linear ID, e.g. JAC-35, or None]
 
    **Embedded JIT Schema & Context**
    [Extract and inject the EXACT schemas, TypeScript interfaces, file paths, or database tables from the docs/ folder required for this task. The developer relies entirely on this block.]

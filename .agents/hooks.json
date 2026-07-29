@@ -7,7 +7,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "npx tsx .agents/scripts/swarm-lock.ts acquire tophat",
+                        "command": "pnpm exec tsx .agents/scripts/swarm-lock.ts acquire tophat",
                         "timeout": 5
                     }
                 ]
@@ -19,7 +19,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "npx tsx .agents/scripts/swarm-lock.ts release tophat",
+                        "command": "pnpm exec tsx .agents/scripts/swarm-lock.ts release tophat",
                         "timeout": 5
                     }
                 ]
@@ -35,7 +35,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "npx tsx .agents/scripts/swarm-lock.ts acquire global-pivot",
+                        "command": "pnpm exec tsx .agents/scripts/swarm-lock.ts acquire global-pivot",
                         "timeout": 10
                     }
                 ]
@@ -48,7 +48,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "npx tsx .agents/scripts/swarm-lock.ts release global-pivot",
+                        "command": "pnpm exec tsx .agents/scripts/swarm-lock.ts release global-pivot",
                         "timeout": 5
                     }
                 ]
@@ -63,7 +63,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "node -e \"if(process.env.TOPHAT_CMD && process.env.TOPHAT_CMD.includes('git commit')) process.exit(1); else process.exit(0);\" || npx tsx .agents/scripts/run-static-analysis.ts",
+                        "command": "node -e \"if(process.env.TOPHAT_CMD && process.env.TOPHAT_CMD.includes('git commit')) process.exit(1); else process.exit(0);\" || pnpm exec tsx .agents/scripts/run-static-analysis.ts",
                         "timeout": 45
                     }
                 ]
@@ -78,7 +78,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "npx tsx .agents/scripts/enforce-strategy-lock.ts",
+                        "command": "pnpm exec tsx .agents/scripts/enforce-strategy-lock.ts",
                         "timeout": 15
                     }
                 ]
@@ -93,7 +93,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "npx tsx .agents/scripts/enforce-svelte-runes.ts",
+                        "command": "pnpm exec tsx .agents/scripts/enforce-svelte-runes.ts",
                         "timeout": 15
                     }
                 ]

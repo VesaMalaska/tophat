@@ -2,6 +2,11 @@
 description: Frontend component logic and client-side reactive state implementation pipeline.
 ---
 
+**Tool & Shell Guardrails:**
+
+- If Host OS is **Windows (PowerShell)**: Execution agents are strictly forbidden from using POSIX text utilities (`cat`, `grep`, `awk`, `sed`) via `run_command`. Use native IDE `view_file` for file inspection, and avoid unsupported flag extensions like `-A` on `findstr`.
+- If Host OS is **macOS/Linux (Zsh/Bash)**: Standard POSIX command-line tools are permitted for file inspection.
+
 **Steps:**
 
 1. **Initialize Task:** Invoke `@agent-mid-dev`.

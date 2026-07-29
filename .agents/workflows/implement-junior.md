@@ -2,6 +2,11 @@
 description: UI/Tailwind implementation pipeline with automated Git and Linear handoff.
 ---
 
+**Tool & Shell Guardrails:**
+
+- If Host OS is **Windows (PowerShell)**: Execution agents are strictly forbidden from using POSIX text utilities (`cat`, `grep`, `awk`, `sed`) via `run_command`. Use native IDE `view_file` for file inspection, and avoid unsupported flag extensions like `-A` on `findstr`.
+- If Host OS is **macOS/Linux (Zsh/Bash)**: Standard POSIX command-line tools are permitted for file inspection.
+
 **Steps:**
 
 1. **Initialize Task:** Invoke `@agent-junior-dev`.

@@ -1,6 +1,6 @@
 ---
 name: git-linear-workflow
-description: Enforces strict Git branching, commit conventions, and Linear task state transitions. Use this at the start and end of every implementation task.
+description: Enforces strict Git branching, commit conventions, clean-state verification, and Linear task state transitions. Use this at the start and end of every implementation task.
 ---
 
 # Git & Linear Workflow Skill
@@ -14,11 +14,12 @@ When assigned a Linear task for implementation, you must strictly follow this op
   - **Hard Stop Condition:** If the `Blocked By` field specifies a task ID (e.g., `JAC-35`) and `gh pr list` shows an open PR for a branch containing that ID (or if that prerequisite task is not in status 'Done'), HALT execution immediately.
   - **Blocker Payload:** Output `[BLOCKER_ENCOUNTERED]: Cannot start implementation. Prerequisite task [Insert ID] has an open PR that is not yet merged to main. Please merge the PR to synchronize the repository state.`
 - **Git Sync & Branching (CRITICAL):** You must synchronize with the remote source of truth to prevent Git Drift. Execute this exact sequence using the `run_command` tool:
-  1.  **Fetch:** Execute `git fetch origin main`.
-  2.  **Checkout/Recover:** Attempt to execute `git checkout [type]/[linear-issue-id]-[short-description]`.
-  3.  **Branch Creation:** If step 2 ('Checkout/Recover') throws an error (e.g., pathspec did not match), execute `git checkout -b [type]/[linear-issue-id]-[short-description] origin/main` to cleanly branch from the remote.
-      - **Types:** `feature/`, `bugfix/`, `chore/`, `refactor/`
-      - **Example:** `feature/ENG-142-electron-sqlite-init`
+  1. **Working Tree Audit:** Execute git status --porcelain. If any untracked or modified files (especially Context.md or HUD.md) exist from a previous run, halt instantly with a [GIT_DIRTY_STATE] blocker and instruct the Human Orchestrator to commit or stash the lingering memory files.
+  2. **Fetch:** Execute `git fetch origin main`.
+  3. **Checkout/Recover:** Attempt to execute `git checkout [type]/[linear-issue-id]-[short-description]`.
+  4. **Branch Creation:** If step 3 ('Checkout/Recover') throws an error (e.g., pathspec did not match), execute `git checkout -b [type]/[linear-issue-id]-[short-description] origin/main` to cleanly branch from the remote.
+     - **Types:** `feature/`, `bugfix/`, `chore/`, `refactor/`
+     - **Example:** `feature/ENG-142-electron-sqlite-init`
 
 ## 2. Implementation & Committing (During coding)
 
@@ -32,9 +33,8 @@ When assigned a Linear task for implementation, you must strictly follow this op
 
 - **Git Push:** Use `run_command` to push your branch to the remote repository.
   - _Command:_ `git push -u origin [branch-name]`
-- **Linear Status:** Use the Linear MCP to transition the task status from `In Progress` to `In Review`.
-- **Handoff:** Only after the push and status update are successful should you yield to the human. **You must output this exact string to prompt the human orchestrator:**
-  > "**Implementation Complete & Pushed.** Human Orchestrator: Please switch the IDE model to `Claude Sonnet` (or Opus for Critical tasks) and invoke the corresponding Code Review Agent."
+- **Linear Status:** Use the Linear MCP to transition the task status from `In Progress` to `In Review: Architecture`.
+- **Handoff:** Only after the push and status update are successful should you yield to the human orchestrator.
 
 ## 4. Unhappy Path (Blockers)
 

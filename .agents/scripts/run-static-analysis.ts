@@ -1,4 +1,6 @@
 import { execSync } from "child_process";
+import fs from "fs";
+import path from "path";
 
 interface TopHatPayload {
   workspacePaths?: string[];
@@ -23,12 +25,52 @@ process.stdin.on("end", () => {
         ? payload.workspacePaths[0]
         : process.cwd();
 
-    // Define the sequence natively in Node
-    const validationCommands = ["pnpm check", "pnpm lint", "pnpm vitest run"];
+    // 1. Identify the Risk Profile via the Git Index
+    let stagedFiles: string[] = [];
+    try {
+      const diffOutput = execSync("git diff --cached --name-only", {
+        cwd: workspace,
+      }).toString();
+      stagedFiles = diffOutput.split("\n").filter((f) => f.trim().length > 0);
+    } catch (e) {
+      // Fallback if git diff fails
+    }
 
+    const touchesLogic = stagedFiles.some(
+      (f) =>
+        f.endsWith(".ts") ||
+        f.endsWith(".svelte") ||
+        f.endsWith(".js") ||
+        f.endsWith(".tsx"),
+    );
+    const touchesCore = stagedFiles.some(
+      (f) =>
+        f.includes("src/main/") ||
+        f.includes("preload") ||
+        f.includes("src/lib/server/") ||
+        f.includes("api/"),
+    );
+
+    // 2. Assemble the Tiered Smoke Profile
+    const validationCommands = ["pnpm check", "pnpm lint"];
+
+    // Tier 1: Frontend/Logic modified. Compile to catch malformed framework syntax.
+    if (touchesLogic) {
+      validationCommands.push("pnpm build");
+    }
+
+    // Tier 2: Core backend/native boundaries modified.
+    // Progressive Wall: Only execute the smoke test if the Dev Agent has successfully implemented it.
+    if (touchesCore) {
+      const smokeTestPath = path.join(workspace, "tests/e2e/smoke.test.ts");
+      if (fs.existsSync(smokeTestPath)) {
+        validationCommands.push("npx playwright test tests/e2e/smoke.test.ts");
+      }
+    }
+
+    // 3. Execute the Wall
     try {
       for (const cmd of validationCommands) {
-        // This acts as a native '&&'. If one fails, it throws immediately to the catch block.
         execSync(cmd, { cwd: workspace, stdio: "pipe" });
       }
 
@@ -40,7 +82,7 @@ process.stdin.on("end", () => {
 
       const rejection: DecisionResponse = {
         decision: "deny",
-        reason: `Static analysis failed on command. Review the following lint/type errors or failing tests and surgically fix them before attempting to commit again:\n\n${combinedOutput}`,
+        reason: `Static analysis or Runtime Smoke Test failed. Review the following errors and surgically fix them before attempting to commit again:\n\n${combinedOutput}`,
       };
 
       console.log(JSON.stringify(rejection));

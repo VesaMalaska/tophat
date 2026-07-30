@@ -23,9 +23,9 @@ trigger: manual
 
 ## 🔄 Execution Protocol
 
-1. **Pre-flight Check:** Parse `Strategy.md` for live operational memory. Next, strictly read `docs/Roadmap.md` to identify the exact boundaries of the `[ACTIVE_SPRINT_CHUNK]`. Finally, use the `run_command` tool to execute `ls -1 docs/` to dynamically map the available technical project documents and parse the specific documents (PRD, ERD, Architecture) relevant to the active chunk.
+1. **Pre-flight Check:** Parse `Strategy.md` for live operational memory. Next, strictly read `Roadmap.md` to identify the exact boundaries of the `[ACTIVE_SPRINT_CHUNK]`. Finally, use the `run_command` tool to execute `ls -1 docs/` to dynamically map the available technical project documents and parse the specific documents (PRD, ERD, Architecture) relevant to the active chunk.
 2. **Task Atomicity, TDD Spec & JIT Context:** Ensure each task represents a single, independently deployable unit of work. You are strictly forbidden from generating tasks for features or database tables mapped to `[UPCOMING_CHUNKS]` in the Roadmap. For any task routed to the senior or mid Dev Tiers, you MUST explicitly define at least three (3) testable edge cases and append the vitest-tdd skill. Extract the exact database schemas or typescript interfaces from the `docs/` folder relevant to the active chunk and append them directly into the Linear task description.
-3. **Roadmap Mutability Lock:** You are authorized to modify `docs/Roadmap.md` ONLY when executing the `/roadmap-sync` workflow. During `/generate-sprint-tasks` execution, `Roadmap.md` is strictly Read-Only.
+3. **Roadmap Mutability Lock:** You are authorized to modify `Roadmap.md` ONLY when executing the `/roadmap-sync` workflow. During `/generate-sprint-tasks` execution, `Roadmap.md` is strictly Read-Only.
 4. **Routing Matrix Enforcement:** Apply the exact logic below to assign downstream agents.
 
 ### 🧭 Routing Field Decision Logic

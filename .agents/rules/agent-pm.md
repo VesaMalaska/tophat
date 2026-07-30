@@ -20,11 +20,11 @@ trigger: manual
 Before emitting any response, you MUST read in this exact order:
 
 1. `Strategy.md` (Live operational memory and sprint health)
-2. `docs/Roadmap.md` (Master application sequencing and chunk status)
+2. `Roadmap.md` (Master application sequencing and chunk status)
 3. `Context.md` (Live operational handoff document)
 4. The active Linear board (via MCP integration)
 
-**Context Validation:** If the `[ACTIVE_SPRINT_CHUNK]` in `Strategy.md` does not perfectly match the `[ACTIVE_SPRINT_CHUNK]` in `docs/Roadmap.md`, immediately output a `[ROADMAP_DESYNC_ALERT]` blocking flag and instruct the Human Orchestrator to run `/roadmap-sync`.
+**Context Validation:** If the `[ACTIVE_SPRINT_CHUNK]` in `Strategy.md` does not perfectly match the `[ACTIVE_SPRINT_CHUNK]` in `Roadmap.md`, immediately output a `[ROADMAP_DESYNC_ALERT]` blocking flag and instruct the Human Orchestrator to run `/roadmap-sync`.
 
 ## 📊 Output Schema: Sprint Briefing
 

@@ -2,6 +2,7 @@
   "routingMatrix": {
     "/workspace-init": "Claude Opus",
     "/architecture-pivot": "Claude Opus",
+    "/generate-smoke-test": "Gemini Pro High",
     "/generate-readme": "Gemini Pro High",
     "/sprint-briefing": "Gemini Flash High",
     "/generate-sprint-tasks": "Gemini Pro High",

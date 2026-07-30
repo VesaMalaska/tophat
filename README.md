@@ -96,7 +96,7 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
 
 The swarm's memory is isolated into specific operational files:
 
-- `docs/Roadmap.md`** & **`Strategy.md`** (Long-term Memory):** The master application sequencing. Read/Write access is strictly locked to the Architect and PM agents.
+- `Roadmap.md`** & **`Strategy.md`** (Long-term Memory):** The master application sequencing. Read/Write access is strictly locked to the Architect and PM agents.
 - `Context.md`** (Short-term Working Memory):** The live operational handoff document. It tracks the active phase and immediate blockers. Updated by agents after every completed task.
 - `.agents/`** (The Vault):** The directory containing the active Skills (`.agents/skills/skill-1-name/SKILL.md`), Rules (`.agents/rules/*.md`), Workflows (`.agents/workflows/*.md`), and tool interception scripts.
 
@@ -110,7 +110,7 @@ To maintain a deterministic state, the human orchestrator drives the swarm throu
 
 These commands are run once at the beginning of a project, or immediately following a full `/architecture-pivot`.
 
-1. `/workspace-init`: Bootstraps the environment, verifies all dependencies and mandatory PRD declarations, and generates the master `docs/Roadmap.md`.
+1. `/workspace-init`: Bootstraps the environment, verifies all dependencies and mandatory PRD declarations, and generates the master `Roadmap.md`.
 2. `/generate-readme`: The Architect synthesizes the core specs to build the client-facing README, and simultaneously injects the crucial `Host Project Snapshot` into `Context.md` for downstream agent reference.
 
 ### 5.2. Phase 1: The Daily Loop

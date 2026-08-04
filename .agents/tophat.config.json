@@ -19,6 +19,7 @@
     "/qa-validate": "Gemini Pro High",
     "/resolve-conflict": "Gemini Pro High",
     "/remediate-task": "Gemini Flash High",
-    "/publish-pr": "Gemini Flash High"
+    "/publish-pr": "Gemini Flash High",
+    "/refactor-audit": "Gemini Pro High"
   }
 }

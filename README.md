@@ -1,6 +1,6 @@
 # TopHat Multi-Agent Workflow
 
-This repository contains a reusable TopHat workflow vault for the Google Antigravity IDE. It supplies agent instructions, templates, and selected tool hooks for a human-orchestrated development process. Its initial 1.0 foundation adds a validated workspace declaration; framework isolation and shared validation are completed in later slices.
+This repository contains a reusable TopHat workflow vault for the Google Antigravity IDE. It supplies agent instructions, templates, and selected tool hooks for a human-orchestrated development process. The 1.0 foundation adds a validated workspace declaration and conditional framework guidance. Shared project-declared validation remains later work.
 
 ---
 
@@ -27,14 +27,14 @@ The swarm uses specific roles with instructed scope boundaries and selected hook
 
 - **@agent-senior-dev:** Handles server-authoritative logic, data mutations, database schemas, and security boundaries.
 - **@agent-mid-dev:** Handles client-side state transformations, component logic, and UI view layers.
-- **@agent-junior-dev:** Restricted entirely to structural markup (HTML) and styling (Tailwind).
+- **@agent-junior-dev:** Restricted to structural markup and the host project's selected styling.
 
 **Review & Validation Tier**
 
 - **@agent-review-standard:** Validates stateless UI and frontend code against project specifications.
 - **@agent-review-critical:** Adversarially audits load-bearing backend code for race conditions and data leaks.
 - **@agent-security-auditor:** Enforces OWASP Top 10 mitigation and strict Row Level Security (RLS) constraints.
-- **@agent-qa:** Executes Playwright E2E tests, verifying edge cases, error states, and accessibility standards.
+- **@agent-qa:** Follows the current QA workflow for applicable user-facing tasks. Proportionate QA method selection remains Slice 6 work.
 
 ---
 
@@ -70,7 +70,7 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
   - **Recommended Model:** Gemini Pro High (Optimized for deep reasoning and severe constraint adherence).
 - `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute reactive frontend logic and client state transformations.
   - **Recommended Model:** Gemini Flash High (Optimized for rapid instruction following and sub-second TDD cycles).
-- `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute raw structural layouts and Tailwind styling passes.
+- `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute structural layouts and declared styling passes.
   - **Recommended Model:** Gemini Flash Low (Optimized for high-speed, low-cost deterministic layout compilation).
 - `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
   - **Recommended Model:** Gemini Pro High (Directory RAG across docs/).
@@ -125,7 +125,7 @@ This is the core iterative loop for chewing through the backlog. It begins with 
 **B. The Standard Route (UI, Layouts, Client State)**
 For tasks routed to `@agent-junior-dev` or `@agent-mid-dev`.
 
-1. `/implement-[tier] [ID]`: Dev Agent checks out branch, writes Vitest specs, implements code, commits, and pushes.
+1. `/implement-[tier] [ID]`: Dev Agent checks out a branch, uses the host's declared test runner where behavior is testable, implements code, commits, and pushes.
 2. `/review-standard [ID]`: Routes the branch through standard syntax and framework validation.
 3. `/context-sync`: Updates `Context.md` with the newly realized state.
 4. `/publish-pr [ID]`: Generates the final pull request.
@@ -172,7 +172,7 @@ Instead, pull the diagnostic emergency brake by initiating `/triage-bug`. This t
 
 1. **The Interview Loop:** Route the chat to **Claude Sonnet** and pass the raw error log, stack trace, or behavioral description to `/triage-bug`. The Architect will not immediately guess a solution or write a task. It will analyze the compiled artifacts, check system boundaries (e.g., IPC bridges, ESM/CJS compilation layers), and ask you targeted clarifying questions across multiple conversational turns.
 2. **The Synthesis Trigger:** Answer the Architect's questions to narrow down the blast radius. Once you and the Architect have forensically confirmed the root cause, reply with the exact command **`GENERATE BUGFIX`**.
-3. **The Authorization Gate:** The Architect will compile a standalone, highly defensive Linear bug specification complete with mandatory Vitest regression criteria. Review the task block and reply **`APPROVED`** to push the ticket to your Linear Todo column.
+3. **The Authorization Gate:** The Architect will compile a standalone, defensible Linear bug specification with regression criteria for the host's declared test runner. Review the task block and reply **`APPROVED`** to push the ticket to your Linear Todo column.
 4. **Execution Handoff:** Once the ticket is on the board, route it to the appropriate Dev Tier (e.g., `/implement-mid [BUG-ID]` or `/implement-senior [BUG-ID]`) to let the swarm self-heal under automated CI/CD enforcement.
 
 ---
@@ -184,12 +184,13 @@ The IDE registers these tool hooks. Their current error handling is not yet unif
 - `context-io-gate`**:** Uses a lock file to coordinate writes to `Context.md` when its hook receives supported input and the filesystem operation succeeds.
 - `static-analysis-gate`**:** Intercepts supported `git commit` tool calls and conditionally runs hard-coded checks. It does not run Vitest or guarantee fail-closed behavior in every error path. Slice 3 replaces this with project-declared validation.
 - `protect-strategy-memory`**:** Intercepts selected writes to strategic memory files; its error paths still need the Slice 3 fail-closed refinement.
+- `enforce-svelte-runes`**:** Statically registered; reads the validated host config before each supported write. It denies legacy syntax on applicable Svelte writes, explicitly skips valid non-Svelte workspaces, and denies invalid config or hook input. Other hook error paths remain pending Slice 3.
 
 ---
 
 ## 7. Prerequisites & Setup
 
-### Slice 1 workspace configuration
+### Workspace configuration and framework selection
 
 `.agents/tophat.config.json` is shipped in this vault as an **unconfigured template**: `schemaVersion` and the existing `routingMatrix` are present, but `workspace`, `documentation`, and `validation` are `null`. This vault has no host application or approved project package, so selecting a framework or inventing scripts here would misrepresent it. After copying the vault into a supported Node.js/TypeScript/pnpm project, fill those sections before calling the loader. The loader denies the unconfigured template; it does not infer Svelte.
 
@@ -218,6 +219,8 @@ Set `workspace.kind` and `workspace.framework` to one of: `web` with `svelte`, `
 
 Map any selected validation category to a **package-script name**, not a shell command. Allowed categories are `typecheck`, `lint`, `unit`, `coverage`, `integration`, `build`, `smoke`, `e2e`, and `documentation`; declare nonempty `commitGate`, `developmentPhaseGate`, and `projectCompletionGate` arrays in execution order. Slice 1 validates the declarations but does not run the scripts. The TopHat repository's own `pnpm test:tophat` command uses Node 24's built-in TypeScript type stripping and is separate from host-project validation. It executes tests but does not type-check them.
 
+Slice 2 uses the derived capabilities for framework-sensitive selection. Before a task proposal and handoff, the Architect supplies the proposed `requestedSkills`, `taskTopics`, and `frameworkInstructions` arrays as JSON on stdin to `pnpm exec tsx .agents/scripts/select-task-guidance.ts`. A `SELECTED` result permits those labels; a nonzero `DENIED` result blocks incompatible or undeclared selections. For example, a React project cannot request a Svelte skill; a Tailwind skill requires an explicit `tailwind` task topic. This check validates the proposal, not the truth of arbitrary prose in an external issue. The host must configure the vault before using it. The smoke workflow selects a web, backend, or Electron specification from the host profile; actual project-declared validation execution and full QA classification arrive later.
+
 To deploy this workflow on a fresh repository, ensure your local environment and project structure meet the following strict requirements:
 
 ### 7.1. System Requirements
@@ -234,9 +237,11 @@ The TopHat swarm does not initialize package managers or install base frameworks
 1. **Initialize the Framework:** Generate your base application scaffolding (e.g., SvelteKit, Vite, Electron).
 2. **Install Core Tooling:** You must install the dependencies required by the Antigravity `hooks.json` interception scripts. Run the following command:
    ```bash
-   pnpm add -D typescript vitest @playwright/test tsx
+   pnpm add -D typescript tsx
    ```
 3. **Verify Lockfile:** Ensure `package.json` and `pnpm-lock.yaml` are present at the workspace root.
+
+Install a test runner, browser tooling, and styling framework only when the host project and its task contract require them. Existing hook scripts use `tsx`; the TopHat repository's own tests use Node 24 directly.
 
 ### 7.3. Workspace Scaffolding
 

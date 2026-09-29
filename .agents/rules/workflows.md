@@ -27,8 +27,8 @@ _Format Output:_ `[Next Action: /command-name]`
 ### Implementation & Remediation Commands
 
 - `/implement-senior [ID]`: Invokes `@agent-senior-dev` to execute backend, database, or security tasks.
-- `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute reactive frontend logic and client state transformations.
-- `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute raw structural layouts and Tailwind styling passes.
+- `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute compatible frontend logic and client state transformations.
+- `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute static layouts and project-declared styling passes.
 - `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
 - `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
 - `/triage-bug [Error Description / Log]`: Invokes `@agent-architect` for a multi-turn analytical diagnostic interview to isolate root causes before generating a Linear bug ticket.

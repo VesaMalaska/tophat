@@ -32,7 +32,7 @@ Inside your "Trace Validation Checklist" payload, you MUST include the following
 - ↓
 - Result: [e.g., Promise<void>]
 - ↓
-- Renderer State: [e.g., Svelte $state mutation]
+- Renderer State: [describe the actual declared renderer state update, if any]
 
 If you cannot definitively fill out all 7 steps of this map, your implementation is broken. Do not commit.
 

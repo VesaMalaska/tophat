@@ -7,18 +7,18 @@
 - **Application Target:** [Extracted from PRD]
 - **Core Architecture:** [Brief summary of Tech Stack & Data Strategy]
 
-### 🏗️ [PHASE_INDEX]
+### 🏗️ [DEVELOPMENT_PHASE_INDEX]
 
 High-level domains defined by the PRD.
 
-1. [Phase 1 Name] - [Status: ACTIVE | PENDING | COMPLETED]
-2. [Phase 2 Name] - [Status: PENDING]
+1. [Development Phase 1 Name] - [Status: ACTIVE | PENDING | COMPLETED]
+2. [Development Phase 2 Name] - [Status: PENDING]
 
 ### 🎯 [ACTIVE_SPRINT_CHUNK]
 
 The immediate micro-milestone being translated into Linear tasks.
 
-- **Chunk Name:** [e.g., Phase 1.1 - Supabase Auth Scaffolding]
+- **Chunk Name:** [e.g., Development Phase 1 / Sprint Chunk 1 - Supabase Auth Scaffolding]
 - **Deliverables:**
   - [Specific, testable outcome 1]
   - [Specific, testable outcome 2]
@@ -27,8 +27,8 @@ The immediate micro-milestone being translated into Linear tasks.
 
 Sequential milestones awaiting activation.
 
-- **[Phase #.# - Chunk Name]:** [Brief 1-sentence description]
-- **[Phase #.# - Chunk Name]:** [Brief 1-sentence description]
+- **[Development Phase # / Sprint Chunk # - Chunk Name]:** [Brief 1-sentence description]
+- **[Development Phase # / Sprint Chunk # - Chunk Name]:** [Brief 1-sentence description]
 
 ### ✅ [REALIZED_CHUNKS]
 

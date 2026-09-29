@@ -27,22 +27,22 @@ _Document critical, irreversible system decisions here to maintain strategic mem
 
 _Updated continuously by `@agent-pm` via the `/strategy-sync` workflow._
 
-- **Current Phase:** [e.g., Phase 1 - Foundation & Auth]
+- **Current Development Phase:** [e.g., Development Phase 1 - Foundation & Auth]
 - **Overall Trajectory:** [Brief PM assessment of velocity, blockers, and backlog health]
 
-## 🎯 5. Domain Sequencing (Epics)
+## 🎯 5. Development Phase Sequencing
 
-_The high-level roadmap. When an Epic is complete, the PM moves it to 'Realized'._
+_The high-level roadmap. When a Development Phase is complete, the PM moves it to 'Realized'._
 
-### 🟡 Active Epics
+### 🟡 Active Development Phases
 
-1. **[Epic Name]:** [Brief description of the current major milestone]
+1. **[Development Phase Name]:** [Brief description of the current major milestone]
    - _Blocking Dependencies:_ [None / Pending external API keys, etc.]
 
-### ⚪ Upcoming Epics (Backlog)
+### ⚪ Upcoming Development Phases (Backlog)
 
-1. **[Epic Name]:** [Brief description]
+1. **[Development Phase Name]:** [Brief description]
 
-### 🟢 Realized Epics (Historical)
+### 🟢 Realized Development Phases (Historical)
 
 - _None yet._

@@ -12,7 +12,7 @@ description: Lead Architect task compilation targeting the Active Sprint Chunk, 
 6. **Execution:** Output the proposed Task Blocks, ADR Summary, and Strategy Update block. CRITICAL: You MUST format EACH task block EXACTLY using the following structure. Do not invent your own formatting, do not skip sections, and do not summarize. Use 4-space indentation for any code blocks inside the Embedded JIT Schema:
 
    **-- LINEAR METADATA --**
-   - **Title:** [Epic] - [Feature]
+   - **Title:** [Development Phase] - [Feature]
    - **Priority:** [Critical | High | Medium | Low]
    - **Dev Tier:** [junior | mid | senior]
    - **Review Tier:** [standard | critical]
@@ -52,4 +52,4 @@ description: Lead Architect task compilation targeting the Active Sprint Chunk, 
 
 7. **Human Gate:** Pause execution. As the ABSOLUTE FINAL LINE of your output, after the Strategy Update block, you MUST append this exact closing call-to-action on its own line: '🛑 **ACTION REQUIRED:** Please review the proposed task blocks and routing fields above. Reply with the exact phrase **APPROVED** to authorize ticket creation to Linear and update Strategy.md.'
 
-8. **Linear State Enforcement (Post-Approval):** Upon receiving the 'APPROVED' signal, execute Phase 2 as defined in your core identity constraints. Invoke the Linear MCP to create the issues, strictly enforcing your MCP Payload Lock for the description and priority, and verify the 'Todo' status transition. Also verify the Linear issue has a Priority set according to the task requirements, if not then set it correctly.
+8. **Linear State Enforcement (Post-Approval):** Upon receiving the 'APPROVED' signal, execute the Issue Creation Stage as defined in your core identity constraints. Invoke the Linear MCP to create the issues, strictly enforcing your MCP Payload Lock for the description and priority, and verify the 'Todo' status transition. Also verify the Linear issue has a Priority set according to the task requirements, if not then set it correctly.

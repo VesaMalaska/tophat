@@ -9,7 +9,7 @@ _Last Updated: INITIALIZED_
 
 ### 🚦 Pipeline Status
 
-_Waiting for Phase 1 Sprint Briefing..._
+_Waiting for the Sprint Briefing workflow..._
 
 ### 🚀 Immediate Next Action
 

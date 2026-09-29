@@ -1,4 +1,8 @@
 {
+  "schemaVersion": 1,
+  "workspace": null,
+  "documentation": null,
+  "validation": null,
   "routingMatrix": {
     "/workspace-init": "Claude Opus",
     "/architecture-pivot": "Claude Opus",

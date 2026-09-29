@@ -17,9 +17,9 @@ _This section is immutable for execution agents. It dictates the architectural b
 
 _Agents update this section via /context-sync after completing their tasks._
 
-### 📊 Active Phase Engine
+### 📊 Active Workflow Stage
 
-- **Current Phase:** Phase 0 - Session Start
+- **Workflow Stage:** SESSION_START
 - **Target Task:** [None]
 - **Assigned Dev Tier:** [None]
 - **Validation Pipeline State:** PENDING

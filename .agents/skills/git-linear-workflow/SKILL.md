@@ -38,7 +38,7 @@ When assigned a Linear task for implementation, you must strictly follow this op
 
 ## 4. Unhappy Path (Blockers)
 
-If you encounter a hard blocker (missing schema, scope violation) during Phase 2 (Implementation):
+If you encounter a hard blocker (missing schema, scope violation) during the Implementation Workflow Stage:
 
 - **Linear Status:** Use the Linear MCP to transition the task to 'Blocked'.
 - **Git State:** If you have written partial code, commit it with `chore(wip): [Linear-ID] partial implementation prior to blocker` and push to origin. If no code was written, you may abandon the branch.

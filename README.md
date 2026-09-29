@@ -1,6 +1,6 @@
 # TopHat Multi-Agent Workflow
 
-This repository utilizes a highly deterministic, AI-Driven Development (AIDD) multi-agent swarm native to the Google Antigravity IDE. This workflow is designed to execute complex, scalable software architecture by strictly isolating agent context, enforcing Test-Driven Development (TDD), and automating the git/PR lifecycle via Linear.
+This repository contains a reusable TopHat workflow vault for the Google Antigravity IDE. It supplies agent instructions, templates, and selected tool hooks for a human-orchestrated development process. Its initial 1.0 foundation adds a validated workspace declaration; framework isolation and shared validation are completed in later slices.
 
 ---
 
@@ -8,15 +8,15 @@ This repository utilizes a highly deterministic, AI-Driven Development (AIDD) mu
 
 This workflow abandons the "chat-and-pray" model of standard AI coding. It operates on three core principles:
 
-- **Contextual Starvation:** Execution agents (Developers) are intentionally "blind." They cannot read the master roadmap or adjacent feature code. They are given highly targeted, Just-In-Time (JIT) task specifications containing only the exact schemas required to complete their current file targets.
+- **Contextual Starvation:** Execution agents are instructed to use bounded Just-In-Time (JIT) task specifications. TopHat 1.0 does not physically prevent them from reading the roadmap or adjacent code.
 - **Hierarchical Orchestration:** The swarm is divided into Strategic, Execution, and Validation tiers. Agents do not brainstorm together; they execute strict handoffs via the `Context.md` state file.
-- **Deterministic Validation:** Code is not merged based on agent confidence. It is gated by strict tool-use interception (`hooks.json`) that enforces Vitest/Lint passes and mandatory adversarial security reviews.
+- **Validation evidence:** Existing hooks intercept selected tool calls, while reviews are workflow instructions. The v0.8.0 commit gate currently runs `pnpm check` and `pnpm lint`, conditionally adds build and smoke commands, and does not run Vitest. Fail-closed behavior and project-declared pnpm execution are later 1.0 work.
 
 ---
 
 ## 2. The Agentic Hierarchy (The Swarm)
 
-The swarm is divided into specific roles with impenetrable scope boundaries. Note that our agents are explicitly model-agnostic; the optimal LLM is determined dynamically by the specific workflow command being executed to optimize for speed, context window, or adversarial reasoning.
+The swarm uses specific roles with instructed scope boundaries and selected hook interception. Model selection follows the routing matrix and human workflow choice.
 
 **Strategic & Management Tier**
 
@@ -40,9 +40,9 @@ The swarm is divided into specific roles with impenetrable scope boundaries. Not
 
 ## 3. Workflow Commands & Model Matrix
 
-Do NOT attempt to run implementation as an automated, continuous script. The Human Orchestrator must manually orchestrate these commands and swap the LLM model at each phase transition to enforce strict Heterogeneous Model Validation.
+Do NOT attempt to run implementation as an automated, continuous script. The Human Orchestrator manually orchestrates these commands and swaps the LLM model at each workflow transition.
 
-### Phase 0: Foundational Commands
+### Foundational Workflow Stage Commands
 
 - `/workspace-init`: Bootstraps environment, verifies Tech Stack constraints, generates initial Roadmap.md.
   - **Recommended Model:** Claude Opus (Requires zero-shot semantic mapping of entire PRD).
@@ -104,16 +104,16 @@ The swarm's memory is isolated into specific operational files:
 
 ## 5. The Execution Lifecycle (The Grind)
 
-To maintain a deterministic state, the human orchestrator drives the swarm through distinct phases. Do not skip steps or attempt to automate across phase boundaries.
+The human orchestrator drives the swarm through distinct Workflow Stages. Do not skip steps or automate across workflow boundaries.
 
-### 5.1. Phase 0: Workspace Initialization
+### 5.1. Workspace Initialization Stage
 
 These commands are run once at the beginning of a project, or immediately following a full `/architecture-pivot`.
 
 1. `/workspace-init`: Bootstraps the environment, verifies all dependencies and mandatory PRD declarations, and generates the master `Roadmap.md`.
 2. `/generate-readme`: The Architect synthesizes the core specs to build the client-facing README, and simultaneously injects the crucial `Host Project Snapshot` into `Context.md` for downstream agent reference.
 
-### 5.2. Phase 1: The Daily Loop
+### 5.2. Daily Workflow Stages
 
 This is the core iterative loop for chewing through the backlog. It begins with session prep and splits into two distinct execution routes depending on the task's Dev Tier and routing constraints.
 
@@ -179,26 +179,55 @@ Instead, pull the diagnostic emergency brake by initiating `/triage-bug`. This t
 
 ## 6. Active Tool Guardrails (`hooks.json`)
 
-To prevent agent hallucination and race conditions, the IDE's tool-calling capabilities are intercepted by strict system scripts:
+The IDE registers these tool hooks. Their current error handling is not yet uniformly fail-closed; see [the boundary registry](.agents/BOUNDARIES.md):
 
-- `context-io-gate`**:** Uses `lockfile-create` to prevent multiple agents from writing to `Context.md` simultaneously.
-- `static-analysis-gate`**:** Intercepts `git commit` commands. Forces a `pnpm vitest run` and `pnpm lint` pass. If tests fail, the agent is blocked from committing and forced to fix the code.
-- `protect-strategy-memory`**:** Blocks execution agents from accidentally modifying or deleting the `[ACTIVE_SPRINT_CHUNK]` in your memory files.
+- `context-io-gate`**:** Uses a lock file to coordinate writes to `Context.md` when its hook receives supported input and the filesystem operation succeeds.
+- `static-analysis-gate`**:** Intercepts supported `git commit` tool calls and conditionally runs hard-coded checks. It does not run Vitest or guarantee fail-closed behavior in every error path. Slice 3 replaces this with project-declared validation.
+- `protect-strategy-memory`**:** Intercepts selected writes to strategic memory files; its error paths still need the Slice 3 fail-closed refinement.
 
 ---
 
 ## 7. Prerequisites & Setup
 
+### Slice 1 workspace configuration
+
+`.agents/tophat.config.json` is shipped in this vault as an **unconfigured template**: `schemaVersion` and the existing `routingMatrix` are present, but `workspace`, `documentation`, and `validation` are `null`. This vault has no host application or approved project package, so selecting a framework or inventing scripts here would misrepresent it. After copying the vault into a supported Node.js/TypeScript/pnpm project, fill those sections before calling the loader. The loader denies the unconfigured template; it does not infer Svelte.
+
+For example, replace the three `null` fields in a SvelteKit host project with the following structure, using that project's actual documentation paths and `package.json` script names:
+
+```json
+{
+  "workspace": { "kind": "web", "framework": "sveltekit" },
+  "documentation": {
+    "package": "docs/project",
+    "manifest": "manifest.json",
+    "derivedTargets": ["README.md"]
+  },
+  "validation": {
+    "scripts": { "typecheck": "check", "lint": "lint", "unit": "test:unit", "build": "build" },
+    "commitGate": ["typecheck", "lint", "unit", "build"],
+    "developmentPhaseGate": ["typecheck", "lint", "unit", "build"],
+    "projectCompletionGate": ["typecheck", "lint", "unit", "build"]
+  }
+}
+```
+
+These are replacement fields inside the existing config, not another configuration file. This example is illustrative and does not claim that the vault contains `docs/project` or these host scripts.
+
+Set `workspace.kind` and `workspace.framework` to one of: `web` with `svelte`, `sveltekit`, `react`, or `nextjs`; `backend` with `none`; or `desktop` with `svelte`, `react`, or `none`. Capabilities are derived from this pair and cannot be declared independently. `documentation.package` is a workspace-relative directory, `documentation.manifest` is a relative file within it, and `documentation.derivedTargets` lists explicit relative files or directories outside private TopHat state. Structural validation here does not approve or verify the package; that is Slice 4.
+
+Map any selected validation category to a **package-script name**, not a shell command. Allowed categories are `typecheck`, `lint`, `unit`, `coverage`, `integration`, `build`, `smoke`, `e2e`, and `documentation`; declare nonempty `commitGate`, `developmentPhaseGate`, and `projectCompletionGate` arrays in execution order. Slice 1 validates the declarations but does not run the scripts. The TopHat repository's own `pnpm test:tophat` command uses Node 24's built-in TypeScript type stripping and is separate from host-project validation. It executes tests but does not type-check them.
+
 To deploy this workflow on a fresh repository, ensure your local environment and project structure meet the following strict requirements:
 
 ### 7.1. System Requirements
 
-- **Node.js:** `>= 22.0.0`
+- **Node.js:** `>= 24.0.0` for TopHat 1.0 and its supported host projects.
 - **Package Manager:** `pnpm`
 - **Antigravity IDE:** Linear MCP Extension must be installed and authenticated.
 - **GitHub CLI:** GitHub CLI must be installed and authenticated for PR creations.
 
-### 7.2. Phase 0: Human Orchestrator Initialization (MANDATORY)
+### 7.2. Human Orchestrator Initialization (MANDATORY)
 
 The TopHat swarm does not initialize package managers or install base frameworks. **Before running `/workspace-init`**, the Human Orchestrator must manually bootstrap the execution stack.
 
@@ -211,7 +240,7 @@ The TopHat swarm does not initialize package managers or install base frameworks
 
 ### 7.3. Workspace Scaffolding
 
-Once Phase 0 is complete, ensure your root directory contains the Antigravity .agents/ vault and the docs/ directory.
+Once workspace initialization is complete, ensure your root directory contains the Antigravity .agents/ vault and the docs/ directory.
 
 _"Multi-agent Development Workflow" structure:_
 

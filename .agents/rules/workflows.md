@@ -11,7 +11,7 @@ _Format Output:_ `[Next Action: /command-name]`
 
 ## TopHat Workflow Commands for Orchestrating the Engine Flow
 
-### Phase 0: Foundational Commands
+### Foundational Workflow Stage Commands
 
 - `/workspace-init`: Bootstraps environment, verifies Tech Stack constraints, generates initial `Roadmap.md`.
 - `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
@@ -43,7 +43,7 @@ _Format Output:_ `[Next Action: /command-name]`
 
 ## 🛑 Manual Implementation Sequences
 
-Do NOT attempt to run implementation as an automated workflow. The Human Orchestrator must manually swap the LLM model at each phase transition to enforce Heterogeneous Model Validation.
+Do NOT attempt to run implementation as an automated workflow. The Human Orchestrator must manually swap the LLM model at each workflow transition to enforce Heterogeneous Model Validation.
 
 ### Standard Implementation Sequence:
 

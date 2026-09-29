@@ -193,9 +193,30 @@ The IDE registers these tool hooks. Their current error handling is not yet unif
 
 `.agents/tophat.config.json` is shipped in this vault as an **unconfigured template**: `schemaVersion` and the existing `routingMatrix` are present, but `workspace`, `documentation`, and `validation` are `null`. This vault has no host application or approved project package, so selecting a framework or inventing scripts here would misrepresent it. After copying the vault into a supported Node.js/TypeScript/pnpm project, fill those sections before calling the loader. The loader denies the unconfigured template; it does not infer Svelte.
 
+For example, replace the three `null` fields in a SvelteKit host project with the following structure, using that project's actual documentation paths and `package.json` script names:
+
+```json
+{
+  "workspace": { "kind": "web", "framework": "sveltekit" },
+  "documentation": {
+    "package": "docs/project",
+    "manifest": "manifest.json",
+    "derivedTargets": ["README.md"]
+  },
+  "validation": {
+    "scripts": { "typecheck": "check", "lint": "lint", "unit": "test:unit", "build": "build" },
+    "commitGate": ["typecheck", "lint", "unit", "build"],
+    "developmentPhaseGate": ["typecheck", "lint", "unit", "build"],
+    "projectCompletionGate": ["typecheck", "lint", "unit", "build"]
+  }
+}
+```
+
+These are replacement fields inside the existing config, not another configuration file. This example is illustrative and does not claim that the vault contains `docs/project` or these host scripts.
+
 Set `workspace.kind` and `workspace.framework` to one of: `web` with `svelte`, `sveltekit`, `react`, or `nextjs`; `backend` with `none`; or `desktop` with `svelte`, `react`, or `none`. Capabilities are derived from this pair and cannot be declared independently. `documentation.package` is a workspace-relative directory, `documentation.manifest` is a relative file within it, and `documentation.derivedTargets` lists explicit relative files or directories outside private TopHat state. Structural validation here does not approve or verify the package; that is Slice 4.
 
-Map any selected validation category to a **package-script name**, not a shell command. Allowed categories are `typecheck`, `lint`, `unit`, `coverage`, `integration`, `build`, `smoke`, `e2e`, and `documentation`; declare nonempty `commitGate`, `developmentPhaseGate`, and `projectCompletionGate` arrays in execution order. Slice 1 validates the declarations but does not run the scripts. The TopHat repository's own `pnpm test:tophat` command runs the loader tests with Node's TypeScript stripping; it is separate from host-project validation.
+Map any selected validation category to a **package-script name**, not a shell command. Allowed categories are `typecheck`, `lint`, `unit`, `coverage`, `integration`, `build`, `smoke`, `e2e`, and `documentation`; declare nonempty `commitGate`, `developmentPhaseGate`, and `projectCompletionGate` arrays in execution order. Slice 1 validates the declarations but does not run the scripts. The TopHat repository's own `pnpm test:tophat` command uses its declared `tsx` development dependency and is separate from host-project validation.
 
 To deploy this workflow on a fresh repository, ensure your local environment and project structure meet the following strict requirements:
 

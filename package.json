@@ -3,6 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test:tophat": "node --experimental-strip-types --test .agents/tests/*.test.ts"
+    "test:tophat": "node --import tsx --test .agents/tests/*.test.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
   }
 }

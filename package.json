@@ -2,10 +2,10 @@
   "name": "tophat-vault-tests",
   "private": true,
   "type": "module",
-  "scripts": {
-    "test:tophat": "node --import tsx --test .agents/tests/*.test.ts"
+  "engines": {
+    "node": ">=24.0.0"
   },
-  "devDependencies": {
-    "tsx": "^4.23.15"
+  "scripts": {
+    "test:tophat": "node --test .agents/tests/*.test.ts"
   }
 }

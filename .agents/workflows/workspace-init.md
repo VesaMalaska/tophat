@@ -5,7 +5,7 @@ description: Strict deterministic environment validation followed by Lead Archit
 **Steps:**
 
 1.  **Initialize State:** Invoke the System Shell (TopHat Orchestrator).
-2.  **Toolchain Audit:** Execute `node -v`, `pnpm -v`, and `git --version`. Parse the Node.js version output. If the major version is `< 22`, halt immediately with a `[ENVIRONMENT_FAILURE]` block, instructing the Human Orchestrator to update Node.js. If any command fails, halt execution.
+2.  **Toolchain Audit:** Execute `node -v`, `pnpm -v`, and `git --version`. Parse the Node.js version output. If the major version is `< 24`, halt immediately with a `[ENVIRONMENT_FAILURE]` block, instructing the Human Orchestrator to update Node.js. If any command fails, halt execution.
 3.  **Deep Structure Check:** Verify the existence of the Multi-Agent Matrix. Check for the `.agents/` directory and verify that the core subdirectories (`/rules`, `/workflows`, `/skills`) and the `hooks.json` file are present at the root of the vault. If the core scaffolding is missing, halt and output a list of the missing files.
 4.  **Strict Memory Check:** Verify that `Strategy.md`, `Context.md`, `HUD.md`, and `DECISIONS.md` exist at the workspace root. Do NOT generate these files autonomously. If absent or malformed, halt with `[WORKSPACE_VALIDATION_FAILED]` and instruct the Human Orchestrator to restore the missing templates from the TopHat base repository before continuing.
 5.  **Integration Ping:** Attempt a lightweight read operation via the Linear MCP extension. If the ping is unresponsive or unauthorized, halt and output `[LINEAR_AUTH_FAILED]: Please authenticate the Linear MCP before proceeding.`

@@ -216,13 +216,13 @@ These are replacement fields inside the existing config, not another configurati
 
 Set `workspace.kind` and `workspace.framework` to one of: `web` with `svelte`, `sveltekit`, `react`, or `nextjs`; `backend` with `none`; or `desktop` with `svelte`, `react`, or `none`. Capabilities are derived from this pair and cannot be declared independently. `documentation.package` is a workspace-relative directory, `documentation.manifest` is a relative file within it, and `documentation.derivedTargets` lists explicit relative files or directories outside private TopHat state. Structural validation here does not approve or verify the package; that is Slice 4.
 
-Map any selected validation category to a **package-script name**, not a shell command. Allowed categories are `typecheck`, `lint`, `unit`, `coverage`, `integration`, `build`, `smoke`, `e2e`, and `documentation`; declare nonempty `commitGate`, `developmentPhaseGate`, and `projectCompletionGate` arrays in execution order. Slice 1 validates the declarations but does not run the scripts. The TopHat repository's own `pnpm test:tophat` command uses its declared `tsx` development dependency and is separate from host-project validation.
+Map any selected validation category to a **package-script name**, not a shell command. Allowed categories are `typecheck`, `lint`, `unit`, `coverage`, `integration`, `build`, `smoke`, `e2e`, and `documentation`; declare nonempty `commitGate`, `developmentPhaseGate`, and `projectCompletionGate` arrays in execution order. Slice 1 validates the declarations but does not run the scripts. The TopHat repository's own `pnpm test:tophat` command uses Node 24's built-in TypeScript type stripping and is separate from host-project validation. It executes tests but does not type-check them.
 
 To deploy this workflow on a fresh repository, ensure your local environment and project structure meet the following strict requirements:
 
 ### 7.1. System Requirements
 
-- **Node.js:** `>= 22.0.0`
+- **Node.js:** `>= 24.0.0` for TopHat 1.0 and its supported host projects.
 - **Package Manager:** `pnpm`
 - **Antigravity IDE:** Linear MCP Extension must be installed and authenticated.
 - **GitHub CLI:** GitHub CLI must be installed and authenticated for PR creations.

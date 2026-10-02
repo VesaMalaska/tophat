@@ -55,21 +55,6 @@
             }
         ]
     },
-    "static-analysis-gate": {
-        "enabled": true,
-        "PostToolUse": [
-            {
-                "matcher": "run_command",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "node -e \"if(process.env.TOPHAT_CMD && process.env.TOPHAT_CMD.includes('git commit')) process.exit(1); else process.exit(0);\" || pnpm exec tsx .agents/scripts/run-static-analysis.ts",
-                        "timeout": 45
-                    }
-                ]
-            }
-        ]
-    },
     "protect-strategy-memory": {
         "enabled": true,
         "PreToolUse": [

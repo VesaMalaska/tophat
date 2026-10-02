@@ -1,15 +1,16 @@
-# TopHat boundary registry — through Slice 2
+# TopHat boundary registry — through Slice 3
 
 This registry distinguishes current mechanisms from instructions and planned work. A registered hook is not automatically a reliable fail-closed control.
 
 | Boundary | Current classification | Evidence and limit |
 |---|---|---|
 | Workspace contract parsing and capability derivation | Deterministic when `loadTophatConfig` is called | The loader denies malformed or unsupported declarations and returns frozen data. The vault template is intentionally unconfigured. Other scripts are not wired to this loader until their owning slices. |
-| Existing hook decisions and context locks | Conditional physical interception | Registered scripts intercept supported tool payloads, but v0.8.0 error paths may return allow. Fail-closed corrections belong to Slice 3. |
-| Svelte syntax guard | Conditional pre-write check for supported hook calls | Static registration remains global, but the script loads validated host config; Svelte profiles enforce, valid non-Svelte profiles explicitly skip, and invalid input/config denies. Coverage depends on the IDE invoking this registered hook for the supported write tools. |
+| IDE hook decisions and context locks | Deterministic when called; host interception unverified | Registered scripts deny malformed payloads, unknown lock owners, and filesystem failures. A live `PreToolUse` probe in standalone Antigravity IDE v2.5.5 did not fire; no physical IDE write or command interception is claimed. `context-lock.ts` was unregistered and has been removed. Stale locks require owner inspection rather than PID-only deletion. |
+| Svelte syntax guard | Deterministic when called; host interception unverified | The script loads validated host config; Svelte profiles enforce, valid non-Svelte profiles explicitly skip, and invalid input/config denies. IDE registration is not proof that a write is intercepted. |
 | Framework skill compatibility | Deterministic when the guidance command is invoked; task handoff is instructed | `select-task-guidance.ts` checks proposed skill labels and framework instructions against derived capabilities and task topics. Architect/task-generation instructions require it before proposal and issue creation. The host does not physically prevent an agent from ignoring those instructions or writing contradictory free-form prose. |
 | Smoke profile | Deterministic profile output, instructed task content | Selection reports web/backend/desktop from validated config. The smoke workflow describes compatible checks; execution and full QA classification remain later work. |
-| Validation script execution, optional skips, coverage | Pending | The loader validates names and gate mappings but does not execute host scripts. Slice 3 supplies the runner and reports. |
+| Host-declared validation execution | Deterministic when invoked | `run-validation.ts` preflights every selected host script and executes `pnpm run` in order. Selected missing or failing scripts deny; an empty optional gate reports `SKIPPED_NOT_APPLICABLE`. The project owns coverage thresholds. Git state changes during checks deny a passing report. |
+| Commit validation boundary | Native Git hook after explicit installation | `install-git-hook.ts` refuses existing hooks and redirected `core.hooksPath`; the installed `pre-commit` script runs the shared executor. A real fixture commit failed with unchanged `HEAD`, then passed after the script passed. Installation is per clone, and `--no-verify` or another Git hook configuration can bypass it. The tested standalone IDE hook did not intercept the command. |
 | Documentation package approval and integrity | Pending | A safe relative package path is not proof that a package exists or is approved. Slice 4 validates content and authority. |
 | Agent context restrictions and role write boundaries | Instructed | No physical read sandbox is claimed. PM and writer mutation gates depend on verified host workflow identity in later slices. |
 | Git mutation safety | Instructed | Existing Git workflows contain instructions and commands; a shared physical preflight is Slice 8. |

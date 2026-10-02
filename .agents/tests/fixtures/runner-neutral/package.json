@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "unit:vitest": "vitest run vitest.test.js",
+    "unit:node": "node --test node.test.js"
+  },
+  "devDependencies": {
+    "vitest": "5.0.3"
+  }
+}

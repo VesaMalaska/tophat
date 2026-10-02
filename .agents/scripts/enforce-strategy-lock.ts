@@ -1,102 +1,65 @@
-interface ReplacementChunk {
-  ReplacementContent: string;
-}
+import { resolve, basename } from "node:path";
+import { fileURLToPath } from "node:url";
 
-interface ToolCallArgs {
-  TargetFile?: string;
-  CodeContent?: string;
-  ReplacementContent?: string;
-  ReplacementChunks?: ReplacementChunk[];
-}
+type Decision = { decision: "allow" | "deny" | "ask"; status: string; reason: string };
+const deny = (status: string, reason: string): Decision => ({ decision: "deny", status, reason });
+const chunkHeader = "##### 🎯 Active Sprint Chunk:";
+const writeTools = ["write_to_file", "replace_file_content", "multi_replace_file_content"];
 
-interface ToolCall {
-  name: string;
-  args?: ToolCallArgs;
-}
-
-interface TopHatPayload {
-  toolCall?: ToolCall;
-}
-
-interface DecisionResponse {
-  decision: "allow" | "deny" | "ask";
-  reason?: string;
-}
-
-let inputData: string = "";
-
-process.stdin.on("data", (chunk: Buffer | string) => {
-  inputData += chunk.toString();
-});
-
-process.stdin.on("end", () => {
-  try {
-    const payload: TopHatPayload = JSON.parse(inputData);
-    const toolCall = payload.toolCall;
-
-    if (!toolCall || !toolCall.args) {
-      console.log(JSON.stringify({ decision: "allow" } as DecisionResponse));
-      return;
-    }
-
-    const args = toolCall.args;
-    const targetFile = args.TargetFile || "";
-
-    // 1. Absolute Lock on Strategy.md
-    if (targetFile.includes("Strategy.md")) {
-      const confirmation: DecisionResponse = {
-        decision: "ask",
-        reason:
-          "Strategy.md is a protected high-level context file. The human orchestrator must approve this update.",
-      };
-      console.log(JSON.stringify(confirmation));
-      return;
-    }
-
-    // 2. Surgical Lock on Context.md (Sprint Chunk Protection)
-    if (targetFile.includes("Context.md")) {
-      const chunkHeader = "##### 🎯 Active Sprint Chunk:";
-
-      if (toolCall.name === "write_to_file") {
-        const newContent = args.CodeContent || "";
-        // Ensure full file rewrites do not accidentally delete the Sprint Chunk
-        if (!newContent.includes(chunkHeader)) {
-          console.log(
-            JSON.stringify({
-              decision: "deny",
-              reason: `Context.md rewrite rejected. You must preserve the '${chunkHeader}' block. You are not authorized to delete the sprint scope.`,
-            }),
-          );
-          return;
-        }
-      } else if (
-        toolCall.name === "replace_file_content" ||
-        toolCall.name === "multi_replace_file_content"
-      ) {
-        const contentToCheck =
-          args.ReplacementContent ||
-          (args.ReplacementChunks || [])
-            .map((c) => c.ReplacementContent)
-            .join("\n");
-
-        // If the targeted replacement block contains the Sprint Chunk header, escalate to Human Orchestrator
-        if (contentToCheck.includes(chunkHeader)) {
-          console.log(
-            JSON.stringify({
-              decision: "ask",
-              reason:
-                "Modification of the 'Active Sprint Chunk' detected in Context.md. Only the PM or Architect should alter this. Human approval required.",
-            }),
-          );
-          return;
-        }
-      }
-    }
-
-    // Default to allow if constraints are not violated
-    console.log(JSON.stringify({ decision: "allow" } as DecisionResponse));
-  } catch (e) {
-    // Fail-open to prevent pipeline blocking on JSON parse errors
-    console.log(JSON.stringify({ decision: "allow" } as DecisionResponse));
+export function evaluateProtectedWrite(input: string): Decision {
+  let payload: unknown;
+  try { payload = JSON.parse(input); }
+  catch { return deny("HOOK_INPUT_INVALID", "Protected-write hook requires valid JSON"); }
+  if (!payload || typeof payload !== "object" || Array.isArray(payload))
+    return deny("HOOK_INPUT_INVALID", "Protected-write hook requires an object");
+  const toolCall = (payload as Record<string, unknown>).toolCall;
+  if (!toolCall || typeof toolCall !== "object" || Array.isArray(toolCall))
+    return deny("HOOK_INPUT_INVALID", "Missing toolCall");
+  const { name, args } = toolCall as Record<string, unknown>;
+  if (typeof name !== "string" || !writeTools.includes(name) ||
+      !args || typeof args !== "object" || Array.isArray(args))
+    return deny("HOOK_INPUT_INVALID", "Expected supported write tool and args");
+  const values = args as Record<string, unknown>;
+  if (typeof values.TargetFile !== "string" || !values.TargetFile)
+    return deny("HOOK_INPUT_INVALID", "TargetFile must identify the write target");
+  let content: string;
+  if (name === "multi_replace_file_content") {
+    if (!Array.isArray(values.ReplacementChunks) || !values.ReplacementChunks.length ||
+        values.ReplacementChunks.some((chunk) => !chunk || typeof chunk !== "object" ||
+          typeof chunk.ReplacementContent !== "string"))
+      return deny("HOOK_INPUT_INVALID", "ReplacementChunks must contain replacement strings");
+    content = values.ReplacementChunks.map((chunk) => chunk.ReplacementContent).join("\n");
+  } else {
+    const key = name === "write_to_file" ? "CodeContent" : "ReplacementContent";
+    if (typeof values[key] !== "string") return deny("HOOK_INPUT_INVALID", `${key} must be a string`);
+    content = values[key] as string;
   }
-});
+
+  const target = basename(values.TargetFile.replaceAll("\\", "/"));
+  if (target === "Strategy.md") return {
+    decision: "ask", status: "HUMAN_APPROVAL_REQUIRED",
+    reason: "Strategy.md is protected. Ask the Human Orchestrator before this write.",
+  };
+  if (target === "Context.md") {
+    if (name === "write_to_file" && !content.includes(chunkHeader))
+      return deny("ACTIVE_CHUNK_MISSING", "Context.md rewrite must preserve the Active Sprint Chunk header");
+    if (name !== "write_to_file" && content.includes(chunkHeader)) return {
+      decision: "ask", status: "HUMAN_APPROVAL_REQUIRED",
+      reason: "Replacement of the Active Sprint Chunk needs Human Orchestrator approval.",
+    };
+  }
+  return { decision: "allow", status: "PASSED", reason: "Protected-write rule checked" };
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  let input = "";
+  process.stdin.setEncoding("utf8");
+  process.stdin.on("data", (chunk: string) => { input += chunk; });
+  process.stdin.on("end", () => {
+    try { console.log(JSON.stringify(evaluateProtectedWrite(input))); }
+    catch { console.log(JSON.stringify(deny("HOOK_INTERNAL_ERROR", "Protected-write check could not complete"))); }
+  });
+  process.stdin.on("error", () => {
+    console.log(JSON.stringify(deny("HOOK_INPUT_INVALID", "Cannot read protected-write hook input")));
+  });
+}

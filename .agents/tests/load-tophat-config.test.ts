@@ -75,6 +75,9 @@ test("script names, categories, and required mappings deny", () => {
   denies({ ...base(), validation: { ...base().validation, commitGate: ["custom"] } }, /unknown category/);
   denies({ ...base(), validation: { ...base().validation, unexpectedGate: ["unit"] } }, /not supported/);
   denies({ ...base(), validation: { ...base().validation, commitGate: [] } }, /nonempty category array/);
+  assert.deepEqual(parse({ ...base(), validation: { ...base().validation,
+    developmentPhaseGate: [], projectCompletionGate: [] } }).validation.projectCompletionGate, []);
+  denies({ ...base(), validation: { ...base().validation, developmentPhaseGate: null } }, /category array/);
   denies({ ...base(), validation: { ...base().validation, commitGate: ["unit", "unit"] } }, /repeats unit/);
 });
 

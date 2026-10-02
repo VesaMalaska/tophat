@@ -7,8 +7,8 @@ description: Lead Architect task compilation targeting the Active Sprint Chunk, 
 1. **Initialize Architecture:** Invoke `@agent-architect`.
 2. **Chunk Isolation Directive:** Read `Roadmap.md` and isolate the exact scope of the `[ACTIVE_SPRINT_CHUNK]`. You are strictly forbidden from generating tasks for any feature, database table, or UI component outside the boundaries of this specific chunk.
 3. **JIT Context Extraction:** Use the `run_command` tool to execute `ls -1 docs/` (or equivalent) to dynamically discover all available technical documents. Parse the PRD, ERD, and any other files discovered in the directory. Extract ONLY the specific data models, API contracts, or component hierarchies relevant to the active chunk. You must embed these exact schemas and constraints directly into the generated Linear task descriptions so downstream Developer agents have perfect, isolated context.
-4. **Constraint & Skill Injection:** Compile atomic, deterministic Linear-ready task specifications. Strictly enforce the boundaries defined in the `[GLOBAL_CONSTRAINTS]` block of `Context.md`. Every generated task MUST explicitly mandate adherence to the relevant active Antigravity Skills (e.g., dictating `svelte5-kit-architecture` for frontend, or `supabase-multitenant-data` for backend).
-5. **Strict Acceptance Criteria:** Format the Acceptance Criteria for every task to pair seamlessly with downstream validation. You must explicitly demand the handling of at least 3 edge cases per feature. You must explicitly map these acceptance criteria to the active validation Skills authorized in the workspace (e.g., the specific TDD or QA skills provided in your context).
+4. **Constraint & Skill Injection:** Compile atomic, deterministic Linear-ready task specifications. Strictly enforce the boundaries defined in the `[GLOBAL_CONSTRAINTS]` block of `Context.md`. Select only skills supported by the validated workspace capabilities and the task scope. Before each Task Block and again before issue creation if its selection changes, pass the proposed `requestedSkills`, `taskTopics`, and `frameworkInstructions` as JSON on stdin to `pnpm exec tsx .agents/scripts/select-task-guidance.ts`. The process must exit successfully with `status: SELECTED`; on `DENIED`, halt that task and report the incompatibility. Copy any returned `boundaries` into the task's implementation requirements and acceptance criteria, particularly for Next.js server/client/route/action and Electron process work. Do not silently remove required guidance. Framework examples are illustrative, not defaults.
+5. **Strict Acceptance Criteria:** Format the Acceptance Criteria for every task to pair seamlessly with downstream validation. Specify relevant testable edge cases and map the criteria to the selected runner-neutral TDD guidance and compatible project-declared validation. Select optional QA or runner-specific skills only when the task and workspace justify them.
 6. **Execution:** Output the proposed Task Blocks, ADR Summary, and Strategy Update block. CRITICAL: You MUST format EACH task block EXACTLY using the following structure. Do not invent your own formatting, do not skip sections, and do not summarize. Use 4-space indentation for any code blocks inside the Embedded JIT Schema:
 
    **-- LINEAR METADATA --**
@@ -19,7 +19,7 @@ description: Lead Architect task compilation targeting the Active Sprint Chunk, 
    - **Security:** [yes | no]
    - **QA:** [yes | no]
    - **Dependencies:** [e.g., JAC-35 | None]
-   - **Required Skills Labels:** [e.g., electron-sqlite-ipc, vitest-tdd]
+   - **Required Skills Labels:** [validated skill names from the task-guidance check]
    - **ADR Flag:** [Yes | No - STRICT CONSTRAINT: Only flag 'Yes' for irreversible technical paradigms (e.g., security boundaries, database structures, UI constraints). Do NOT flag standard task generation, dev routing, or sprint counts as ADRs.]
 
    **-- LINEAR DESCRIPTION (MARKDOWN) --**
@@ -42,7 +42,7 @@ description: Lead Architect task compilation targeting the Active Sprint Chunk, 
    - [Skill Name] — [Brief reason for inclusion]
 
    **Validation Mapping**
-   - [Validation Type, e.g., TDD: vitest-tdd] — [What exactly needs to be tested to prove the logic works]
+   - [Validation Type, e.g., TDD: tdd-workflow] — [What exactly needs to be tested to prove the logic works]
 
    **Acceptance Criteria**
    - [ ] [Testable outcome 1]

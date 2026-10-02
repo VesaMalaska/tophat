@@ -1,87 +1,73 @@
-interface ReplacementChunk {
-  ReplacementContent: string;
-}
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { loadTophatConfig, TophatConfigError } from "./load-tophat-config.ts";
 
-interface ToolCallArgs {
-  TargetFile?: string;
-  CodeContent?: string;
-  ReplacementContent?: string;
-  ReplacementChunks?: ReplacementChunk[];
-}
+type Decision = { decision: "allow" | "deny"; status: string; reason: string };
+const deny = (status: string, reason: string): Decision => ({ decision: "deny", status, reason });
 
-interface ToolCall {
-  name: string;
-  args?: ToolCallArgs;
-}
+const legacyExport = /^(?!\s*\/\/|\s*\/\*|\s*\*).*?\bexport\s+let\b/m;
+const legacyReactive = /^(?!\s*\/\/|\s*\/\*|\s*\*).*?(?:^|\s)\$:\s/m;
 
-interface TopHatPayload {
-  toolCall?: ToolCall;
-}
-
-interface DecisionResponse {
-  decision: "allow" | "deny" | "ask";
-  reason?: string;
-}
-
-let inputData: string = "";
-
-process.stdin.on("data", (chunk: Buffer | string) => {
-  inputData += chunk.toString();
-});
-
-process.stdin.on("end", () => {
-  try {
-    const payload: TopHatPayload = JSON.parse(inputData);
-    const toolCall = payload.toolCall;
-
-    if (!toolCall || !toolCall.args) {
-      console.log(JSON.stringify({ decision: "allow" } as DecisionResponse));
-      return;
-    }
-
-    const args = toolCall.args;
-    const targetFile = args.TargetFile || "";
-    let contentToCheck = "";
-
-    if (toolCall.name === "write_to_file") {
-      contentToCheck = args.CodeContent || "";
-    } else if (toolCall.name === "replace_file_content") {
-      contentToCheck = args.ReplacementContent || "";
-    } else if (toolCall.name === "multi_replace_file_content") {
-      contentToCheck = (args.ReplacementChunks || [])
-        .map((c) => c.ReplacementContent)
-        .join("\n");
-    }
-
-    // Only enforce on Svelte files
-    if (targetFile.endsWith(".svelte")) {
-      // Regex Breakdown:
-      // ^ = start of line
-      // (?!\s*\/\/|\s*\/\*|\s*\*) = Negative lookahead. Ignores lines starting with //, /*, or * (JSDoc)
-      // \b = word boundary enforcement
-      const legacyExportRegex =
-        /^(?!\s*\/\/|\s*\/\*|\s*\*).*?\bexport\s+let\b/m;
-      const legacyReactiveRegex = /^(?!\s*\/\/|\s*\/\*|\s*\*).*?(?:^|\s)\$:\s/m;
-
-      const hasExportLet = legacyExportRegex.test(contentToCheck);
-      const hasReactiveStatement = legacyReactiveRegex.test(contentToCheck);
-
-      if (hasExportLet || hasReactiveStatement) {
-        const rejection: DecisionResponse = {
-          decision: "deny",
-          // CRITICAL: This reason acts as an immediate prompt injection to correct the agent's behavior.
-          reason:
-            "[SVELTE_5_CONSTRAINT_VIOLATION]: Legacy syntax ('export let' or '$:') detected. You MUST use Svelte 5 Runes ($state, $props, $derived, $effect).\n\nAGENT DIRECTIVE: This is a strict regex pre-flight check. If you are attempting to write a valid string literal (e.g., a tooltip) containing these characters, you must break up the string to bypass this security gate (e.g., use string concatenation like '$' + ': ').",
-        };
-        console.log(JSON.stringify(rejection));
-        return;
-      }
-    }
-
-    // Pass-through
-    console.log(JSON.stringify({ decision: "allow" } as DecisionResponse));
-  } catch (e) {
-    // Fail-open to prevent workspace locking on unhandled JSON errors
-    console.log(JSON.stringify({ decision: "allow" } as DecisionResponse));
+/** Decide from the validated host configuration before inspecting Svelte syntax. */
+export function evaluateSvelteWrite(input: string, workspaceRoot: string): Decision {
+  let capabilities: readonly string[];
+  try { capabilities = loadTophatConfig(workspaceRoot).capabilities; }
+  catch (error) {
+    const reason = error instanceof TophatConfigError ? error.message : "Cannot inspect TopHat configuration";
+    return deny("TOPHAT_CONFIG_INVALID", reason);
   }
-});
+
+  let payload: unknown;
+  try { payload = JSON.parse(input); }
+  catch { return deny("HOOK_INPUT_INVALID", "Hook input must be valid JSON"); }
+  if (!payload || typeof payload !== "object" || Array.isArray(payload))
+    return deny("HOOK_INPUT_INVALID", "Hook input must be an object");
+  const toolCall = (payload as Record<string, unknown>).toolCall;
+  if (!toolCall || typeof toolCall !== "object" || Array.isArray(toolCall))
+    return deny("HOOK_INPUT_INVALID", "Hook input must contain toolCall");
+  const { name, args } = toolCall as Record<string, unknown>;
+  if (!["write_to_file", "replace_file_content", "multi_replace_file_content"].includes(name as string) ||
+      !args || typeof args !== "object" || Array.isArray(args))
+    return deny("HOOK_INPUT_INVALID", "Hook input requires a supported write call and args");
+  const values = args as Record<string, unknown>;
+  if (typeof values.TargetFile !== "string" || !values.TargetFile)
+    return deny("HOOK_INPUT_INVALID", "TargetFile must be a nonempty string");
+  let content: string;
+  if (name === "multi_replace_file_content") {
+    const chunks = values.ReplacementChunks;
+    if (!Array.isArray(chunks) || !chunks.length || chunks.some(
+      (chunk) => !chunk || typeof chunk !== "object" || typeof chunk.ReplacementContent !== "string",
+    )) return deny("HOOK_INPUT_INVALID", "ReplacementChunks must contain replacement text");
+    content = chunks.map((chunk) => chunk.ReplacementContent).join("\n");
+  } else {
+    const key = name === "write_to_file" ? "CodeContent" : "ReplacementContent";
+    if (typeof values[key] !== "string") return deny("HOOK_INPUT_INVALID", `${key} must be a string`);
+    content = values[key] as string;
+  }
+
+  if (!capabilities.includes("svelte")) return {
+    decision: "allow", status: "SKIPPED_NOT_APPLICABLE",
+    reason: "Svelte enforcement is inactive because this workspace does not declare the svelte capability.",
+  };
+  if (!values.TargetFile.endsWith(".svelte")) return {
+    decision: "allow", status: "SKIPPED_NOT_APPLICABLE", reason: "This write does not target a .svelte file.",
+  };
+  if (legacyExport.test(content) || legacyReactive.test(content)) return deny(
+    "SVELTE_5_CONSTRAINT_VIOLATION",
+    "Legacy Svelte syntax ('export let' or '$:') detected. Use Svelte 5 runes ($state, $props, $derived, $effect); inspect any literal false positive before changing code.",
+  );
+  return { decision: "allow", status: "PASSED", reason: "No legacy Svelte syntax detected." };
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  let input = "";
+  process.stdin.setEncoding("utf8");
+  process.stdin.on("data", (chunk: string) => { input += chunk; });
+  process.stdin.on("end", () => {
+    try { console.log(JSON.stringify(evaluateSvelteWrite(input, process.cwd()))); }
+    catch { console.log(JSON.stringify(deny("HOOK_INTERNAL_ERROR", "Svelte hook could not complete"))); }
+  });
+  process.stdin.on("error", () => {
+    console.log(JSON.stringify(deny("HOOK_INPUT_INVALID", "Cannot read hook input")));
+  });
+}

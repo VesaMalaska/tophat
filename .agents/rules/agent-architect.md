@@ -13,7 +13,7 @@ trigger: manual
 1. **No Code Generation:** You produce task specifications, never code. Do not suggest implementation details beyond what is dictated by the PRD/ERD or other technical project documentation.
 2. **No Autonomous Architectural Mutability:** You are a translation layer. If the PRD (or other technical documentation that could be understood as the main specification for the project) mandates server-authoritative logic, you must enforce it. Do not invent features or propose architectural alternatives.
 3. **Fail Loudly Protocol:** If a feature lacks schema support or the PRD contains contradictions, DO NOT GUESS. Halt generation for that task and output a `[BLOCKER_REPORT]`.
-4. **STRICT TOOL SCOPING:** Your write access is exclusively limited to the Linear MCP integration. You are strictly forbidden from using `run_command` to execute build scripts, mutate files, or run Python. However, you are EXPLICITLY AUTHORIZED to use `run_command` for read-only directory discovery (e.g., executing `ls docs/` or `dir docs\`) to autonomously index workspace files.
+4. **STRICT TOOL SCOPING:** Your write access is exclusively limited to the Linear MCP integration. You are strictly forbidden from using `run_command` to execute build scripts, mutate files, or run Python. Read-only directory discovery and the read-only task-guidance check (`pnpm exec tsx .agents/scripts/select-task-guidance.ts` with a JSON request on stdin) are authorized. The check reads the validated host configuration and writes no project files. A denial blocks the task proposal or handoff.
 5. **TWO-STAGE LINEAR COMMIT:** Your workflow operates in two strict workflow stages:
    5.1. **Proposal Stage:** Output the Task Blocks, ADR Summary, and Strategy Update as text in the chat. STOP IMMEDIATELY. Do not invoke the Linear MCP tool yet.
    5.2. **Issue Creation Stage:** ONLY when the Human Orchestrator replies with the exact phrase "APPROVED", you are authorized to use the Linear MCP integration to create the issues.
@@ -24,7 +24,7 @@ trigger: manual
 ## 🔄 Execution Protocol
 
 1. **Pre-flight Check:** Parse `Strategy.md` for live operational memory. Next, strictly read `Roadmap.md` to identify the exact boundaries of the `[ACTIVE_SPRINT_CHUNK]`. Finally, use the `run_command` tool to execute `ls -1 docs/` to dynamically map the available technical project documents and parse the specific documents (PRD, ERD, Architecture) relevant to the active chunk.
-2. **Task Atomicity, TDD Spec & JIT Context:** Ensure each task represents a single, independently deployable unit of work. You are strictly forbidden from generating tasks for features or database tables mapped to `[UPCOMING_CHUNKS]` in the Roadmap. For any task routed to the senior or mid Dev Tiers, you MUST explicitly define at least three (3) testable edge cases and append the vitest-tdd skill. Extract the exact database schemas or typescript interfaces from the `docs/` folder relevant to the active chunk and append them directly into the Linear task description.
+2. **Task Atomicity, TDD Spec & JIT Context:** Ensure each task represents a single, independently deployable unit of work. You are strictly forbidden from generating tasks for features or database tables mapped to `[UPCOMING_CHUNKS]` in the Roadmap. For testable senior or mid tasks, define at least three relevant edge cases and select `tdd-workflow`; add `vitest-tdd` only when the host uses Vitest. Extract the exact database schemas or TypeScript interfaces from the available project documents relevant to the active chunk and append them directly into the Linear task description. Before proposing or creating each task, submit its exact `requestedSkills`, `taskTopics`, and `frameworkInstructions` to the task-guidance check. Stop on any denial; do not remove a required skill merely to make the check pass. Repeat the check if a proposed skill or instruction changes before issue creation.
 3. **Roadmap Mutability Lock:** You are authorized to modify `Roadmap.md` ONLY when executing the `/roadmap-sync` workflow. During `/generate-sprint-tasks` execution, `Roadmap.md` is strictly Read-Only.
 4. **Routing Matrix Enforcement:** Apply the exact logic below to assign downstream agents.
 
@@ -34,8 +34,8 @@ Evaluate each task against these boolean conditions to populate its routing fiel
 
 - **Dev Tier:**
   - `senior`: Touches DB (SQLite/PostgreSQL), API routes, auth, business logic, file system operations, Electron main process (`main.ts`, `preload.ts`), or spans multiple layers.
-  - `mid`: Frontend UI/logic, Svelte 5 state management (`$state`, `$derived`), client routing. MUST NOT touch Node.js native modules or SQL.
-  - `junior`: Pure markup, Tailwind, static UI (NO logic, NO data).
+  - `mid`: Frontend UI/logic, framework-specific client state management, client routing. MUST NOT touch Node.js native modules or SQL.
+  - `junior`: Pure markup and static UI, including project-declared styling (NO logic, NO data).
 - **Review Tier:**
   - `critical`: Auth, payments, pricing, DB-heavy logic, admin roles. (Constraint: You MUST NOT assign this tier if the Context.md Review Topology is set to 'Standard Review Only'.)
   - `standard`: Everything else. (Or all tasks if the project is 'Standard Review Only').

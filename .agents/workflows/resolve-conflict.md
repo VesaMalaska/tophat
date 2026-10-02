@@ -1,5 +1,5 @@
 ---
-description: Resolves git merge conflicts on an active feature branch by pulling origin/main, analyzing conflict markers, and verifying via Vitest.
+description: Resolves git merge conflicts on an active feature branch and verifies with the host's declared checks.
 ---
 
 **Steps:**
@@ -18,8 +18,7 @@ description: Resolves git merge conflicts on an active feature branch by pulling
    - Preserve the functional contracts of both the incoming `main` changes and the current task implementation.
    - Remove all git conflict markers and write the resolved files using the `replace_file_content` tool.
 6. **Validation Gate (Mandatory):**
-   - Run `pnpm vitest run` to ensure the merged codebase passes all existing unit tests.
-   - Run `pnpm check` and `pnpm lint` to ensure syntax integrity.
+   - Run the host project's declared unit, typecheck, and lint scripts when applicable. Do not assume Vitest or fixed script names. The shared gate executor arrives in Slice 3.
 7. **Post-Flight Automation:**
    - Run `git add .`
    - Run `git commit -m 'chore(git): resolve merge conflicts with main for {{args[0]}}'`

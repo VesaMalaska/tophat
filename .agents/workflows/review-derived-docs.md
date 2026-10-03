@@ -1,0 +1,13 @@
+---
+description: Independent read-only document review bound to the finalized documentation candidate.
+---
+
+The orchestrator captures a clean candidate before review and verifies it afterward, including on rejection/failure. Use the existing independent read-only review responsibility and configured review model; do not create a writer/reviewer execution exception.
+
+Review exact approved source references, realized implementation/accepted task evidence, target operations and claim checks. Complete every checklist item from `reviewChecklist` in `validate-derived-docs.ts`: authority correspondence; realized behavior; coverage; setup/configuration; operations/usage; links/examples/screenshots; superseded guidance; private orchestration leakage; and SVG active content when applicable.
+
+Audit SVG scripts, event handlers, unsafe external references and embedded active/XSS content explicitly. A filename/extension does not prove safety. Public guides cannot depend on private roadmaps, agent handoffs, model routing or Linear state. Do not use a blanket TopHat keyword ban when the host product legitimately documents TopHat.
+
+Review a no-change assessment with equal coverage scrutiny. Material claims cannot pass through a prose-only assertion: examine actual supplied artifacts/procedures and applicable verification. Missing necessary evidence is BLOCKED. Realization/authority conflict is DOCUMENTATION_AUTHORITY_CONFLICT.
+
+Return APPROVED, CHANGES_REQUIRED or BLOCKED with exact candidate identity, checklist and findings. Do not edit documents/product/config/receipts, execute commands or mutate Git/Linear/private state. The orchestrator binds the independent receipt to the final nonrecursive candidate fingerprint after postcheck. Reviewer cannot edit and approve their own correction.

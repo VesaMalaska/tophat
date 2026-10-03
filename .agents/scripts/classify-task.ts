@@ -1,7 +1,8 @@
 import { readFileSync, existsSync } from "node:fs";
-import { loadTophatConfig, validationCategories, type ValidationCategory } from "./load-tophat-config.ts";
+import { loadTophatConfig, parseTophatConfig, validationCategories, type ValidationCategory } from "./load-tophat-config.ts";
+import { git } from "./inspect-workspace-attachment.ts";
 import { selectTaskGuidance, type TaskGuidanceRequest } from "./select-task-guidance.ts";
-import { validateTaskAuthority, type TaskAuthorityRequest } from "./validate-task-authority.ts";
+import { validateTaskAuthority, authorityContextFromSource, type TaskAuthorityRequest } from "./validate-task-authority.ts";
 import { strictJson, canonical, digest, safePath, isMain, DocFailure } from "./validate-doc-package.ts";
 
 export class WorkflowError extends Error {
@@ -60,6 +61,7 @@ export interface TaskClassification {
   schemaVersion: 1; taskId: string; authority: TaskAuthorityRequest; guidance: TaskGuidanceRequest;
   workKinds: string[]; userEffects: string[]; noUserFacingReason: string | null;
   validationCategories: ValidationCategory[]; acceptanceChecks: AcceptanceCheck[]; declaredRouting?: Routing;
+  immediateDocumentation?: { required: boolean; reason: string | null; rationale: string | null };
 }
 export interface Routing {
   devTier: "junior" | "mid" | "senior"; reviewTier: "standard" | "critical";
@@ -67,9 +69,15 @@ export interface Routing {
 }
 export interface Classified extends Routing { status: "ROUTING_VALID"; issues: []; taskFingerprint: string; capabilities: readonly string[]; task: TaskClassification }
 
-export function classifyTask(root: string, input: unknown): Classified {
+/** Historical inspection is internal and binds its inputs to a real local commit. CLI remains live-chunk only. */
+export function classifyTask(root: string, input: unknown, historicalCommit?: string): Classified {
   const v = record(input, "task");
-  fields(v, ["schemaVersion", "taskId", "authority", "guidance", "workKinds", "userEffects", "noUserFacingReason", "validationCategories", "acceptanceChecks"], ["declaredRouting"]);
+  fields(v, ["schemaVersion", "taskId", "authority", "guidance", "workKinds", "userEffects", "noUserFacingReason", "validationCategories", "acceptanceChecks"], ["declaredRouting", "immediateDocumentation"]);
+  if (v.immediateDocumentation !== undefined) {
+    const d = record(v.immediateDocumentation, "immediate documentation"); fields(d, ["required", "reason", "rationale"]);
+    if (typeof d.required !== "boolean" || (d.required ? !["safe-operation", "continued-development", "migration", "configuration", "compatibility"].includes(d.reason as string) : d.reason !== null || d.rationale !== null)) fail("TASK_CLASSIFICATION_INVALID", "Invalid immediate-document declaration");
+    if (d.required) text(d.rationale);
+  }
   if (v.schemaVersion !== 1 || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(text(v.taskId))) fail("TASK_CLASSIFICATION_INVALID", "Unsupported version or task ID");
   const kinds = strings(v.workKinds, workKinds, true), effects = strings(v.userEffects, userEffects, true);
   const noUI = effects.includes("no-user-facing-change");
@@ -77,7 +85,12 @@ export function classifyTask(root: string, input: unknown): Classified {
     fail("TASK_CLASSIFICATION_INVALID", "Contradictory user effects");
   if (noUI) text(v.noUserFacingReason);
   const config = loadTophatConfig(root);
-  const authority = validateTaskAuthority(root, v.authority);
+  if (historicalCommit) {
+    commitSha(historicalCommit);
+    const old = parseTophatConfig(git(root, ["show", `${historicalCommit}:.agents/tophat.config.json`]));
+    if (canonical(old) !== canonical(config)) fail("DOCUMENTATION_EVIDENCE_STALE", "Historical config requires explicit reconciliation");
+  }
+  const authority = validateTaskAuthority(root, v.authority, historicalCommit ? authorityContextFromSource(git(root, ["show", `${historicalCommit}:Roadmap.md`])) : undefined);
   if (authority.status !== "AUTHORITY_VALID") fail(authority.issues[0]?.code ?? "TASK_CLASSIFICATION_INVALID", authority.issues.map(x => x.message).join("; "));
   const guidance = record(v.guidance, "guidance"); fields(guidance, ["requestedSkills", "taskTopics", "frameworkInstructions"]);
   for (const key of Object.keys(guidance)) strings(guidance[key]);
@@ -90,7 +103,7 @@ export function classifyTask(root: string, input: unknown): Classified {
   if (kinds.some(k => k.startsWith("electron-")) && !config.capabilities.includes("electron")) fail("ROUTING_METADATA_CONFLICT", "Electron work requires Electron workspace");
   if (kinds.includes("client-logic") && !config.capabilities.some(c => ["web-ui", "renderer-ui"].includes(c))) fail("ROUTING_METADATA_CONFLICT", "Client work requires UI capability");
   const categories = strings(v.validationCategories, validationCategories) as ValidationCategory[];
-  const pkg = record(inputJson(readFileSync(safePath(root, "package.json"), "utf8")), "package.json");
+  const pkg = record(inputJson(historicalCommit ? git(root, ["show", `${historicalCommit}:package.json`]) : readFileSync(safePath(root, "package.json"), "utf8")), "package.json");
   const scripts = record(pkg.scripts, "scripts");
   for (const category of [...new Set([...config.validation.commitGate, ...categories])]) {
     const name = config.validation.scripts[category];

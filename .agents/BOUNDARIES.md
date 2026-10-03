@@ -1,4 +1,4 @@
-# TopHat boundary registry — through Slice 6
+# TopHat boundary registry — through Slice 7
 
 This registry distinguishes current mechanisms from instructions and planned work. A registered hook is not automatically a reliable fail-closed control.
 
@@ -22,7 +22,10 @@ This registry distinguishes current mechanisms from instructions and planned wor
 | QA evidence and publication readiness | Deterministic consistency check when invoked | Exact candidate, latest supplied attempts/stages, criterion/method coverage and artifact/runner-log integrity. Every later commit invalidates QA, including private-state commits. Receipts do not authenticate identity, actual execution, complete history, or consent; arbitrary publication can bypass invocation. |
 | QA product-code read-only boundary | Instructed plus postcondition detection | Explicit artifact outputs, bounded pre/post snapshots and reported operation checks; surviving writes or observed forbidden operations reject the result. No OS sandbox, invisible-command proof or physical IDE prevention. Separate developer remediation and independent re-QA are required. |
 | PM/Sprint Briefing | Instructed plus externally supervised detection | No command/file/Git/HUD/Linear mutation exception. Orchestrator captures/verifies outside PM session. Failed/unavailable inspection is visibly unverified. Tested host interception/workflow identity remains unproven, so no role hook is registered. |
-| Agent context restrictions and writer boundary | Instructed | No physical read sandbox is claimed. The bounded writer lifecycle remains Slice 7. |
+| Derived documentation lifecycle | Deterministic consistency/readiness checks when invoked | Phase/completion reports require integrated task evidence, unchanged authority/config, exact safe plan, independent document review/checks/claim verification and current candidate. No-change is explicit; immediate mode cannot accept a phase. Receipts do not authenticate consent, identity, execution or complete membership/history. |
+| Technical writer | Instructed plus externally supervised detection | No command/Git/Linear/product/authority/private-state mutation. Git/filesystem comparison rejects surviving or reported forbidden actions, but no physical IDE interception/read sandbox/invisible-action proof or automatic rollback exists. SVG active content remains independent semantic review. |
+| Document publication | Explicit invoked workflow gate | Documentation-only candidates start from accepted integrated tasks and contain only authorized derived diffs; combined candidates retain fresh Slice 6 task evidence. Later commits invalidate readiness; historical approval is not refreshed QA. No server-enforced GitHub publication policy. |
+| Agent context restrictions | Instructed | No physical read sandbox is claimed. |
 | Git mutation safety | Instructed | Existing Git workflows contain instructions and commands; a shared physical preflight is Slice 8. |
 | Workflow postcondition checks | Detection where actually performed | A diff or state audit can reject a result after a mutation; it does not prevent that mutation. Later slices must record both separately. |
 

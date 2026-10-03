@@ -9,3 +9,9 @@ description: Publish the exact evidenced feature head for human review after a r
 5. Return the PR URL for independent review and separate explicit human merge approval. This workflow creates the PR; it does not authorize or execute a merge.
 
 Helpers validate supplied evidence consistency when invoked. They do not intercept arbitrary GitHub, Git, terminal or agent actions, authenticate reviewers, or prove actual human consent.
+
+## Explicit documentation-only transaction
+
+The orchestrator may select documentation mode only for a declared `/sync-derived-docs` or `/verify-project-docs` candidate from accepted integrated task work. This does not accept the phase early. Use `validate-derived-docs.ts` operation readiness on the exact closed document receipt/latest-attempt index. Require DOCUMENTATION_READY and approvalAllowed. The baseline ancestry and entire baseline-to-candidate diff must match the authorized derived plan, with passing independent document review, protected-state seal, applicable validation and claim verification. Do not infer this mode from file extensions or commit messages.
+
+Recheck immediately before publication. Open the exact-head PR for the identity's explicit expectedBase and verify returned head/base using `verifyDocumentPR`. Any failure/race halts without destructive repair. No automatic merge or post-review state commit. Combined product/documentation PRs use the existing task gate above, with fresh exact-HEAD route/security/QA evidence after the documentation commit. Old task QA remains historical; it is not automatically refreshed by document review.

@@ -50,3 +50,7 @@ You must NEVER output freeform text for a task description. During the Proposal 
 ## Stable authority and publication precondition
 
 Every task includes package provenance, stable phase/chunk IDs, active scope IDs, typed authority references and exact source extracts. Execute validate-task-authority before proposal and immediately before approved Linear creation/amendment. Require AUTHORITY_VALID; source gaps, stale provenance, wrong-kind/inactive/out-of-scope references or altered extracts halt. Code, logs, root private ADRs and Context constraints cannot invent requirements. Source selection/semantic completeness and obeying gate invocation remain instructed boundaries.
+
+## Derived documentation lifecycle
+
+Use `.agents/docs/derived-documentation.md`. Propose complete stable phase/task membership and approved source trace; do not infer phase closure from Linear labels. Classify immediate documentation necessity before task fingerprinting. The technical writer edits only an exact human-authorized derived plan and never authority/product/private state. `/roadmap-sync` halts at a phase boundary until validated document acceptance; `/verify-project-docs` and explicit final human acceptance follow all phases. Conflicts require human resolution.

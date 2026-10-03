@@ -50,7 +50,7 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
   - **Recommended Model:** Claude Opus (Uses semantic mapping of the approved package).
 - `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
   - **Recommended Model:** Claude Opus (Requires high adversarial precision to prevent data loss).
-- `/generate-readme`: Disabled legacy rewrite path until Slice 7 provides the bounded derived-document responsibility.
+- `/generate-readme`: Retired autonomous rewrite; use the explicit derived-document lifecycle.
   - **Recommended Model:** Gemini Pro High (Required for advanced cross-referencing and rigid template adherence).
 
 ### Standard Automation Workflows
@@ -250,7 +250,7 @@ The published package schema must match `.agents/schemas/doc-manifest.schema.jso
 
 Every source item is declared in the manifest and has one literal anchor line, e.g. `<a id="REQ-001"></a>`. Horizontal whitespace around anchor syntax is accepted; examples in backtick/tilde fences do not count. Source text runs to the next declared anchor or EOF. Tasks reference document-id#item-id, include exact source blocks and match the active chunk's private JSON authorityContext. Only CRLF/LF transport normalization is permitted for extracts. Semantic relevance/completeness still requires review.
 
-Authoritative hashes use exact bytes. The **authority fingerprint** binds manifest metadata, schema and authoritative bytes; it is recorded in the approved manifest and task/roadmap provenance. The **candidate fingerprint** additionally binds entry-guide/derived bytes for definition review and finalization. Ordinary derived-byte edits do not invalidate unchanged authority, but do stale a definition review candidate. Approved authority edits require new package version, fresh independent review and matching explicit human approval. Later derived synchronization is Slice 7.
+Authoritative hashes use exact bytes. The **authority fingerprint** binds manifest metadata, schema and authoritative bytes; it is recorded in the approved manifest and task/roadmap provenance. The **candidate fingerprint** additionally binds entry-guide/derived bytes for definition review and finalization. Ordinary derived-byte edits do not invalidate unchanged authority, but do stale a definition review candidate. Approved authority edits require new package version, fresh independent review and matching explicit human approval. Derived synchronization follows the bounded Slice 7 lifecycle.
 
 Receipts establish recorded consistency; they cannot authenticate a human or prove that a recorded approval genuinely occurred. An already human-approved package can validate without using the optional definition stage. Gate invocation, source selection and exact Linear handoff are instructed behavior; no physical planning/IDE interception or read sandbox is claimed. The local native Git gate retains its Slice 3 installation/bypass limits. The parser bounds JSON nesting at 128 levels and denies deeper input instead of risking uncontrolled recursion.
 
@@ -325,3 +325,11 @@ QA records the exact commit/build/environment, controlled test data, criterion m
 PM/Sprint Briefing performs file/MCP reads and advisory output only. It executes no shell, tests, builds, Git, helper or HUD/task mutation. The orchestrator captures and verifies state outside that session and applies human-selected follow-up separately. Review/QA do not fix product code; developers remediate, then independent applicable review/security/QA repeats.
 
 See `.agents/docs/task-routing-and-qa.md` for exact JSON interfaces, evidence custody, failure behavior, inspection limits and examples. These are deterministic checks when invoked plus instructed role boundaries and postcondition detection. No physical Antigravity interception, reviewer authentication, invisible-operation audit or OS sandbox is claimed.
+
+## Derived documentation lifecycle
+
+At every Development Phase boundary, `/sync-derived-docs` evaluates declared host documentation and produces bounded changes or a reviewed explicit no-change outcome. `/verify-project-docs` independently verifies the current final handoff. Ordinary tasks/chunks do not trigger synchronization; fingerprinted immediate necessities are narrow exceptions and never accept the enclosing phase.
+
+The technical writer edits only an exact human-approved plan within validated derived targets. It cannot run commands or change product code/tests/config, authority, package infrastructure or private orchestration. A separately authorized orchestrator captures/verifies the session, runs host-declared checks, persists external evidence and publishes. The independent document reviewer checks correspondence, coverage, links/examples and private leakage, including SVG active content. These are instructed boundaries with deterministic postcondition/readiness checks when invoked, not an OS sandbox or verified Antigravity role hook.
+
+Documentation-only PRs have an explicit candidate-bound review/check/claim-evidence gate from accepted integrated task work. Combined product/documentation PRs retain fresh Slice 6 exact-HEAD QA after documentation commits. Old QA is historical, never refreshed implicitly. Phase/final acceptance and PR merge each require explicit human approval. No post-review private-state commit chain is automatic. See [.agents/docs/derived-documentation.md](.agents/docs/derived-documentation.md) for exact interfaces, limits and custody.

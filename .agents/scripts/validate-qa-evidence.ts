@@ -38,7 +38,7 @@ function positive(value: unknown): number { if (!Number.isSafeInteger(value) || 
 function exactIds(actual: string[], expected: string[], code = "QA_EVIDENCE_INVALID"): void {
   if (new Set(actual).size !== actual.length || fingerprint([...actual].sort()) !== fingerprint([...expected].sort())) fail(code, "Missing, duplicate or foreign evidence IDs");
 }
-function checkedReport(value: unknown): QAReport {
+export function checkedReport(value: unknown): QAReport {
   const v = record(value, "QA report"); fields(v, ["schemaVersion", "identity", "environment", "methodResults", "criteria", "commands", "artifacts", "findings", "preflight", "postflight", "reviewer", "startedAt", "completedAt", "verdict"]);
   if (v.schemaVersion !== 1 || !["APPROVED", "CHANGES_REQUIRED", "BLOCKED"].includes(v.verdict as string)) fail("QA_EVIDENCE_INVALID", "Unsupported QA report");
   const id = record(v.identity, "identity"); fields(id, ["taskId", "attemptId", "sequence", "taskFingerprint", "expectedBranch", "testedCommit"]);
@@ -102,7 +102,7 @@ function attempts(value: unknown, current: QAReport): void {
   const last = entries.at(-1) as { attemptId: string; reportSha256: string };
   if (last.attemptId !== v.currentAttempt || last.attemptId !== current.identity.attemptId || last.reportSha256 !== fingerprint(current)) fail("QA_APPROVAL_STALE", "Selected report is not the latest recorded attempt");
 }
-function verification(value: unknown, before: RoleCapture): RoleVerification {
+export function verification(value: unknown, before: RoleCapture): RoleVerification {
   const v = record(value, "postflight"); fields(v, ["schemaVersion", "status", "issues", "before", "after", "observedOperations", "unchangedProtectedState", "postconditionFingerprint"]);
   const { postconditionFingerprint: fp, ...body } = v;
   if (fp !== fingerprint(body) || fingerprint(v.before) !== fingerprint(before)) fail("POSTCONDITION_UNVERIFIED", "Postflight is missing or tampered");
@@ -143,12 +143,12 @@ function validation(root: string, value: unknown, route: Classified, commit: str
   if (v.status === "PASSED" ? !passed || v.decision !== "allow" : v.status !== "FAILED" || v.decision !== "deny") fail("QA_EVIDENCE_INVALID", "Validation verdict contradicts outcomes");
   text(v.code); text(v.reason); return { allPassed: v.status === "PASSED" };
 }
-export function validateQAEvidence(root: string, input: unknown): EvidenceResult {
+export function validateQAEvidence(root: string, input: unknown, historicalCommit?: string): EvidenceResult {
   try {
     const v = record(input, "QA request"); fields(v, ["schemaVersion", "operation", "task", "report", "before", "after", "attemptIndex", "stageRecords"]);
     if (v.schemaVersion !== 1 || v.operation !== "validate") fail("QA_EVIDENCE_INVALID", "Unsupported evidence request");
-    const route = classifyTask(root, v.task), r = checkedReport(v.report), before = checkedCapture(v.before), post = verification(v.after, before);
-    if (git(root, ["rev-parse", "HEAD"]).trim() !== r.identity.testedCommit) fail("QA_APPROVAL_STALE", "Current HEAD differs from QA commit");
+    const route = classifyTask(root, v.task, historicalCommit), r = checkedReport(v.report), before = checkedCapture(v.before), post = verification(v.after, before);
+    if ((historicalCommit ?? git(root, ["rev-parse", "HEAD"]).trim()) !== r.identity.testedCommit) fail("QA_APPROVAL_STALE", "Inspected HEAD differs from QA commit");
     if (!route.qaRequired || before.declaration.role !== "qa" || r.identity.taskId !== route.task.taskId || r.identity.taskFingerprint !== route.taskFingerprint || r.preflight !== before.snapshotFingerprint || r.postflight !== post.postconditionFingerprint || r.reviewer.sessionId !== before.declaration.sessionId)
       fail("QA_EVIDENCE_INVALID", "Task/session evidence does not match");
     if (r.identity.expectedBranch !== before.declaration.expectedBranch || r.identity.testedCommit !== before.snapshot.commit || before.snapshot.branch !== r.identity.expectedBranch) fail("QA_PREFLIGHT_DENIED", "QA preflight branch/commit differs");
@@ -168,9 +168,11 @@ export function validateQAEvidence(root: string, input: unknown): EvidenceResult
     if (new Set(r.artifacts.map(a => a.path)).size !== r.artifacts.length) fail("QA_ARTIFACT_INVALID", "Duplicate artifact paths");
     const files = before.declaration.artifactRoot === null ? post.after.outputs : post.after.externalArtifacts;
     const artifactBase = before.declaration.artifactRoot === null ? root : resolve(before.declaration.artifactRoot);
-    const fresh = verifyRole(root, before.declaration, before, post.observedOperations);
-    if (fingerprint(fresh.after.outputs) !== fingerprint(post.after.outputs) || fingerprint(fresh.after.externalArtifacts) !== fingerprint(post.after.externalArtifacts)) fail("QA_ARTIFACT_INVALID", "Session outputs changed after postflight");
-    if (r.verdict === "APPROVED" && fresh.status !== "SESSION_UNCHANGED") fail("ROLE_BOUNDARY_VIOLATION", "Current protected state differs from QA candidate");
+    if (!historicalCommit) {
+      const fresh = verifyRole(root, before.declaration, before, post.observedOperations);
+      if (fingerprint(fresh.after.outputs) !== fingerprint(post.after.outputs) || fingerprint(fresh.after.externalArtifacts) !== fingerprint(post.after.externalArtifacts)) fail("QA_ARTIFACT_INVALID", "Session outputs changed after postflight");
+      if (r.verdict === "APPROVED" && fresh.status !== "SESSION_UNCHANGED") fail("ROLE_BOUNDARY_VIOLATION", "Current protected state differs from QA candidate");
+    } else if (before.declaration.artifactRoot === null) fail("QA_ARTIFACT_INVALID", "Historical QA requires preserved external artifacts");
     for (const a of r.artifacts) {
       const found = files.find(f => f.path === a.path);
       if (!found || found.sha256 !== a.sha256 || fileState(artifactBase, a.path).sha256 !== a.sha256) fail("QA_ARTIFACT_INVALID", "Artifact missing, changed or outside declared outputs");

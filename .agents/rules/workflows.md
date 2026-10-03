@@ -42,8 +42,8 @@ _Format Output:_ `[Next Action: /command-name]`
 - `/review-standard [ID]`: Validates stateless UI and frontend code against project specifications.
 - `/review-critical [ID]`: Adversarially audits load-bearing backend code for race conditions.
 - `/security-review [ID]`: Enforces OWASP Top 10 mitigation and strict RLS constraints.
-- `/qa-validate [ID]`: Evaluates edge cases, Playwright resilience, and UI degradation.
-- `/publish-pr [ID]`: Generates final PR and merges approved work.
+- `/qa-validate [ID]`: Executes the derived compatible QA profile and records exact-commit evidence.
+- `/publish-pr [ID]`: Checks exact-candidate evidence and creates the PR; merge requires separate explicit human approval.
 
 ## 🛑 Manual Implementation Sequences
 
@@ -51,14 +51,18 @@ Do NOT attempt to run implementation as an automated workflow. The Human Orchest
 
 ### Standard Implementation Sequence:
 
-1. **[Human - Model: Gemini Flash/Pro]**: `/implement-junior [ID]` | `/implement-mid [ID]` Use MCP to fetch Linear Task [ID]. Execute and push branch. (Auto-moves to `In Review: Architecture`)
-2. **[Human - Model: Claude Sonnet]**: `/review-standard [ID]` Review the active branch against the spec. (Auto-moves to `Ready for PR`)
-3. **[Human - Model: Gemini Pro]**: `/context-sync` Update the handoff state.
+1. **[Human - Model: Gemini Flash/Pro]**: `/implement-junior [ID]` Use MCP to fetch Linear Task [ID]. Execute and push branch. (Auto-moves to `In Review: Architecture`)
+2. **[Human - Model: Claude Sonnet]**: `/review-standard [ID]` Review the active branch against the spec. (Next: classified QA when required, otherwise evidence-checked readiness)
+3. Finalize intended tracked private-state updates before candidate review/QA; independent QA, when required, precedes evidence-checked publication.
 
 ### Critical Implementation Sequence:
 
-1. **[Human - Model: Gemini Pro High]**: `/implement-senior [ID]` Use MCP to fetch Linear Task [ID]. Execute and push branch. (Auto-moves to `In Review: Architecture`)
+1. **[Human - Model: from routingMatrix]**: `/implement-mid [ID]` | `/implement-senior [ID]` Use MCP to fetch Linear Task [ID]. Execute and push branch. (Auto-moves to `In Review: Architecture`)
 2. **[Human - Model: Claude Sonnet]**: `/review-critical [ID]` Adversarially review the active branch. (Auto-moves to `In Review: Security`)
 3. **[Human - Model: Claude Sonnet]**: `/security-review [ID]` Execute threat model. (Auto-moves to `In Review: QA` or `Ready for PR`)
-4. **[Human - Model: Gemini Pro High]**: `/qa-validate [ID]` (if UI involved). Validate Playwright flows. (Auto-moves to `Ready for PR`)
-5. **[Human - Model: Gemini Pro]**: `/context-sync` Update the handoff state.
+4. **[Human - Model: from routingMatrix]**: `/qa-validate [ID]` only when the classifier requires methods. Validate the exact candidate using those compatible methods; no universal Playwright route.
+5. `/publish-pr [ID]` checks the current required stage/validation/QA records; no post-QA private-state commit chain.
+
+## Routing and role evidence
+
+Use `.agents/docs/task-routing-and-qa.md` and `classify-task.ts`: junior → standard; mid/senior → critical + security. QA methods derive from observable effects. No topology/boolean bypass exists. Review/QA return read-only findings; the separate orchestrator persists records and applies external state. PM executes no command or mutation. Readiness checks and postconditions are deterministic when invoked; semantic completeness, actual independence and agent adherence remain instructed/supervised. Every later commit invalidates exact-head QA.

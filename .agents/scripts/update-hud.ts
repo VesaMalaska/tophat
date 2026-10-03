@@ -3,6 +3,7 @@ import path from "node:path";
 import { inspectDocPackage, isMain, type DocReport } from "./validate-doc-package.ts";
 import { attachmentReadiness } from "./validate-workspace-attachment.ts";
 import { reviewEvidence } from "./finalize-doc-package.ts";
+import { classifyTask, inputJson, fail } from "./classify-task.ts";
 
 export function documentationReadiness(workspaceRoot: string): { report: DocReport; reviewRequired: boolean } {
   const approved = inspectDocPackage(workspaceRoot);
@@ -26,6 +27,7 @@ export function overlayDocumentation(content: string, workspaceRoot: string): st
   return `${previous}\n\n📚 Documentation Authority\n  - State: ${state}\n  - Package: ${report.packageId ?? "Unavailable"} / ${report.packageVersion ?? "Unavailable"}\n  - Planning allowed: ${report.planningAllowed && attachment.state !== "ATTACHMENT_INVALIDATED" ? "yes" : "no"}\n  - Authority fingerprint: ${report.authorityFingerprint ?? "Unavailable"}\n  - Validation: ${report.status} at ${new Date().toISOString()}\n  - Attachment: ${attachment.state} (historical completion evidence; current authority checked separately)\n  - Attachment blockers: ${attachment.issues.join("; ") || "None recorded"}\n  - Review: ${reviewRequired ? "REVIEW REQUIRED" : "No review blocker recorded"}\n  - Blockers: ${report.issues.map(i => `${i.code}: ${i.message}`).join("; ") || (report.planningAllowed ? "None" : "Explicit matching human approval is required before planning")}\n`;
 }
 export function renderHud(args: string[], workspaceRoot = process.cwd()): string {
+if (args.includes("--sec") || args.includes("--qa")) fail("ROUTING_METADATA_CONFLICT", "Legacy HUD routing bypass flags are unsupported");
 // Zero-dependency CLI argument parser
 
 const getArg = (flag: string, fallback: string = "N/A"): string => {
@@ -35,7 +37,7 @@ const getArg = (flag: string, fallback: string = "N/A"): string => {
 
 const task = getArg("--task", "No Active Task");
 const title = getArg("--title", "Task Execution");
-const tier = getArg("--tier", "mid");
+let tier = getArg("--tier", "Unverified");
 const status = getArg("--status", "In Progress");
 const nextCmd = getArg("--next", "/sprint-briefing");
 
@@ -60,9 +62,12 @@ try {
   resolvedModel = "Config Parse Error";
 }
 
-// New Bypass Flags
-const secReq = getArg("--sec", "yes").toLowerCase();
-const qaReq = getArg("--qa", "yes").toLowerCase();
+const routingFile = getArg("--routing-file", "");
+const route = routingFile ? classifyTask(workspaceRoot, inputJson(fs.readFileSync(path.resolve(workspaceRoot, routingFile), "utf8"))) : null;
+if (route) {
+  if (args.includes("--tier") && tier !== route.devTier) fail("ROUTING_METADATA_CONFLICT", "HUD tier differs from task classification");
+  tier = route.devTier;
+}
 
 type Emojis = "🟢" | "🟡" | "⚪" | "🔴" | "➖";
 interface StageStates {
@@ -100,20 +105,9 @@ const calculateStages = (currentStatus: string): StageStates => {
       break;
   }
 
-  // INDESTRUCTIBLE BYPASS PARSER
-  const isSecSkipped =
-    secReq.includes("no") ||
-    secReq.includes("false") ||
-    secReq.includes("n/a") ||
-    secReq.includes("none");
-  const isQASkipped =
-    qaReq.includes("no") ||
-    qaReq.includes("false") ||
-    qaReq.includes("n/a") ||
-    qaReq.includes("none");
-
-  if (isSecSkipped) base.sec = "➖";
-  if (isQASkipped) base.qa = "➖";
+  if (route && !route.securityRequired) base.sec = "➖";
+  if (route && !route.qaRequired) base.qa = "➖";
+  if (!route) base = { impl: "⚪", rev: "⚪", sec: "⚪", qa: "⚪", pr: "⚪" };
 
   return base;
 };
@@ -128,6 +122,7 @@ Last Updated: ${timestamp}
   - Task: ${task} - ${title}
   - Dev Tier: ${tier}
   - Linear Status: ${status}
+  - Routing: ${route ? route.taskFingerprint : "UNVERIFIED — supply the current task classification"}
 
 🚦 Pipeline Status
   - [${stages.impl}] Implementation
@@ -135,13 +130,14 @@ Last Updated: ${timestamp}
   - [${stages.sec}] Security Audit
   - [${stages.qa}] QA Validation
   - [${stages.pr}] PR Generation
+  - Indicators reflect reported workflow status; they are not approval evidence.
 
 🚀 Immediate Next Action
   - Command: \`${nextCmd}\`
   - Model: \`${resolvedModel}\`
 
 🚧 Active Blockers
-  - None. Workspace is clean and ready.`;
+  - Publication readiness requires the evidence validator; HUD status cannot authorize publication.`;
 
 return overlayDocumentation(hudContent, workspaceRoot);
 }

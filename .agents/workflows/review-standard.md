@@ -1,17 +1,11 @@
 ---
-description: Stateless and UI code review pipeline with automated Linear rejection/approval routing.
+description: Independent read-only review-standard inspection of the exact classified candidate.
 ---
 
-**Steps:**
+1. The orchestrator fetches the taskClassification and current candidate/stage evidence. Run `node .agents/scripts/classify-task.ts` with the exact JSON on stdin; require ROUTING_VALID and that `review-standard` belongs to requiredStages. A missing legacy record, stale authority or wrong route halts. Standard and critical are alternative reviews.
+2. Invoke `@agent-review-standard` with the bounded task/source extracts, applicable skills, exact candidate commit and prior findings. Inspect only relevant code and evidence. Apply the shared understandability/change-locality checklist in `.agents/docs/task-routing-and-qa.md`. Do not change product code, tests, configuration, authority or private state; do not run Git mutation, install dependencies, or implement fixes.
+3. Return criterion-linked findings and `APPROVED`, `CHANGES_REQUIRED`, or `BLOCKED`. Re-check prior findings in this role's domain after developer remediation. Do not substitute for another required role's validation or approve your own remediation.
+4. The separate orchestrator records the latest stage receipt (sequence, taskFingerprint, inspectedCommit, role/session, verdict, findings) and verifies surviving diffs/observed operations before applying Linear/HUD state. No review agent HUD shell exception is granted.
+5. Derive the next stage with `nextStage` from the validated route. Approved critical always leads to `/security-review`; approved standard/security leads to `/qa-validate` if methods are required, otherwise publication readiness. CHANGES_REQUIRED leads to `/remediate-task`; BLOCKED requires human direction. Status labels alone do not authorize publication.
 
-1. **Initialize Task:** Invoke `@agent-review-standard`.
-2. **Instruction:** Evaluate the active branch associated with Linear Task ID `{{args[0]}}` strictly against the explicit Linear Task Acceptance Criteria and the `[GLOBAL_CONSTRAINTS]` in `Context.md`. Use the Linear MCP to check the issue's comment history. If this task was previously in 'Changes Requested', review the previous failure notes. IF the rejection originated from your architectural domain (syntax, framework alignment), verify those specific fixes. IF the rejection originated from Security or QA, do not attempt to validate their domain; simply perform your standard baseline audit to ensure the remediation did not break existing structural constraints.
-3. **Execution:** Perform a strict read-only audit. Check for framework syntax enforcement based on the active attached Skills, type safety, and UI degradation. Cross-check against the `[GLOBAL_CONSTRAINTS]`.
-4. **Post-Flight Automation:**
-   - If `[APPROVED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'In Review: QA' (or 'Ready for PR' if no QA is required). Use the Linear MCP to post your complete Findings and Matrix as a comment on the ticket.
-   - If `[CHANGES_REQUIRED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Changes Requested'. Use the Linear MCP to post your CRITICAL/MAJOR findings as a comment on the ticket.
-   - If `[BLOCKED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Blocked'. Output a `[BLOCKER_ENCOUNTERED]` payload detailing the broken environment or missing testing infrastructure, and instruct the Human Orchestrator to update `Context.md`.
-   - **HUD Radar Broadcast:** Upon transitioning the Linear task, execute `npx tsx .agents/scripts/update-hud.ts --task "{{args[0]}}" --title "[Fetched Task Title]" --tier "[Assigned Tier]" --sec "[yes or no]" --qa "[yes or no]" --status "[New Linear Status]" --next "[/qa-validate {{args[0]}}, /publish-pr {{args[0]}}, OR /remediate-task {{args[0]}}]"` via `run_command` to synchronize the Orchestrator HUD.
-5. **Handoff Resolution:** If `[APPROVED]`, look up the 'QA Required' metadata field on the active Linear Task to establish your target command:
-   - If QA is 'yes', use Linear MCP to transition to 'In Review: QA'. Output exactly: `[Next Action: /qa-validate {{args[0]}}]`.
-   - If QA is 'no', use Linear MCP to transition to 'Ready for PR'. Output exactly: `[Next Action: /publish-pr {{args[0]}}]`.
+A subsequent code correction requires a new developer commit and a fresh derived review route, then security/QA where required. Actual independence and gate invocation are supervised instructions; no physical IDE prevention is claimed.

@@ -49,3 +49,7 @@ test("example test", async () => {
 
 - Validate the "Happy Path" through the UI components.
 - You must explicitly trigger and test Error Boundaries (e.g., submitting invalid data, simulating an IPC failure) to verify the UI displays the correct error states and gracefully recovers.
+
+## Slice 6 applicability and evidence
+
+Apply this skill only when the validated task selects the corresponding web/desktop E2E method and compatible capability. QA uses existing declared test infrastructure; missing tooling is BLOCKED and does not authorize installation or source/test edits. New reusable tests belong to a separate developer task/remediation. Record exact tested commit/build, controlled data/roles, applicable states, procedures, results and artifact digests using the shared QAReport. Only the declared methods run; no universal UI QA is inferred from Node.js. Preserve main/preload/renderer/IPC boundaries in Electron; renderer framework guidance remains separate.

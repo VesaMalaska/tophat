@@ -8,7 +8,7 @@ _This section is immutable for execution agents. It dictates the architectural b
 - Backend/Data: [e.g., Supabase RLS / Firebase Firestore / SQLite]
 - Desktop/Native: [e.g., Electron IPC]
 - Localization: [e.g., i18n Required | Hardcoded UI Authorized]
-- Review Topology: [e.g., Full Critical Path | Standard Review Only]
+- Routing Authority: Closed task classification; junior → standard, mid/senior → critical + security; QA methods derive from observable effects. No topology bypass.
 - Active Antigravity Skills: [List the attached .md skill files here]
 
 ---

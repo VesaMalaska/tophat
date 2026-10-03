@@ -31,3 +31,7 @@ Before proposing, creating or amending a task, run `node .agents/scripts/validat
    - Upon receiving 'APPROVED', invoke the Linear MCP tool to create the issue using your exact Markdown description. Verify the ticket transitions to 'Todo'.
 
 Bug compilation/publication must use the current active chunk provenance. If a justified regression is outside that scope, request a human-authorized bounded roadmap adjustment first; do not widen the task or invent requirements.
+
+## Slice 6 routing precondition
+
+Every generated/amended task embeds the closed taskClassification record from `.agents/docs/task-routing-and-qa.md`. Run `node .agents/scripts/classify-task.ts` on that exact JSON before proposal and again before approved Linear handoff. Require ROUTING_VALID. Copy only derived route/method fields; a missing record or contradiction halts for reviewed amendment. Preserve the approved source/task payload. A senior smoke task always takes critical review and security; backend smoke does not imply browser QA. Private topology cannot bypass the route.

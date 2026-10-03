@@ -34,7 +34,7 @@ The swarm uses specific roles with instructed scope boundaries and selected hook
 - **@agent-review-standard:** Validates stateless UI and frontend code against project specifications.
 - **@agent-review-critical:** Adversarially audits load-bearing backend code for race conditions and data leaks.
 - **@agent-security-auditor:** Enforces OWASP Top 10 mitigation and strict Row Level Security (RLS) constraints.
-- **@agent-qa:** Follows the current QA workflow for applicable user-facing tasks. Proportionate QA method selection remains Slice 6 work.
+- **@agent-qa:** Follows the current QA workflow for applicable user-facing tasks. Methods derive from the validated task effects/capabilities; approval requires current exact-commit evidence.
 
 ---
 
@@ -87,9 +87,9 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
   - **Recommended Model:** Claude Sonnet (Cross-model validation against Gemini implementations).
 - `/security-review [ID]`: Enforces OWASP Top 10 mitigation and strict RLS constraints.
   - **Recommended Model:** Claude Sonnet (Adversarial security posture).
-- `/qa-validate [ID]`: Evaluates edge cases, Playwright resilience, and UI degradation.
+- `/qa-validate [ID]`: Applies the derived QA methods with exact-commit evidence.
   - **Recommended Model:** Gemini Pro Low (Requires Vision-enabled UI analysis).
-- `/publish-pr [ID]`: Generates final PR and merges approved work.
+- `/publish-pr [ID]`: Checks candidate evidence and creates a PR for separate human merge approval.
   - **Recommended Model:** Gemini Flash Medium (Lightweight API/CLI execution).
 
 ---
@@ -98,8 +98,8 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
 
 The swarm's memory is isolated into specific operational files:
 
-- `Roadmap.md`** & **`Strategy.md`** (Long-term Memory):** Private derived sequencing and memory. The Architect proposes changes; named authorized orchestrator steps apply them. The PM boundary is addressed fully in Slice 6.
-- `Context.md`** (Short-term Working Memory):** The live operational handoff document. It tracks the active phase and immediate blockers. Updated by agents after every completed task.
+- `Roadmap.md`** & **`Strategy.md`** (Long-term Memory):** Private derived sequencing and memory. The Architect proposes changes; named authorized orchestrator steps apply them. PM reads and advises only; separate orchestrator steps apply state.
+- `Context.md`** (Short-term Working Memory):** The live operational handoff document. It tracks the active phase and immediate blockers. Updated by authorized orchestrator steps before the candidate QA run; later commits require fresh approval.
 - `.agents/`** (The Vault):** The directory containing the active Skills (`.agents/skills/skill-1-name/SKILL.md`), Rules (`.agents/rules/*.md`), Workflows (`.agents/workflows/*.md`), and tool interception scripts.
 
 ---
@@ -117,34 +117,13 @@ These commands are run once at the beginning of a project, or immediately follow
 
 Existing projects use `/workspace-attach`, explicitly authorized `/workspace-attach-assess`, and approval-gated `/workspace-attach-finalize`. Discovery writes nothing; assessment runs only declared host scripts and checks all exits for side effects. See [attachment](.agents/docs/workspace-attachment.md) and the [record contract](.agents/templates/workspace-attachment/README.md). Missing/legacy host config is reviewed in memory, never silently migrated.
 
-### 5.2. Daily Workflow Stages
+### 5.2. Task execution and publication
 
-This is the core iterative loop for chewing through the backlog. It begins with session prep and splits into two distinct execution routes depending on the task's Dev Tier and routing constraints.
-
-**A. Session Prep (Run at the start of a sprint chunk or daily session)**
-
-1. `/generate-sprint-tasks`: The Architect JIT-compiles a batch of Linear-ready tasks for the active sprint chunk (Requires a human "APPROVED" phase-2 commit).
-2. `/sprint-briefing`: The PM Agent briefs you on sprint health and assigns the optimal Task ID to begin.
-
-**B. The Standard Route (UI, Layouts, Client State)**
-For tasks routed to `@agent-junior-dev` or `@agent-mid-dev`.
-
-1. `/implement-[tier] [ID]`: Dev Agent checks out a branch, uses the host's declared test runner where behavior is testable, implements code, commits, and pushes.
-2. `/review-standard [ID]`: Routes the branch through standard syntax and framework validation.
-3. `/context-sync`: Updates `Context.md` with the newly realized state.
-4. `/publish-pr [ID]`: Generates the final pull request.
-
-**C. The Critical Route (Backend, Database, Auth, High-Risk)**
-For tasks routed to `@agent-senior-dev`. This is an adversarial, multi-agent validation pipeline.
-
-1. `/implement-senior [ID]`: Senior Dev Agent executes secure data or server-authoritative implementation.
-2. `/review-critical [ID]`: Triggers an adversarial concurrency and state-bleeding audit.
-3. `/security-review [ID]`: The Security Auditor enforces OWASP Top 10 mitigation and strict RLS constraints.
-4. `/qa-validate [ID]`: Evaluates user-facing flows, edge cases, Playwright resilience, and error-state degradation.
-5. `/context-sync`: Updates `Context.md` with the newly realized state.
-6. `/publish-pr [ID]`: Generates the final pull request after all automated audits pass.
-
-_(Note: If a task fails ANY review stage, invoke `/remediate-task [ID]` to surgically fix the specific lines flagged by the respective agent. Upon completing all deliverables in the current chunk, run `/roadmap-sync` to advance the master timeline)._
+1. `/sprint-briefing` reads existing state/evidence and advises; it performs no command or mutation.
+2. `/generate-sprint-tasks` proposes traced tasks with a closed validated classification. Human APPROVED authorizes exact issue creation.
+3. Execute the classified developer tier. Junior takes standard review; mid/senior take critical review followed by security. Finalize intended tracked private-state synchronization before final review/QA.
+4. Run independent `/qa-validate` only when the classifier requires methods. Record the exact commit/build, criterion evidence and role postconditions. Backend/internal work may record a justified QA skip.
+5. `/publish-pr` requires the current stage/validation/QA evidence before opening the exact feature-head PR. Any later commit invalidates QA. Separate human approval authorizes merge.
 
 ### 5.3. Handling Blockers & Mid-Flight Pivots (The Emergency Brakes)
 
@@ -228,7 +207,7 @@ node .agents/scripts/install-git-hook.ts
 
 The installer denies an existing `pre-commit` hook or configured `core.hooksPath` without changing it; integrate the versioned `.agents/git-hooks/pre-commit` manually if your project already manages hooks. Installation writes to that clone's `.git/hooks/`, which Git does not version; repeat it for each clone. Verify with `git config --get core.hooksPath` (no output when unset) and inspect `.git/hooks/pre-commit`. Before treating the gate as active, make a harmless test commit with a deliberately failing declared script in a disposable clone and confirm `HEAD` does not advance. Run optional phase and completion gates explicitly with `node .agents/scripts/run-validation.ts '{"gate":"developmentPhaseGate"}'` or `'{"gate":"projectCompletionGate"}'`.
 
-Slice 2 uses the derived capabilities for framework-sensitive selection. Before a task proposal and handoff, the Architect supplies the proposed `requestedSkills`, `taskTopics`, and `frameworkInstructions` arrays as JSON on stdin to `pnpm exec tsx .agents/scripts/select-task-guidance.ts`. A `SELECTED` result permits those labels; a nonzero `DENIED` result blocks incompatible or undeclared selections. For example, a React project cannot request a Svelte skill; a Tailwind skill requires an explicit `tailwind` task topic. This check validates the proposal, not the truth of arbitrary prose in an external issue. The host must configure the vault before using it. The smoke workflow selects a web, backend, or Electron specification from the host profile; full QA classification arrives later.
+Slice 2 uses the derived capabilities for framework-sensitive selection. Before a task proposal and handoff, the Architect supplies the proposed `requestedSkills`, `taskTopics`, and `frameworkInstructions` arrays as JSON on stdin to `pnpm exec tsx .agents/scripts/select-task-guidance.ts`. A `SELECTED` result permits those labels; a nonzero `DENIED` result blocks incompatible or undeclared selections. For example, a React project cannot request a Svelte skill; a Tailwind skill requires an explicit `tailwind` task topic. This check validates the proposal, not the truth of arbitrary prose in an external issue. The host must configure the vault before using it. The smoke workflow selects a web, backend, or Electron specification from the host profile; QA classification is checked by the Slice 6 task classifier.
 
 To deploy this workflow on a fresh repository, ensure your local environment and project structure meet the following strict requirements:
 
@@ -336,3 +315,13 @@ Choose **tracked/shared** or **local/private** explicitly. Shared mode intention
 [Attachment guidance](.agents/docs/workspace-attachment.md) covers approval, baseline failures and bounded v0.8 migration. [Manual detachment](.agents/docs/workspace-detachment.md) presents exact known private paths and current hashes for human approval, then verifies preservation of product code, docs, scripts, lockfiles and history. The read-only helper never removes files. Existing/shared hooks and redirected hooksPath remain host integrations requiring separate review.
 
 Helpers enforce recorded proposal/snapshot/receipt consistency when invoked. They cannot authenticate consent or physically prevent an agent bypass. Host validation scripts are not sandboxed. Attachment assessment sets per-command time/output limits and disables automatic pnpm setup; those limits do not promise complete descendant termination or a process-memory sandbox. File application and removal are separate explicitly authorized actions, with truthful postcondition verification.
+
+## Routing, QA evidence and advisory roles
+
+Slice 6 uses one closed task classification: junior → standard review; mid/senior → critical review and security. User-facing effects derive compatible QA methods, including static styling/visual/responsive and accessibility changes; justified internal/backend-only work records QA_NOT_APPLICABLE. Independent fields or private topology cannot override the route. Model selection still comes from routingMatrix.
+
+QA records the exact commit/build/environment, controlled test data, criterion matrix, method results and intact artifacts. Publication validates the latest required records and current state; Linear/HUD status alone is not approval. Any later commit, including private-state synchronization, invalidates QA. Finalize intended tracked state before testing; publish-pr no longer writes/commits Context after QA.
+
+PM/Sprint Briefing performs file/MCP reads and advisory output only. It executes no shell, tests, builds, Git, helper or HUD/task mutation. The orchestrator captures and verifies state outside that session and applies human-selected follow-up separately. Review/QA do not fix product code; developers remediate, then independent applicable review/security/QA repeats.
+
+See `.agents/docs/task-routing-and-qa.md` for exact JSON interfaces, evidence custody, failure behavior, inspection limits and examples. These are deterministic checks when invoked plus instructed role boundaries and postcondition detection. No physical Antigravity interception, reviewer authentication, invisible-operation audit or OS sandbox is claimed.

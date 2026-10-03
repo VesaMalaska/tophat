@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { lstatSync, readFileSync, realpathSync } from "node:fs";
 import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadTophatConfig, TophatConfigError } from "./load-tophat-config.ts";
+import { loadTophatConfig, parseTophatConfig, TophatConfigError, type TophatConfig } from "./load-tophat-config.ts";
 
 export type DocMode = "approved" | "draft";
 export type DocumentationState = "DRAFT" | "AWAITING_HUMAN_APPROVAL" | "APPROVED" | "INVALIDATED";
@@ -211,11 +211,11 @@ function fingerprintMetadata(m: DocManifest): unknown {
   const { approvalStatus: _status, approvedAuthorityFingerprint: _approval, documents, ...rest } = m;
   return { ...rest, documents: documents.map(({ sha256: _hash, ...doc }) => doc) };
 }
-export function inspectDocPackage(workspaceRoot: string, mode: DocMode = "approved", proposedManifest?: Buffer): { report: DocReport; snapshot?: PackageSnapshot } {
+export function inspectDocPackage(workspaceRoot: string, mode: DocMode = "approved", proposedManifest?: Buffer, candidateConfig?: TophatConfig): { report: DocReport; snapshot?: PackageSnapshot } {
   let manifest: DocManifest | undefined;
   try {
     if (mode !== "draft" && mode !== "approved") deny("DOC_INPUT_INVALID", "mode must be draft or approved");
-    const config = loadTophatConfig(workspaceRoot), root = realpathSync(workspaceRoot);
+    const config = candidateConfig ? parseTophatConfig(JSON.stringify(Object.fromEntries(Object.entries(candidateConfig).filter(([key]) => key !== "capabilities")))) : loadTophatConfig(workspaceRoot), root = realpathSync(workspaceRoot);
     const packagePath = config.documentation.package.replace(/\/$/, "");
     if (!packagePath.startsWith("docs/") || packagePath === "docs/") deny("DOC_PATH_INVALID", "Package must be below docs/<package>", packagePath);
     const packageRoot = safePath(root, packagePath, "directory");

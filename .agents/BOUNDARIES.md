@@ -1,4 +1,4 @@
-# TopHat boundary registry — through Slice 4
+# TopHat boundary registry — through Slice 5
 
 This registry distinguishes current mechanisms from instructions and planned work. A registered hook is not automatically a reliable fail-closed control.
 
@@ -15,6 +15,9 @@ This registry distinguishes current mechanisms from instructions and planned wor
 | Task authority/source extracts | Deterministic when the task checker runs | Fresh approved authority and private chunk provenance; typed active references and exact source-block equality. Semantic relevance and exact issue handoff remain instructed; no physical prevention of agent bypass. |
 | Definition approval/finalization | Manifest publication gate when finalizer is invoked | Matching review/approval receipts, candidate fingerprint, review digest, explicit signal and ordered timestamps are required before manifest-only publication. Receipts prove recorded consistency, not human/reviewer authentication or that the event genuinely occurred. Semantic completeness/consent are human-supervised. |
 | HUD documentation state | Read-only current-state detection | Revalidates on render with polling fallback; stale approved prose cannot override checks. Temporary inaccessible files deny readiness. It does not enforce workflow execution. |
+| Attachment discovery/readiness | Read-only deterministic checks when invoked | Candidate config is inspected in memory; proposal/script/snapshot/package/approval consistency and exact application postconditions are checked. No helper writes host files; agent application is instructed and postchecked. Receipts do not authenticate consent. |
+| Attachment baseline | Authorized host execution and postcondition detection | Runs selected project pnpm scripts with timeout/output bounds and no automatic pnpm setup. Checks all exits for tracked/index/history/artifact changes. Scripts/descendants are not an OS sandbox or memory-isolated. |
+| Manual detachment | Read-only inventory plus instructed human removal | Exact current ownership/removal and preservation checks; helper never deletes. Mixed paths/hooks/exclusions require a new human decision. |
 | Agent context restrictions and role write boundaries | Instructed | No physical read sandbox is claimed. PM and writer mutation gates depend on verified host workflow identity in later slices. |
 | Git mutation safety | Instructed | Existing Git workflows contain instructions and commands; a shared physical preflight is Slice 8. |
 | Workflow postcondition checks | Detection where actually performed | A diff or state audit can reject a result after a mutation; it does not prevent that mutation. Later slices must record both separately. |

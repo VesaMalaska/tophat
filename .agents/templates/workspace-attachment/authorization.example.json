@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "proposalId": "REPLACE_WITH_ACTUAL_ID",
+  "proposalFingerprint": "REPLACE_WITH_ACTUAL_PROPOSAL_SHA256",
+  "hostSnapshotFingerprint": "REPLACE_WITH_ACTUAL_HOST_SHA256",
+  "scripts": [{"category": "unit", "script": "REPLACE_WITH_EXISTING_SCRIPT"}],
+  "human": "REPLACE_WITH_ACTUAL_HUMAN",
+  "authorizedAt": "REPLACE_WITH_ACTUAL_UTC_TIME",
+  "evidenceLocator": "REPLACE_WITH_GENUINE_COMMAND_AUTHORIZATION"
+}

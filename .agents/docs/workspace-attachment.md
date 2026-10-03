@@ -1,0 +1,29 @@
+# Existing-project attachment
+
+TopHat 1.0 supports Node >=24, TypeScript and pnpm with the declared web/backend/Electron combinations. Existing code and legacy documentation are evidence; an approved Slice 4 package governs product scope. One repository-root contract/root package scripts is the monorepo boundary; mixed profiles require a future design.
+
+Use `/workspace-attach` → `/workspace-attach-assess` → `/workspace-attach-finalize`. Keep the pinned TopHat checkout and all preapproval reports outside the host. Discovery runs fixed version/Git queries and reads bounded files, never imports host configuration or invokes scripts. Proposal and command authorization are separate; passing assessment and exact attachment approval are separate again.
+
+The proposal includes actual host snapshot, derived facts, explicit candidateConfig, current package authority/candidate fingerprints, exact ordered script bodies/category mappings, expected outputs, limits, installation/write/ownership plans and scope provenance. Duplicate/unknown JSON fields, unsafe/symlink paths and case-folded component collisions deny. Missing/null/legacy installed config does not require a temporary write: the helpers use `parseTophatConfig` and narrow internal candidate-config adapters. Normal checkers/native hooks still load installed config.
+
+Baseline categories are the first-occurrence ordered union of the three configured gates. Every selected category must pass; untouched scripts are NOT_SELECTED and checks after a failure are NOT_RUN. The helper disables pnpm automatic dependency installation/package-manager switching; prerequisites remain human setup. Per-command timeout is 1..600000 milliseconds and captured output buffer is 1024..1048576 bytes; stdout/stderr evidence is limited to 4000 characters each. Timeout/output failure is a denial. These limits do not bound total child-process memory or guarantee descendant termination; scripts remain trusted, explicitly authorized host code. Resource failures and poststate evidence are retained.
+
+A failed baseline stops at BASELINE_REQUIRES_DECISION. Preserve the old result, rationale and later result; never convert failure to success with a waiver. Human-bounded prerequisite work or legitimate policy revision requires rediscovery, renewed command authorization and a passing run. Every poststate is checked, including early script failure. Generated known untracked/ignored outputs are inventoried, not removed. Unexpected files or unreadable evidence deny. Git/output inspection detects visible effects rather than providing an OS sandbox.
+
+Snapshot bounds: 16384 tracked entries, 128 MiB aggregate tracked bytes, 32 MiB per required file; declared output inventories are bounded to 4096 files and 32 directory levels. Symlinks/submodules and oversized required inputs are explicit unsupported/incomplete evidence, never silently omitted. Node_modules/caches and arbitrary ignored files are not recursively hashed. Remote credentials are redacted. HEAD, branch, history refs, index, tracked bytes/modes, relevant untracked inputs, chosen destination files and Git hooks/exclusions are bound to the proposal. Do not place reports in the host before approval.
+
+Attachment helpers output plans and checks, not writes. The separately authorized orchestrator applies exact infrastructure/config/Context/Strategy/Roadmap/HUD bytes and generated private evidence, appends nominated exclusions and explicitly installs/verifies the Slice 3 hook. The attachment file sequence is not atomic; partial failure remains invalidated until a reviewed repair. No product changes, issue creation or Git publication are automatic. Historical ATTACHED evidence is retained after normal product/private-state evolution; current documentation validation always governs planning. Config changes invalidate that attachment setup until reassessed.
+
+## Installation mode
+
+**Tracked/shared:** intentionally version the exact TopHat/private inventory for collaboration. Publication is a separate authorized Git operation. Hook installation repeats per clone.
+
+**Local/private:** exact exclusions in `.git/info/exclude`, appended after verifying the original bytes. Preserve host rules. Never exclude docs, product paths or a mixed `.agents` directory wholesale. Ignore entries cannot hide already-tracked files; deliberate index removal is a separate decision, not attachment. Client archives may still include ignored files: verify the handoff inventory explicitly.
+
+Ownership is per file: TOPHAT_OWNED_PRIVATE, HOST_OWNED, SHARED or UNKNOWN, with human evidence and digests. A filename/prefix does not prove ownership. Private root-file collisions and legacy tool replacements require explicit ownership/backup decisions. Record exact installed inventory; evidence copies have fixed filenames and actual input digests rather than circular proposal self-hashes. The ownership record identifies itself without a self-digest.
+
+## Legacy v0.8 migration
+
+Read legacy routing-only config and missing sections without editing it. `/workspace-init` reports LEGACY_WORKSPACE_CONFIG for that shape; malformed/unsupported modern config remains an ordinary denial. Preserve existing routing entries, code, scripts, lockfile and history. Human separately prepares and approves the public package, removing only obsolete TopHat declarations while retaining product facts. Definition workflows need prepared config: use a separate prepared authoring workspace or explicitly approved host prerequisite setup, then rediscover/reassess. Never infer authority from old PRD existence.
+
+Only approved attachment finalization writes the 1.0 host config and exact proposed private state. No automated cleanup, history rewriting or v0.8 tag alteration. A shared/redirected hook requires separate reviewed integration; default attachment rejects that path. Manual detachment is documented in [workspace-detachment.md](workspace-detachment.md).

@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const activeFiles = [
+  ".agents/workflows/workspace-attach.md", ".agents/workflows/workspace-attach-assess.md", ".agents/workflows/workspace-attach-finalize.md", ".agents/docs/workspace-attachment.md", ".agents/docs/workspace-detachment.md",
   "README.md", "Strategy.md", "Roadmap.md", "Context.md", "HUD.md",
   ".agents/rules/agent-architect.md", ".agents/rules/workflows.md",
   ".agents/skills/git-linear-workflow/SKILL.md",

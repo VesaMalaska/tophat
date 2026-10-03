@@ -27,6 +27,9 @@
     "/refactor-audit": "Gemini Pro High",
     "/project-define": "Claude Opus",
     "/project-definition-review": "Claude Sonnet",
-    "/project-definition-finalize": "Claude Opus"
+    "/project-definition-finalize": "Claude Opus",
+    "/workspace-attach": "Claude Opus",
+    "/workspace-attach-assess": "Claude Opus",
+    "/workspace-attach-finalize": "Claude Opus"
   }
 }

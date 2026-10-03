@@ -62,3 +62,11 @@ _Agents update this section via /context-sync after completing their tasks._
 - Package ID / Version / Authority Fingerprint: [No configured package]
 - Last validation / review blockers: [No evidence]
 - This cache cannot authorize planning or override public product authority.
+
+## Attachment evidence (derived)
+
+- Workflow Stage: NOT_RECORDED
+- Source baseline / proposal / assessment: [No host attachment record]
+- Installation mode / ownership inventory: [Human decision required]
+- Existing failures / dispositions: [Never inferred or erased]
+- This mirror is not approval; current attachment records and documentation checks govern readiness.

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { inspectDocPackage, isMain, type DocReport } from "./validate-doc-package.ts";
+import { attachmentReadiness } from "./validate-workspace-attachment.ts";
 import { reviewEvidence } from "./finalize-doc-package.ts";
 
 export function documentationReadiness(workspaceRoot: string): { report: DocReport; reviewRequired: boolean } {
@@ -18,10 +19,11 @@ export function documentationReadiness(workspaceRoot: string): { report: DocRepo
 }
 export function overlayDocumentation(content: string, workspaceRoot: string): string {
   const { report, reviewRequired } = documentationReadiness(workspaceRoot);
+  const attachment = attachmentReadiness(workspaceRoot);
   const state = report.documentationState ?? "UNAVAILABLE — VALIDATION DENIED";
   let previous = content.replace(/\n(?:#{1,6} )?📚 Documentation Authority[\s\S]*$/, "").trimEnd();
-  if (!report.planningAllowed) previous = previous.replace(/None\. Workspace is clean and ready\./g, "Documentation readiness denied; inspect the authority report.");
-  return `${previous}\n\n📚 Documentation Authority\n  - State: ${state}\n  - Package: ${report.packageId ?? "Unavailable"} / ${report.packageVersion ?? "Unavailable"}\n  - Planning allowed: ${report.planningAllowed ? "yes" : "no"}\n  - Authority fingerprint: ${report.authorityFingerprint ?? "Unavailable"}\n  - Validation: ${report.status} at ${new Date().toISOString()}\n  - Review: ${reviewRequired ? "REVIEW REQUIRED" : "No review blocker recorded"}\n  - Blockers: ${report.issues.map(i => `${i.code}: ${i.message}`).join("; ") || (report.planningAllowed ? "None" : "Explicit matching human approval is required before planning")}\n`;
+  if (!report.planningAllowed || attachment.state === "ATTACHMENT_INVALIDATED") previous = previous.replace(/None\. Workspace is clean and ready\./g, "Documentation readiness denied; inspect the authority report.");
+  return `${previous}\n\n📚 Documentation Authority\n  - State: ${state}\n  - Package: ${report.packageId ?? "Unavailable"} / ${report.packageVersion ?? "Unavailable"}\n  - Planning allowed: ${report.planningAllowed && attachment.state !== "ATTACHMENT_INVALIDATED" ? "yes" : "no"}\n  - Authority fingerprint: ${report.authorityFingerprint ?? "Unavailable"}\n  - Validation: ${report.status} at ${new Date().toISOString()}\n  - Attachment: ${attachment.state} (historical completion evidence; current authority checked separately)\n  - Attachment blockers: ${attachment.issues.join("; ") || "None recorded"}\n  - Review: ${reviewRequired ? "REVIEW REQUIRED" : "No review blocker recorded"}\n  - Blockers: ${report.issues.map(i => `${i.code}: ${i.message}`).join("; ") || (report.planningAllowed ? "None" : "Explicit matching human approval is required before planning")}\n`;
 }
 export function renderHud(args: string[], workspaceRoot = process.cwd()): string {
 // Zero-dependency CLI argument parser

@@ -25,3 +25,11 @@ _Waiting for the Sprint Briefing workflow..._
   - Planning allowed: no
   - Review: REVIEW REQUIRED
   - Validation: run the shared package validator; this template is not evidence.
+
+## Attachment evidence (derived)
+
+- Workflow Stage: NOT_RECORDED
+- Source baseline / proposal / assessment: [No host attachment record]
+- Installation mode / ownership inventory: [Human decision required]
+- Existing failures / dispositions: [Never inferred or erased]
+- This mirror is not approval; current attachment records and documentation checks govern readiness.

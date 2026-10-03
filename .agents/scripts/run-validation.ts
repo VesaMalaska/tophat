@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  loadTophatConfig, validationCategories, type ValidationCategory,
+  loadTophatConfig, parseTophatConfig, validationCategories, type ValidationCategory,
   type TophatConfig,
 } from "./load-tophat-config.ts";
 
@@ -14,6 +14,7 @@ export type CategoryResult = {
   script: string;
   status: "PASSED" | "FAILED";
   exitStatus: number | null;
+  stdout?: string; stderr?: string; signal?: string | null;
 };
 export type ValidationReport = {
   schemaVersion: 1;
@@ -53,7 +54,8 @@ function requestCategories(request: ValidationRequest, config: TophatConfig): Va
 }
 
 /** Executes a validated, ordered host gate. Additional categories append in request order. */
-export function runValidation(request: ValidationRequest, root: string, pnpm = "pnpm"): ValidationReport {
+export interface ValidationExecutionOptions { candidateConfig?: TophatConfig; timeoutMs?: number; maxBufferBytes?: number }
+export function runValidation(request: ValidationRequest, root: string, pnpm = "pnpm", options: ValidationExecutionOptions = {}): ValidationReport {
   const report: ValidationReport = {
     schemaVersion: 1, gate: null, profile: null, categories: [], results: [],
     status: "FAILED", decision: "deny", code: "VALIDATION_REQUEST_INVALID", reason: "Invalid request",
@@ -64,7 +66,9 @@ export function runValidation(request: ValidationRequest, root: string, pnpm = "
     return report;
   };
   try {
-    const config = loadTophatConfig(root);
+    const config = options.candidateConfig ? parseTophatConfig(JSON.stringify(Object.fromEntries(Object.entries(options.candidateConfig).filter(([key]) => key !== "capabilities")))) : loadTophatConfig(root);
+    if (options.timeoutMs !== undefined && (!Number.isSafeInteger(options.timeoutMs) || options.timeoutMs < 1 || options.timeoutMs > 600000)) throw new Error("Invalid execution timeout");
+    if (options.maxBufferBytes !== undefined && (!Number.isSafeInteger(options.maxBufferBytes) || options.maxBufferBytes < 1024 || options.maxBufferBytes > 16 * 1024 * 1024)) throw new Error("Invalid output limit");
     const selected = requestCategories(request, config);
     report.gate = request.gate;
     report.profile = `${config.workspace.kind}:${config.workspace.framework}`;
@@ -99,10 +103,10 @@ export function runValidation(request: ValidationRequest, root: string, pnpm = "
 
     for (const category of selected) {
       const script = config.validation.scripts[category]!;
-      const result = spawnSync(pnpm, ["run", script], { cwd: root, encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
+      const result = spawnSync(pnpm, ["run", script], { cwd: root, encoding: "utf8", maxBuffer: options.maxBufferBytes ?? 16 * 1024 * 1024, timeout: options.timeoutMs, killSignal: "SIGKILL", ...(options.candidateConfig ? { env: { ...process.env, pnpm_config_verify_deps_before_run: "false", pnpm_config_manage_package_manager_versions: "false" } } : {}) });
       const passed = !result.error && result.status === 0;
-      report.results.push({ category, script, status: passed ? "PASSED" : "FAILED", exitStatus: result.status });
-      if (!passed) return fail(result.error ? "SCRIPT_SPAWN_FAILED" : "SCRIPT_FAILED",
+      report.results.push({ category, script, status: passed ? "PASSED" : "FAILED", exitStatus: result.status, ...(options.timeoutMs === undefined ? {} : { stdout: (result.stdout ?? "").slice(0, 4000), stderr: (result.stderr ?? "").slice(0, 4000), signal: result.signal }) });
+      if (!passed) return fail(result.error ? (result.error.code === "ETIMEDOUT" ? "SCRIPT_TIMEOUT" : result.error.code === "ENOBUFS" ? "SCRIPT_OUTPUT_LIMIT" : "SCRIPT_SPAWN_FAILED") : "SCRIPT_FAILED",
         result.error ? `Cannot start pnpm for ${category}: ${result.error.message}` :
           `${category} script ${script} exited with ${result.status}: ${(result.stderr || result.stdout || "").slice(0, 1000)}`);
     }

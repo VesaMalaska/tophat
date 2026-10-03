@@ -115,6 +115,8 @@ These commands are run once at the beginning of a project, or immediately follow
 1. `/workspace-init`: Validates the host and selected approved package, then proposes private Roadmap/Context/Strategy initialization for human authorization.
 2. If product input is incomplete, use `/project-define`, independent `/project-definition-review`, and exact-candidate human-gated `/project-definition-finalize` before initialization. The legacy `/generate-readme` workflow is disabled.
 
+Existing projects use `/workspace-attach`, explicitly authorized `/workspace-attach-assess`, and approval-gated `/workspace-attach-finalize`. Discovery writes nothing; assessment runs only declared host scripts and checks all exits for side effects. See [attachment](.agents/docs/workspace-attachment.md) and the [record contract](.agents/templates/workspace-attachment/README.md). Missing/legacy host config is reviewed in memory, never silently migrated.
+
 ### 5.2. Daily Workflow Stages
 
 This is the core iterative loop for chewing through the backlog. It begins with session prep and splits into two distinct execution routes depending on the task's Dev Tier and routing constraints.
@@ -327,19 +329,10 @@ The TopHat swarm does not have admin privileges to create workflow states in you
 
 _(Note: If these exact strings are not present in your Linear workflow settings, the agents will fail when attempting to transition tasks, halting the automated pipeline)._
 
-### 7.6. `.gitignore` Recommendations (Optional Privacy)
+### 7.6. Installation and manual detachment
 
-If you wish to keep the existence of this multi-agent workflow hidden from public repositories or client deliverables, you can add the swarm mechanics to your `.gitignore`.
+Choose **tracked/shared** or **local/private** explicitly. Shared mode intentionally versions the exact TopHat inventory. Local mode appends only reviewed per-file exclusions to `.git/info/exclude`, preserving host rules. Exclusions cannot hide already-tracked files or ensure a client archive omits them. Never exclude public docs or a mixed `.agents` directory wholesale; review the actual handoff inventory.
 
-_Architect's Warning: Gitignoring these files will lock your swarm's execution state to your current physical machine. If you clone the repo elsewhere, the automated workflow will not function until the files are manually restored._
+[Attachment guidance](.agents/docs/workspace-attachment.md) covers approval, baseline failures and bounded v0.8 migration. [Manual detachment](.agents/docs/workspace-detachment.md) presents exact known private paths and current hashes for human approval, then verifies preservation of product code, docs, scripts, lockfiles and history. The read-only helper never removes files. Existing/shared hooks and redirected hooksPath remain host integrations requiring separate review.
 
-```
-# TopHat Multi-Agent Workflow Files
-.agents/
-Context.md
-Strategy.md
-HUD.md
-Roadmap.md
-DECISIONS.md
-
-```
+Helpers enforce recorded proposal/snapshot/receipt consistency when invoked. They cannot authenticate consent or physically prevent an agent bypass. Host validation scripts are not sandboxed. Attachment assessment sets per-command time/output limits and disables automatic pnpm setup; those limits do not promise complete descendant termination or a process-memory sandbox. File application and removal are separate explicitly authorized actions, with truthful postcondition verification.

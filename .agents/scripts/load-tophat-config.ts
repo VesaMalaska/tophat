@@ -84,9 +84,9 @@ function relativePath(value: unknown, label: string, issues: string[], directory
   return path;
 }
 
-function gate(value: unknown, label: string, scripts: RecordValue, issues: string[]): ValidationCategory[] {
-  if (!Array.isArray(value) || value.length === 0) {
-    issues.push(`${label} must be a nonempty category array`);
+function gate(value: unknown, label: string, scripts: RecordValue, issues: string[], optional = false): ValidationCategory[] {
+  if (!Array.isArray(value) || (!optional && value.length === 0)) {
+    issues.push(`${label} must be ${optional ? "a" : "a nonempty"} category array`);
     return [];
   }
   const selected: ValidationCategory[] = [];
@@ -146,8 +146,8 @@ export function parseTophatConfig(source: string): TophatConfig {
       issues.push(`validation.scripts.${category} must be a package-script name`);
   }
   const commitGate = gate(validation.commitGate, "validation.commitGate", scripts, issues);
-  const developmentPhaseGate = gate(validation.developmentPhaseGate, "validation.developmentPhaseGate", scripts, issues);
-  const projectCompletionGate = gate(validation.projectCompletionGate, "validation.projectCompletionGate", scripts, issues);
+  const developmentPhaseGate = gate(validation.developmentPhaseGate, "validation.developmentPhaseGate", scripts, issues, true);
+  const projectCompletionGate = gate(validation.projectCompletionGate, "validation.projectCompletionGate", scripts, issues, true);
 
   const routingMatrix = objectAt(root.routingMatrix, "routingMatrix", issues);
   for (const [route, model] of Object.entries(routingMatrix)) {

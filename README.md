@@ -1,6 +1,6 @@
 # TopHat Multi-Agent Workflow
 
-This repository contains a reusable TopHat workflow vault for the Google Antigravity IDE. It supplies agent instructions, templates, and selected tool hooks for a human-orchestrated development process. The 1.0 foundation adds a validated workspace declaration and conditional framework guidance. Shared project-declared validation remains later work.
+This repository contains a reusable TopHat workflow vault for the Google Antigravity IDE. It supplies agent instructions, templates, and selected tool hooks for a human-orchestrated development process. The 1.0 foundation adds a validated workspace declaration, conditional framework guidance, and a shared executor for host-declared validation.
 
 ---
 
@@ -10,7 +10,7 @@ This workflow abandons the "chat-and-pray" model of standard AI coding. It opera
 
 - **Contextual Starvation:** Execution agents are instructed to use bounded Just-In-Time (JIT) task specifications. TopHat 1.0 does not physically prevent them from reading the roadmap or adjacent code.
 - **Hierarchical Orchestration:** The swarm is divided into Strategic, Execution, and Validation tiers. Agents do not brainstorm together; they execute strict handoffs via the `Context.md` state file.
-- **Validation evidence:** Existing hooks intercept selected tool calls, while reviews are workflow instructions. The v0.8.0 commit gate currently runs `pnpm check` and `pnpm lint`, conditionally adds build and smoke commands, and does not run Vitest. Fail-closed behavior and project-declared pnpm execution are later 1.0 work.
+- **Validation evidence:** A native Git `pre-commit` hook, when explicitly installed in a configured host, runs the declared `commitGate`. Other gates run when their workflow invokes the shared executor. The IDE hook registry is unverified in the tested standalone IDE and is not the commit boundary.
 
 ---
 
@@ -177,14 +177,11 @@ Instead, pull the diagnostic emergency brake by initiating `/triage-bug`. This t
 
 ---
 
-## 6. Active Tool Guardrails (`hooks.json`)
+## 6. Validation and tool guardrails
 
-The IDE registers these tool hooks. Their current error handling is not yet uniformly fail-closed; see [the boundary registry](.agents/BOUNDARIES.md):
+The native Git hook runs `.agents/scripts/run-validation.ts` before a commit when installed. It verifies the configured categories and host `package.json` scripts before executing `pnpm run <script-name>` in declared order. A missing script, failed command, unreadable config, or tracked-file mutation during validation denies the commit. A passing report identifies the pre-commit snapshot and the existing `HEAD`; it does not claim that a new commit already exists. Git's `--no-verify`, an uninstalled hook, or a different `core.hooksPath` bypasses this local gate.
 
-- `context-io-gate`**:** Uses a lock file to coordinate writes to `Context.md` when its hook receives supported input and the filesystem operation succeeds.
-- `static-analysis-gate`**:** Intercepts supported `git commit` tool calls and conditionally runs hard-coded checks. It does not run Vitest or guarantee fail-closed behavior in every error path. Slice 3 replaces this with project-declared validation.
-- `protect-strategy-memory`**:** Intercepts selected writes to strategic memory files; its error paths still need the Slice 3 fail-closed refinement.
-- `enforce-svelte-runes`**:** Statically registered; reads the validated host config before each supported write. It denies legacy syntax on applicable Svelte writes, explicitly skips valid non-Svelte workspaces, and denies invalid config or hook input. Other hook error paths remain pending Slice 3.
+`.agents/hooks.json` also declares IDE handlers for locks, protected writes, and Svelte syntax. Their scripts deny malformed calls and errors when invoked. A live test of a correctly shaped `PreToolUse` command hook in standalone Antigravity IDE v2.5.5 did not invoke it, so registration alone does not prove these handlers intercept writes. See [the boundary registry](.agents/BOUNDARIES.md) for their exact status. The obsolete post-command static analysis handler has been removed.
 
 ---
 
@@ -217,9 +214,17 @@ These are replacement fields inside the existing config, not another configurati
 
 Set `workspace.kind` and `workspace.framework` to one of: `web` with `svelte`, `sveltekit`, `react`, or `nextjs`; `backend` with `none`; or `desktop` with `svelte`, `react`, or `none`. Capabilities are derived from this pair and cannot be declared independently. `documentation.package` is a workspace-relative directory, `documentation.manifest` is a relative file within it, and `documentation.derivedTargets` lists explicit relative files or directories outside private TopHat state. Structural validation here does not approve or verify the package; that is Slice 4.
 
-Map any selected validation category to a **package-script name**, not a shell command. Allowed categories are `typecheck`, `lint`, `unit`, `coverage`, `integration`, `build`, `smoke`, `e2e`, and `documentation`; declare nonempty `commitGate`, `developmentPhaseGate`, and `projectCompletionGate` arrays in execution order. Slice 1 validates the declarations but does not run the scripts. The TopHat repository's own `pnpm test:tophat` command uses Node 24's built-in TypeScript type stripping and is separate from host-project validation. It executes tests but does not type-check them.
+Map any selected validation category to a **package-script name**, not a shell command. Allowed categories are `typecheck`, `lint`, `unit`, `coverage`, `integration`, `build`, `smoke`, `e2e`, and `documentation`. `commitGate` must be nonempty; `developmentPhaseGate` and `projectCompletionGate` must be arrays and may be empty to request an explicit `SKIPPED_NOT_APPLICABLE` report. Selected categories must map to scripts present in the host `package.json`. The project owns the test runner, coverage provider, exclusions, and thresholds. The TopHat repository's own `pnpm test:tophat` uses Node 24's TypeScript type stripping and is separate from host validation; it does not type-check tests.
 
-Slice 2 uses the derived capabilities for framework-sensitive selection. Before a task proposal and handoff, the Architect supplies the proposed `requestedSkills`, `taskTopics`, and `frameworkInstructions` arrays as JSON on stdin to `pnpm exec tsx .agents/scripts/select-task-guidance.ts`. A `SELECTED` result permits those labels; a nonzero `DENIED` result blocks incompatible or undeclared selections. For example, a React project cannot request a Svelte skill; a Tailwind skill requires an explicit `tailwind` task topic. This check validates the proposal, not the truth of arbitrary prose in an external issue. The host must configure the vault before using it. The smoke workflow selects a web, backend, or Electron specification from the host profile; actual project-declared validation execution and full QA classification arrive later.
+After configuring the host and its pnpm scripts, run **from its repository root**:
+
+```bash
+node .agents/scripts/install-git-hook.ts
+```
+
+The installer denies an existing `pre-commit` hook or configured `core.hooksPath` without changing it; integrate the versioned `.agents/git-hooks/pre-commit` manually if your project already manages hooks. Installation writes to that clone's `.git/hooks/`, which Git does not version; repeat it for each clone. Verify with `git config --get core.hooksPath` (no output when unset) and inspect `.git/hooks/pre-commit`. Before treating the gate as active, make a harmless test commit with a deliberately failing declared script in a disposable clone and confirm `HEAD` does not advance. Run optional phase and completion gates explicitly with `node .agents/scripts/run-validation.ts '{"gate":"developmentPhaseGate"}'` or `'{"gate":"projectCompletionGate"}'`.
+
+Slice 2 uses the derived capabilities for framework-sensitive selection. Before a task proposal and handoff, the Architect supplies the proposed `requestedSkills`, `taskTopics`, and `frameworkInstructions` arrays as JSON on stdin to `pnpm exec tsx .agents/scripts/select-task-guidance.ts`. A `SELECTED` result permits those labels; a nonzero `DENIED` result blocks incompatible or undeclared selections. For example, a React project cannot request a Svelte skill; a Tailwind skill requires an explicit `tailwind` task topic. This check validates the proposal, not the truth of arbitrary prose in an external issue. The host must configure the vault before using it. The smoke workflow selects a web, backend, or Electron specification from the host profile; full QA classification arrives later.
 
 To deploy this workflow on a fresh repository, ensure your local environment and project structure meet the following strict requirements:
 

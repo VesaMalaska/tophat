@@ -8,6 +8,8 @@ const activeFiles = [
   ".agents/skills/git-linear-workflow/SKILL.md",
   ".agents/workflows/generate-sprint-tasks.md", ".agents/workflows/refactor-audit.md",
   ".agents/workflows/workspace-init.md",
+  ".agents/workflows/project-define.md", ".agents/workflows/project-definition-review.md",
+  ".agents/workflows/project-definition-finalize.md", ".agents/rules/project-definition.md",
 ];
 
 test("active templates and instructions have no Epic tier or numbered operational Phase", () => {

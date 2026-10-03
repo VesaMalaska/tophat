@@ -1,11 +1,9 @@
 ---
-description: Synchronizes the Master Roadmap based on completed chunks and updates the PM's Strategy memory.
+description: Propose private chunk advancement from completed work and current approved authority.
 ---
 
-**Steps:**
-
-1.  **Initialize Architect:** Invoke `@agent-architect`.
-2.  **Contextual Ingestion:** Read `Context.md` (specifically the Agent Handoff Notes) and the active Linear board via the MCP extension to evaluate the completion status of the current `[ACTIVE_SPRINT_CHUNK]`.
-3.  **Roadmap Mutation:** If all deliverables for the current chunk are realized, use the replace_file_content tool to move the current chunk to `[REALIZED_CHUNKS]` in `Roadmap.md`. Elevate the next logical sequence from `[UPCOMING_CHUNKS]` into the `[ACTIVE_SPRINT_CHUNK]` slot.
-4.  **Strategy Cascade:** Once the Roadmap is updated, overwrite the 'Active Sprint Chunk' section in `Strategy.md` with the newly elevated chunk to ensure `@agent-pm` remains perfectly aligned with the Architect's timeline.
-5.  **Completion:** Output a summary of the Roadmap shift, highlighting the new active chunk and its deliverables, for the Human Orchestrator's review.
+1. Invoke `@agent-architect`. Run `node .agents/scripts/validate-doc-package.ts '{"mode":"approved"}'` before private planning advancement; require APPROVED_VALID and planningAllowed. Halt on any denial or mismatch with current roadmap authorityFingerprint.
+2. Read Context, Roadmap and completed task/Linear evidence. Verify the current active chunk's deliverables against its source references. Code realization and private ADRs do not redefine product authority.
+3. Output the proposed move to REALIZED_CHUNKS and the next ACTIVE_SPRINT_CHUNK with stable Development Phase/Sprint Chunk IDs, declared scopeIds and current fenced JSON authorityContext. Do not change approved product files or generate future tasks.
+4. Require explicit human direction before mutation. A separate authorized orchestrator revalidates unchanged authority and applies only the named Roadmap/Strategy/Context/HUD changes. The Architect remains a proposal author; PM is not granted execution authority.
+5. Summarize the bounded advancement and blockers. Development Phase documentation synchronization/final acceptance remains Slice 7 work; this workflow does not claim those obligations were performed. No implicit Git operations.

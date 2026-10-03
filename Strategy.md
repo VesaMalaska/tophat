@@ -4,8 +4,8 @@ _This document is the exclusive domain of `@agent-pm` and `@agent-architect`. Ex
 
 ## 🏛️ 1. Architectural Source of Truth
 
-- **Primary Documentation:** The immutable PRD, ERD, and core Architecture Specifications reside exclusively in the `docs/` directory.
-- **Operational Rules:** The Lead Architect must parse the `docs/` directory to define the `[GLOBAL_CONSTRAINTS]` injected into `Context.md` before generating Linear tasks.
+- **Primary Documentation:** The selected approved documentation package under docs/<package> owns product requirements, decisions, contracts and acceptance criteria. Private ADRs below reference it; they cannot override it.
+- **Operational Rules:** The Lead Architect must validate the selected package and read its declared inventory to define the `[GLOBAL_CONSTRAINTS]` injected into `Context.md` before generating Linear tasks.
 
 ## 🧩 2. Authorized Skill Matrix
 
@@ -46,3 +46,9 @@ _The high-level roadmap. When a Development Phase is complete, the PM moves it t
 ### 🟢 Realized Development Phases (Historical)
 
 - _None yet._
+
+## Documentation authority evidence (derived)
+
+- Package ID / Version / Authority Fingerprint: [UNAVAILABLE until validated]
+- Last validation / blockers: [Require current shared validator result]
+- Approval state is never established by editing this private mirror.

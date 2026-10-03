@@ -4,8 +4,8 @@ trigger: always_on
 
 # Global Context Synchronization
 
-## 1. The Single Source of Truth
-The file `Context.md` located at the workspace root is the live operational handoff document. It contains the current phase, completed implementation steps, and immediate blocker states.
+## 1. Operational handoff state
+The file `Context.md` located at the workspace root is the live operational handoff document. It is derived operational memory, not product authority. It contains the current Workflow Stage, completed implementation steps, and immediate blocker states.
 
 ## 2. Mandatory Pre-Flight Protocol
 Before initiating any tool use or answering any prompt, you MUST:
@@ -15,3 +15,4 @@ Before initiating any tool use or answering any prompt, you MUST:
 
 ## 3. Post-Flight Protocol
 If your task involves implementation, review, or QA, you are responsible for updating `Context.md` upon completion via `/workflow-context-sync`. Never exit a successful trajectory without ensuring the next agent in the hierarchy has an accurate handoff state.
+Cached documentation labels never authorize planning. Read-only package/task validators supply current approval and integrity; conflicting Context authority references cause a blocker, not a public requirements rewrite. Orchestrator state updates remain separate authorized actions.

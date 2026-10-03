@@ -1,13 +1,11 @@
 ---
-description: Halts the swarm, reconciles modified PRD/ERD specifications against the Master Roadmap, regenerates documentation, and triages active Linear tasks.
+description: Propose private planning reconciliation only after revised product authority is approved and valid.
 ---
 
-**Steps:**
-
-1. **Initialize Reconciliation:** Invoke `@agent-architect`.
-2. **Spec Ingestion:** The Human Orchestrator has altered the core specifications. Use the `run_command` tool to execute `ls -1 docs/`. Read the updated `docs/PRD.md`, `docs/ERD.md`, and any other technical files in their entirety.
-3. **Roadmap Reconciliation:** Cross-reference the new specifications against `Roadmap.md`. Use the `replace_file_content` tool to surgically update the `[UPCOMING_CHUNKS]` and `[ACTIVE_SPRINT_CHUNK]` to reflect the new architectural reality. Do not alter `[REALIZED_CHUNKS]`.
-4. **Master Documentation Sync (CRITICAL):** The core application truth has changed. You MUST autonomously execute the logic of the `/generate-readme` workflow. Re-write the root `README.md` to reflect the new specs, and use `replace_file_content` to update the `#### 🧠 Host Project Snapshot` inside `Context.md`.
-5. **Linear Triage (Read-Only):** Use the Linear MCP to scan the active board. Identify any tasks in the 'Todo', 'In Progress', or 'Blocked' columns that are now obsolete, structurally incorrect, or missing critical new schemas based on the pivot.
-6. **Strategy Reset:** Update `Strategy.md` to document the pivot in the ADR section and adjust the Active Phase Engine.
-7. **Human Gate:** Output a `[TRIAGE_REPORT]` detailing which Linear tasks must be manually canceled or regenerated. Prompt the Human Orchestrator to confirm the new Roadmap state.
+1. Invoke `@agent-architect`; pause task generation. Run `node .agents/scripts/validate-doc-package.ts '{"mode":"approved"}'` before authority ingestion or roadmap/task side effects. Require APPROVED_VALID and planningAllowed. Draft, changed hashes/metadata or stale approval causes a blocker; the human resolves and reapproves authority first.
+2. Read only the selected validated package inventory, current private roadmap and relevant existing task evidence. Do not discover loose PRD/ERD files or treat code/root private ADRs as new scope authority.
+3. Output a bounded reconciliation proposal for ACTIVE_SPRINT_CHUNK and UPCOMING_CHUNKS, including stable IDs and updated authorityContext provenance. Preserve REALIZED_CHUNKS history. If product meaning remains contradictory, halt rather than mutate requirements.
+4. Read the Linear board and output an obsolete/stale task triage report. This does not cancel, rewrite or create issues; new/amended task payloads require fresh package and task-authority checks and their human gates.
+5. After explicit human direction, a separate authorized orchestrator revalidates the proposed authority fingerprint and applies only the named private Roadmap/Context/Strategy/HUD changes. The Architect does not violate its declared file-write boundary.
+6. Do not run the disabled `/generate-readme` path or autonomously rewrite public documentation. Derived-document synchronization is Slice 7. Do not execute Git operations implicitly.
+7. Summarize exact changed private paths, package provenance and triage decisions for the human. Recommend the appropriate authorized workflow/model from routingMatrix.

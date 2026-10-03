@@ -103,7 +103,7 @@ function gate(value: unknown, label: string, scripts: RecordValue, issues: strin
   return selected;
 }
 
-/** Structural validation only. Package existence and script execution belong to later slices. */
+/** Structural validation only. Package authority and host-script execution are checked by their separate shared validators. */
 export function parseTophatConfig(source: string): TophatConfig {
   let raw: unknown;
   try { raw = JSON.parse(source); }

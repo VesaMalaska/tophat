@@ -20,7 +20,7 @@ The swarm uses specific roles with instructed scope boundaries and selected hook
 
 **Strategic & Management Tier**
 
-- **@agent-architect:** The only agent allowed to read the PRD/ERD. Compiles JIT task batches and dictates architectural boundaries.
+- **@agent-architect:** Reads the selected approved package and compiles bounded, traceable task proposals. The separate definition-review responsibility may also inspect its package.
 - **@agent-pm:** Your session guide. Reads the active Linear board and Strategy.md to recommend the optimal next task and monitor sprint health.
 
 **Execution Tier**
@@ -44,11 +44,13 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
 
 ### Foundational Workflow Stage Commands
 
-- `/workspace-init`: Bootstraps environment, verifies Tech Stack constraints, generates initial Roadmap.md.
-  - **Recommended Model:** Claude Opus (Requires zero-shot semantic mapping of entire PRD).
+- `/project-define`, `/project-definition-review`, `/project-definition-finalize`: Optional draft → independent review → exact-candidate human approval. Models come from routingMatrix; review independence is human-supervised.
+
+- `/workspace-init`: Validates the host and approved authority, then proposes private planning state.
+  - **Recommended Model:** Claude Opus (Uses semantic mapping of the approved package).
 - `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
   - **Recommended Model:** Claude Opus (Requires high adversarial precision to prevent data loss).
-- `/generate-readme`: Invokes Architect to execute multi-document semantic synthesis across specs and ERDs to generate the master README.md template.
+- `/generate-readme`: Disabled legacy rewrite path until Slice 7 provides the bounded derived-document responsibility.
   - **Recommended Model:** Gemini Pro High (Required for advanced cross-referencing and rigid template adherence).
 
 ### Standard Automation Workflows
@@ -73,9 +75,9 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
 - `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute structural layouts and declared styling passes.
   - **Recommended Model:** Gemini Flash Low (Optimized for high-speed, low-cost deterministic layout compilation).
 - `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
-  - **Recommended Model:** Gemini Pro High (Directory RAG across docs/).
+  - **Recommended Model:** Gemini Pro High (Bounded extraction from validated authority).
 - `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
-  - **Recommended Model:** Gemini Pro High (Requires cross-referencing PRD with audit failures).
+  - **Recommended Model:** Gemini Pro High (Cross-references approved requirements with audit failures).
 
 ### Validation & Pipeline Commands
 
@@ -96,7 +98,7 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
 
 The swarm's memory is isolated into specific operational files:
 
-- `Roadmap.md`** & **`Strategy.md`** (Long-term Memory):** The master application sequencing. Read/Write access is strictly locked to the Architect and PM agents.
+- `Roadmap.md`** & **`Strategy.md`** (Long-term Memory):** Private derived sequencing and memory. The Architect proposes changes; named authorized orchestrator steps apply them. The PM boundary is addressed fully in Slice 6.
 - `Context.md`** (Short-term Working Memory):** The live operational handoff document. It tracks the active phase and immediate blockers. Updated by agents after every completed task.
 - `.agents/`** (The Vault):** The directory containing the active Skills (`.agents/skills/skill-1-name/SKILL.md`), Rules (`.agents/rules/*.md`), Workflows (`.agents/workflows/*.md`), and tool interception scripts.
 
@@ -110,8 +112,8 @@ The human orchestrator drives the swarm through distinct Workflow Stages. Do not
 
 These commands are run once at the beginning of a project, or immediately following a full `/architecture-pivot`.
 
-1. `/workspace-init`: Bootstraps the environment, verifies all dependencies and mandatory PRD declarations, and generates the master `Roadmap.md`.
-2. `/generate-readme`: The Architect synthesizes the core specs to build the client-facing README, and simultaneously injects the crucial `Host Project Snapshot` into `Context.md` for downstream agent reference.
+1. `/workspace-init`: Validates the host and selected approved package, then proposes private Roadmap/Context/Strategy initialization for human authorization.
+2. If product input is incomplete, use `/project-define`, independent `/project-definition-review`, and exact-candidate human-gated `/project-definition-finalize` before initialization. The legacy `/generate-readme` workflow is disabled.
 
 ### 5.2. Daily Workflow Stages
 
@@ -144,7 +146,7 @@ _(Note: If a task fails ANY review stage, invoke `/remediate-task [ID]` to surgi
 
 ### 5.3. Handling Blockers & Mid-Flight Pivots (The Emergency Brakes)
 
-The TopHat swarm is intentionally deterministic and does not waste tokens polling your file system for background changes. When an execution agent encounters a missing dependency, missing schema, or architectural contradiction, it will throw a `[BLOCKER_ENCOUNTERED]` payload, transition the task to Blocked in Linear, and halt.
+The development pipeline advances through human-invoked workflows. The read-only HUD watcher polls documentation readiness to detect nested edits or missed filesystem events. When an execution agent encounters a missing dependency, missing schema, or architectural contradiction, it will throw a `[BLOCKER_ENCOUNTERED]` payload, transition the task to Blocked in Linear, and halt.
 
 Depending on the severity of the missing context, the Human Orchestrator must execute one of two recovery workflows:
 
@@ -153,13 +155,13 @@ Depending on the severity of the missing context, the Human Orchestrator must ex
 Use this when the overall architecture is sound, but a specific blueprint is missing a measurement (e.g., a missing TypeScript interface, an undefined database column, or an unstated business rule).
 
 - **Action:** Run `/remediate-blocker [Linear ID]`.
-- **Execution:** The Lead Architect fetches the blocked ticket, reads the developer's error, parses the `docs/` folder for the missing context, and injects the schema directly into the Linear task description. It then returns the ticket to Todo for immediate execution.
+- **Execution:** The Architect locates the missing context in current approved authority, validates the exact task amendment, and requests human approval before applying it. Missing authority is a blocker; the Architect cannot invent a schema.
 
 #### 5.3.2. The Macro-Reset: `/architecture-pivot`
 
 Use this only when the fundamental architecture has shifted (e.g., swapping from a REST API to GraphQL, or migrating from SQLite to PostgreSQL). This is computationally expensive and alters the master timeline.
 
-- **Action:** First, manually mutate `docs/PRD.md` or `docs/ERD.md` with the new core requirements. Then, run `/architecture-pivot`.
+- **Action:** Prepare and explicitly reapprove the revised selected documentation package. Then run `/architecture-pivot`; changed hashes or authority metadata block planning until reapproval.
 - **Execution:** The Lead Architect halts the swarm, recalculates the entire `Roadmap.md`, and outputs a triage hit-list of active Linear tasks (including tasks with 'Blocked' status) that are now structurally obsolete. You must manually cancel obsolete tasks and run `/generate-sprint-tasks` to fill the gaps.
 
 #### 5.3.3. The Diagnostic Emergency Brake: `/triage-bug`
@@ -212,7 +214,7 @@ For example, replace the three `null` fields in a SvelteKit host project with th
 
 These are replacement fields inside the existing config, not another configuration file. This example is illustrative and does not claim that the vault contains `docs/project` or these host scripts.
 
-Set `workspace.kind` and `workspace.framework` to one of: `web` with `svelte`, `sveltekit`, `react`, or `nextjs`; `backend` with `none`; or `desktop` with `svelte`, `react`, or `none`. Capabilities are derived from this pair and cannot be declared independently. `documentation.package` is a workspace-relative directory, `documentation.manifest` is a relative file within it, and `documentation.derivedTargets` lists explicit relative files or directories outside private TopHat state. Structural validation here does not approve or verify the package; that is Slice 4.
+Set `workspace.kind` and `workspace.framework` to one of: `web` with `svelte`, `sveltekit`, `react`, or `nextjs`; `backend` with `none`; or `desktop` with `svelte`, `react`, or `none`. Capabilities are derived from this pair and cannot be declared independently. `documentation.package` is a workspace-relative directory, `documentation.manifest` is a relative file within it, and `documentation.derivedTargets` lists explicit relative files or directories outside private TopHat state. The config loader only validates declarations. The separate documentation validator checks package approval, files, fixed schema, graph, source relationships, hashes and authority fingerprint before planning.
 
 Map any selected validation category to a **package-script name**, not a shell command. Allowed categories are `typecheck`, `lint`, `unit`, `coverage`, `integration`, `build`, `smoke`, `e2e`, and `documentation`. `commitGate` must be nonempty; `developmentPhaseGate` and `projectCompletionGate` must be arrays and may be empty to request an explicit `SKIPPED_NOT_APPLICABLE` report. Selected categories must map to scripts present in the host `package.json`. The project owns the test runner, coverage provider, exclusions, and thresholds. The TopHat repository's own `pnpm test:tophat` uses Node 24's TypeScript type stripping and is separate from host validation; it does not type-check tests.
 
@@ -237,7 +239,7 @@ To deploy this workflow on a fresh repository, ensure your local environment and
 
 ### 7.2. Human Orchestrator Initialization (MANDATORY)
 
-The TopHat swarm does not initialize package managers or install base frameworks. **Before running `/workspace-init`**, the Human Orchestrator must manually bootstrap the execution stack.
+The TopHat swarm does not initialize package managers or install base frameworks. **Before running `/workspace-init`**, the Human Orchestrator must bootstrap the execution stack, configure the vault, and supply an approved valid package.
 
 1. **Initialize the Framework:** Generate your base application scaffolding (e.g., SvelteKit, Vite, Electron).
 2. **Install Core Tooling:** You must install the dependencies required by the Antigravity `hooks.json` interception scripts. Run the following command:
@@ -248,44 +250,37 @@ The TopHat swarm does not initialize package managers or install base frameworks
 
 Install a test runner, browser tooling, and styling framework only when the host project and its task contract require them. Existing hook scripts use `tsx`; the TopHat repository's own tests use Node 24 directly.
 
-### 7.3. Workspace Scaffolding
+### 7.3. Documentation package and private state
 
-Once workspace initialization is complete, ensure your root directory contains the Antigravity .agents/ vault and the docs/ directory.
+Product documentation lives under the configured `docs/<package>/`: README.md, manifest.json (or the configured relative manifest filename), manifest.schema.json and project-specific numbered documents. Private Roadmap.md, Strategy.md, Context.md, HUD.md, root DECISIONS.md and `.agents/` remain separate. Do not put TopHat model assignments, Linear workflows or private execution contracts in public product documents. Do not blanket-ignore `docs/` to hide orchestration.
 
-_"Multi-agent Development Workflow" structure:_
+Copy `.agents/templates/documentation-package/` only as a **draft scaffold**, choose appropriate product documents, and supply the host config before running checks. The vault remains intentionally unconfigured. A single combined authority document is permitted; the full BunnyHop document set is not mandatory. Existing packages may need deliberate adaptation to the canonical v1 contract; no automatic migration or BunnyHop compatibility is claimed.
 
+```bash
+node .agents/scripts/validate-doc-package.ts '{"mode":"draft"}'
+node .agents/scripts/validate-doc-package.ts '{"mode":"approved"}'
+node .agents/scripts/validate-task-authority.ts < private-task-authority-request.json
+node .agents/scripts/finalize-doc-package.ts < private-finalization-request.json
 ```
-├── .agents/
-│   ├── rules/                (*.md files)
-│   ├── skills/
-│   │   ├── skill-1-name/
-│   │   │   └── SKILL.md
-│   │   ├── skill-2-name/
-│   │   │   └── SKILL.md
-│   │   └── skill-3-name/
-│   │   │   └── SKILL.md
-│   ├── workflows/            (*.md files)
-│   ├── scripts/              (ts scripts triggered from hooks.json)
-│   └── hooks.json
-├── docs/
-│   ├── PRD.md                (Must contain the TopHat Mandatory Declarations block)
-│   ├── ERD.md                (Database schemas and relationships)
-│   └── Roadmap.md            (Empty boilerplate containing [ACTIVE_SPRINT_CHUNK] tags)
-├── Context.md                (Empty boilerplate initialized with [GLOBAL_CONSTRAINTS] header)
-├── Strategy.md               (Empty boilerplate initialized with phase headers)
-├── HUD.md                    (Empty boilerplate containing needed structure)
-└── DECISIONS.md              (Updated and Read by Human Orchestrator to log ADRs)
 
-```
+The validators are read-only. Draft success is DRAFT_VALID with planningAllowed false; approved success is APPROVED_VALID. Denials are nonzero and identify the failure; hash mismatch reports expected/calculated hashes without repairing files. The finalizer requires matching private review/approval receipts for the exact candidate and atomically writes only the approved manifest. It does not create tasks, initialize a roadmap, commit or publish. See the three [definition workflows](.agents/workflows/project-define.md) and [task contract](.agents/workflows/generate-sprint-tasks.md) for exact receipt/request fields.
+
+The published package schema must match `.agents/schemas/doc-manifest.schema.json` structurally; the closed v1 validator rejects weakened schemas, duplicate JSON members, unknown fields, unresolved ownership/dependencies, cycles, invalid status/scope/decision relationships and unsafe paths. Package paths use POSIX `/` separators, must stay below docs, and cannot contain traversal, backslashes, symlink components or case-folded/file-identity collisions. Windows-shaped absolute/drive paths are rejected before native path resolution.
+
+Every source item is declared in the manifest and has one literal anchor line, e.g. `<a id="REQ-001"></a>`. Horizontal whitespace around anchor syntax is accepted; examples in backtick/tilde fences do not count. Source text runs to the next declared anchor or EOF. Tasks reference document-id#item-id, include exact source blocks and match the active chunk's private JSON authorityContext. Only CRLF/LF transport normalization is permitted for extracts. Semantic relevance/completeness still requires review.
+
+Authoritative hashes use exact bytes. The **authority fingerprint** binds manifest metadata, schema and authoritative bytes; it is recorded in the approved manifest and task/roadmap provenance. The **candidate fingerprint** additionally binds entry-guide/derived bytes for definition review and finalization. Ordinary derived-byte edits do not invalidate unchanged authority, but do stale a definition review candidate. Approved authority edits require new package version, fresh independent review and matching explicit human approval. Later derived synchronization is Slice 7.
+
+Receipts establish recorded consistency; they cannot authenticate a human or prove that a recorded approval genuinely occurred. An already human-approved package can validate without using the optional definition stage. Gate invocation, source selection and exact Linear handoff are instructed behavior; no physical planning/IDE interception or read sandbox is claimed. The local native Git gate retains its Slice 3 installation/bypass limits. The parser bounds JSON nesting at 128 levels and denies deeper input instead of risking uncontrolled recursion.
 
 ### 7.4. The Command Center (The HUD)
 
 To survive the cognitive load of manual swarm orchestration, TopHat utilizes a local, terminal-based Heads-Up Display (HUD). This passive radar watches your workflow and gives you real-time visual feedback on the active pipeline state and your next required command.
 
 **How to Boot the HUD:**
-To start the HUD run the watcher script: `npx tsx .agents/scripts/watch-hud.ts`.
+To start the HUD run: `node .agents/scripts/watch-hud.ts`. It revalidates authority on each render and every two seconds; filesystem watch failure or temporary missing/locked files produces a blocked diagnostic rather than crashing the terminal.
 
-Every time an agent finishes a task and you trigger `/context-sync`, the HUD will instantly refresh with your next marching orders.
+The documentation state is DRAFT, AWAITING_HUMAN_APPROVAL, APPROVED or INVALIDATED. REVIEW REQUIRED indicates missing/stale/blocked review evidence. When config/manifest cannot establish a lifecycle state, UNAVAILABLE — VALIDATION DENIED is a diagnostic, not an invented transition. A hand-edited approved label cannot override current validation. Unrelated blockers are preserved.
 
 ### 7.5. **Linear Team Configuration (Mandatory)**
 
@@ -343,7 +338,8 @@ _Architect's Warning: Gitignoring these files will lock your swarm's execution s
 .agents/
 Context.md
 Strategy.md
-docs/
+HUD.md
+Roadmap.md
 DECISIONS.md
 
 ```

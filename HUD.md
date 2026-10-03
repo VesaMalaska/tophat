@@ -18,4 +18,10 @@ _Waiting for the Sprint Briefing workflow..._
 
 ### 🚧 Active Blockers
 
-- None. Workspace is clean and ready.
+- Documentation evidence is unavailable; configure and validate the host package.
+
+📚 Documentation Authority
+  - State: UNAVAILABLE — VALIDATION DENIED
+  - Planning allowed: no
+  - Review: REVIEW REQUIRED
+  - Validation: run the shared package validator; this template is not evidence.

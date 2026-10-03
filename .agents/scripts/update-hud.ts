@@ -1,8 +1,31 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+import { inspectDocPackage, isMain, type DocReport } from "./validate-doc-package.ts";
+import { reviewEvidence } from "./finalize-doc-package.ts";
 
+export function documentationReadiness(workspaceRoot: string): { report: DocReport; reviewRequired: boolean } {
+  const approved = inspectDocPackage(workspaceRoot);
+  if (approved.report.planningAllowed || approved.report.documentationState === "INVALIDATED")
+    return { report: approved.report, reviewRequired: false };
+  const draft = inspectDocPackage(workspaceRoot, "draft");
+  if (!draft.snapshot) return { report: draft.report, reviewRequired: true };
+  try {
+    reviewEvidence(draft.snapshot, `.agents/project-definition/${draft.snapshot.manifest.packageId}/review.json`);
+    return { report: draft.report, reviewRequired: false };
+  } catch {
+    return { report: draft.report, reviewRequired: true };
+  }
+}
+export function overlayDocumentation(content: string, workspaceRoot: string): string {
+  const { report, reviewRequired } = documentationReadiness(workspaceRoot);
+  const state = report.documentationState ?? "UNAVAILABLE — VALIDATION DENIED";
+  let previous = content.replace(/\n(?:#{1,6} )?📚 Documentation Authority[\s\S]*$/, "").trimEnd();
+  if (!report.planningAllowed) previous = previous.replace(/None\. Workspace is clean and ready\./g, "Documentation readiness denied; inspect the authority report.");
+  return `${previous}\n\n📚 Documentation Authority\n  - State: ${state}\n  - Package: ${report.packageId ?? "Unavailable"} / ${report.packageVersion ?? "Unavailable"}\n  - Planning allowed: ${report.planningAllowed ? "yes" : "no"}\n  - Authority fingerprint: ${report.authorityFingerprint ?? "Unavailable"}\n  - Validation: ${report.status} at ${new Date().toISOString()}\n  - Review: ${reviewRequired ? "REVIEW REQUIRED" : "No review blocker recorded"}\n  - Blockers: ${report.issues.map(i => `${i.code}: ${i.message}`).join("; ") || (report.planningAllowed ? "None" : "Explicit matching human approval is required before planning")}\n`;
+}
+export function renderHud(args: string[], workspaceRoot = process.cwd()): string {
 // Zero-dependency CLI argument parser
-const args = process.argv.slice(2);
+
 const getArg = (flag: string, fallback: string = "N/A"): string => {
   const index = args.indexOf(flag);
   return index !== -1 && args[index + 1] ? args[index + 1] : fallback;
@@ -17,7 +40,7 @@ const nextCmd = getArg("--next", "/sprint-briefing");
 // Read the Single Source of Truth Config
 let resolvedModel = "Fallback Model";
 try {
-  const configPath = path.join(process.cwd(), ".agents", "tophat.config.json");
+  const configPath = path.join(workspaceRoot, ".agents", "tophat.config.json");
   if (fs.existsSync(configPath)) {
     const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 
@@ -118,10 +141,14 @@ Last Updated: ${timestamp}
 🚧 Active Blockers
   - None. Workspace is clean and ready.`;
 
-fs.writeFileSync(path.join(process.cwd(), "HUD.md"), hudContent);
-console.log(
-  JSON.stringify({
-    status: "HUD Updated Successfully",
-    next_model: resolvedModel,
-  }),
-);
+return overlayDocumentation(hudContent, workspaceRoot);
+}
+
+if (isMain(import.meta.url)) {
+  try {
+    fs.writeFileSync(path.join(process.cwd(), "HUD.md"), renderHud(process.argv.slice(2)));
+    console.log(JSON.stringify({ status: "HUD Updated Successfully" }));
+  } catch {
+    console.log(JSON.stringify({ status: "HUD_UPDATE_FAILED", message: "HUD could not be written" })); process.exitCode = 1;
+  }
+}

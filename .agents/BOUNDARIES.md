@@ -1,4 +1,4 @@
-# TopHat boundary registry — through Slice 3
+# TopHat boundary registry — through Slice 4
 
 This registry distinguishes current mechanisms from instructions and planned work. A registered hook is not automatically a reliable fail-closed control.
 
@@ -11,7 +11,10 @@ This registry distinguishes current mechanisms from instructions and planned wor
 | Smoke profile | Deterministic profile output, instructed task content | Selection reports web/backend/desktop from validated config. The smoke workflow describes compatible checks; execution and full QA classification remain later work. |
 | Host-declared validation execution | Deterministic when invoked | `run-validation.ts` preflights every selected host script and executes `pnpm run` in order. Selected missing or failing scripts deny; an empty optional gate reports `SKIPPED_NOT_APPLICABLE`. The project owns coverage thresholds. Git state changes during checks deny a passing report. |
 | Commit validation boundary | Native Git hook after explicit installation | `install-git-hook.ts` refuses existing hooks and redirected `core.hooksPath`; the installed `pre-commit` script runs the shared executor. A real fixture commit failed with unchanged `HEAD`, then passed after the script passed. Installation is per clone, and `--no-verify` or another Git hook configuration can bypass it. The tested standalone IDE hook did not intercept the command. |
-| Documentation package approval and integrity | Pending | A safe relative package path is not proof that a package exists or is approved. Slice 4 validates content and authority. |
+| Documentation package structure/integrity | Deterministic when the read-only validator runs | Closed v1 schema, safe files, exact-byte hashes, metadata fingerprint, dependency/ownership/trace checks. All named planning/task workflows require invocation; instructions do not physically intercept planning. |
+| Task authority/source extracts | Deterministic when the task checker runs | Fresh approved authority and private chunk provenance; typed active references and exact source-block equality. Semantic relevance and exact issue handoff remain instructed; no physical prevention of agent bypass. |
+| Definition approval/finalization | Manifest publication gate when finalizer is invoked | Matching review/approval receipts, candidate fingerprint, review digest, explicit signal and ordered timestamps are required before manifest-only publication. Receipts prove recorded consistency, not human/reviewer authentication or that the event genuinely occurred. Semantic completeness/consent are human-supervised. |
+| HUD documentation state | Read-only current-state detection | Revalidates on render with polling fallback; stale approved prose cannot override checks. Temporary inaccessible files deny readiness. It does not enforce workflow execution. |
 | Agent context restrictions and role write boundaries | Instructed | No physical read sandbox is claimed. PM and writer mutation gates depend on verified host workflow identity in later slices. |
 | Git mutation safety | Instructed | Existing Git workflows contain instructions and commands; a shared physical preflight is Slice 8. |
 | Workflow postcondition checks | Detection where actually performed | A diff or state audit can reject a result after a mutation; it does not prevent that mutation. Later slices must record both separately. |

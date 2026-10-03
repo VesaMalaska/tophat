@@ -13,9 +13,13 @@ _Format Output:_ `[Next Action: /command-name]`
 
 ### Foundational Workflow Stage Commands
 
+- `/project-define`: Optional bounded draft preparation from incomplete input.
+- `/project-definition-review`: Separate read-only review; no automatic approval.
+- `/project-definition-finalize`: Exact-candidate human approval and manifest-only finalization.
+
 - `/workspace-init`: Bootstraps environment, verifies Tech Stack constraints, generates initial `Roadmap.md`.
 - `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
-- `/generate-readme`: Invokes `@agent-architect` to execute multi-document semantic synthesis across specs and ERDs to generate the master `README.md` template.
+- `/generate-readme`: Disabled legacy rewrite path; bounded replacement belongs to Slice 7.
 
 ### Standard Automation Workflows
 

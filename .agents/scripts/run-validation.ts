@@ -54,7 +54,7 @@ function requestCategories(request: ValidationRequest, config: TophatConfig): Va
 }
 
 /** Executes a validated, ordered host gate. Additional categories append in request order. */
-export interface ValidationExecutionOptions { candidateConfig?: TophatConfig; timeoutMs?: number; maxBufferBytes?: number }
+export interface ValidationExecutionOptions { candidateConfig?: TophatConfig; timeoutMs?: number; maxBufferBytes?: number; disableAutomaticSetup?: boolean }
 export function runValidation(request: ValidationRequest, root: string, pnpm = "pnpm", options: ValidationExecutionOptions = {}): ValidationReport {
   const report: ValidationReport = {
     schemaVersion: 1, gate: null, profile: null, categories: [], results: [],
@@ -69,6 +69,7 @@ export function runValidation(request: ValidationRequest, root: string, pnpm = "
     const config = options.candidateConfig ? parseTophatConfig(JSON.stringify(Object.fromEntries(Object.entries(options.candidateConfig).filter(([key]) => key !== "capabilities")))) : loadTophatConfig(root);
     if (options.timeoutMs !== undefined && (!Number.isSafeInteger(options.timeoutMs) || options.timeoutMs < 1 || options.timeoutMs > 600000)) throw new Error("Invalid execution timeout");
     if (options.maxBufferBytes !== undefined && (!Number.isSafeInteger(options.maxBufferBytes) || options.maxBufferBytes < 1024 || options.maxBufferBytes > 16 * 1024 * 1024)) throw new Error("Invalid output limit");
+    if (options.disableAutomaticSetup !== undefined && typeof options.disableAutomaticSetup !== "boolean") throw new Error("Invalid setup suppression option");
     const selected = requestCategories(request, config);
     report.gate = request.gate;
     report.profile = `${config.workspace.kind}:${config.workspace.framework}`;
@@ -103,7 +104,7 @@ export function runValidation(request: ValidationRequest, root: string, pnpm = "
 
     for (const category of selected) {
       const script = config.validation.scripts[category]!;
-      const result = spawnSync(pnpm, ["run", script], { cwd: root, encoding: "utf8", maxBuffer: options.maxBufferBytes ?? 16 * 1024 * 1024, timeout: options.timeoutMs, killSignal: "SIGKILL", ...(options.candidateConfig ? { env: { ...process.env, pnpm_config_verify_deps_before_run: "false", pnpm_config_manage_package_manager_versions: "false" } } : {}) });
+      const result = spawnSync(pnpm, ["run", script], { cwd: root, encoding: "utf8", maxBuffer: options.maxBufferBytes ?? 16 * 1024 * 1024, timeout: options.timeoutMs, killSignal: "SIGKILL", ...(options.candidateConfig || options.disableAutomaticSetup ? { env: { ...process.env, pnpm_config_verify_deps_before_run: "false", pnpm_config_manage_package_manager_versions: "false" } } : {}) });
       const passed = !result.error && result.status === 0;
       report.results.push({ category, script, status: passed ? "PASSED" : "FAILED", exitStatus: result.status, ...(options.timeoutMs === undefined ? {} : { stdout: (result.stdout ?? "").slice(0, 4000), stderr: (result.stderr ?? "").slice(0, 4000), signal: result.signal }) });
       if (!passed) return fail(result.error ? (result.error.code === "ETIMEDOUT" ? "SCRIPT_TIMEOUT" : result.error.code === "ENOBUFS" ? "SCRIPT_OUTPUT_LIMIT" : "SCRIPT_SPAWN_FAILED") : "SCRIPT_FAILED",
@@ -133,8 +134,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     request = null as unknown as ValidationRequest;
   }
   if (request) {
-    const result = runValidation(request, process.cwd());
+    const qaMode = process.argv[3] === "--qa";
+    if (process.argv.length > (qaMode ? 4 : 3)) {
+      console.log(JSON.stringify({ status: "FAILED", decision: "deny", code: "VALIDATION_REQUEST_INVALID", reason: "Only the bounded --qa execution mode is supported" })); process.exitCode = 1;
+    } else {
+    const result = runValidation(request, process.cwd(), "pnpm", qaMode ? { disableAutomaticSetup: true, timeoutMs: 600000, maxBufferBytes: 1024 * 1024 } : {});
     console.log(JSON.stringify(result));
     if (result.decision === "deny") process.exitCode = 1;
+    }
   }
 }

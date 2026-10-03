@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "taskId": "task-1",
+  "authority": {
+    "packageId": "replace-with-approved-package",
+    "packageVersion": "replace-with-approved-version",
+    "authorityFingerprint": "replace-with-current-sha256",
+    "developmentPhaseId": "phase-1",
+    "sprintChunkId": "chunk-1",
+    "scopeIds": ["core"],
+    "references": {"requirements": ["product#REQ-001"], "decisions": [], "contracts": [], "acceptanceCriteria": ["product#AC-001"]},
+    "notApplicable": {"decisions": "replace-with-applicability-reason", "contracts": "replace-with-applicability-reason"},
+    "extracts": [{"reference": "product#REQ-001", "content": "replace-with-exact-indexed-source"}, {"reference": "product#AC-001", "content": "replace-with-exact-indexed-source"}]
+  },
+  "guidance": {"requestedSkills": [], "taskTopics": ["browser-flow"], "frameworkInstructions": []},
+  "workKinds": ["client-logic"],
+  "userEffects": ["web-flow"],
+  "noUserFacingReason": null,
+  "validationCategories": ["unit", "e2e"],
+  "acceptanceChecks": [{"id": "check-1", "sourceCriterion": "product#AC-001", "text": "replace-with-bounded-derived-check", "qaApplicable": true}]
+}

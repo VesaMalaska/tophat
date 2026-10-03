@@ -1,12 +1,10 @@
 ---
-description: Strategic sprint orientation, risk assessment, contextual routing, Linear connection validation, and visual HUD synchronization.
+description: Advisory read-only sprint briefing; no PM execution or state mutation.
 ---
 
-**Steps:**
-
-1. **Initialize State:** Invoke `@agent-pm`.
-2. **Pre-Flight Authentication:** Attempt a lightweight read operation using the Linear MCP (e.g., fetch the current user profile or active workspace status). If this fails, halt execution and output a `[LINEAR_AUTH_FAILED]` blocker alert requiring human intervention.
-3. **Instruction:** If authentication is successful, read `Strategy.md`, `Roadmap.md`, `Context.md`, and the active Linear board via your MCP tool. Do not confabulate missing state. Cross-reference the active chunks to ensure timeline alignment.
-4. **Execution (Briefing):** Generate the standard sprint briefing detailing Sprint Health, the Roadmap Horizon, Recently Completed tasks, the Recommended Next Action (with Dev Tier), and any immediate architectural blockers.
-5. **HUD Radar Broadcast (Authorized Execution):** You are explicitly authorized to use the `run_command` tool for this specific step. Take the "Recommended Next Action" you just generated and pipe it into the HUD. Execute the following command, dynamically replacing the bracketed values: `npx tsx .agents/scripts/update-hud.ts --task "[Recommended Task ID]" --title "[Recommended Task Title]" --tier "[Recommended Dev Tier]" --status "Todo" --next "[Recommended Command, e.g., /implement-mid JAC-33]"`
-6. **Human Gate:** Output the briefing. The Human Orchestrator will review your recommendation and the refreshed HUD before proceeding to task implementation.
+1. Before the PM session, the separate orchestrator captures current files/private state/Git identity with inspect-role-session.ts role pm and no writable outputs. Existing dirty state or failed authority may be briefing evidence; it does not authorize implementation. If capture is unavailable, mark POSTCONDITION_UNVERIFIED.
+2. Invoke @agent-pm. Read Strategy.md, Roadmap.md, Context.md, supplied validation/authority evidence and read-only Linear status through file/MCP reads. Missing or inconsistent evidence is a blocker; do not invent state. Linear authentication failure is advisory blocking evidence, not permission to execute repair.
+3. Output Sprint Health, Roadmap Horizon, Recently Completed, Recommended Next Action with derived Dev Tier/model mapping, and Risks/Blockers. Recommend the next separately authorized workflow; do not run it.
+4. PM executes no shell command, Git inspection, validation helper, test, build, installation, file write, HUD update, Linear/task mutation, remediation or subagent invocation. No HUD exception exists.
+5. After leaving the PM session, the orchestrator verifies the original snapshot and observed operations. A violation rejects the briefing result and requires human direction. Unavailable verification stays POSTCONDITION_UNVERIFIED; a diff cannot prove that invisible operations never occurred.
+6. The human selects a separate authorized workflow to apply any recommendation. Antigravity workflow identity/interception remains unverified; this is an instructed boundary plus postcondition detection, not physical prevention.

@@ -1,17 +1,11 @@
 ---
-description: Triggers the Security Auditor Agent against completed implementations.
+description: Independent read-only security inspection of the exact classified candidate.
 ---
 
-**Steps:**
+1. The orchestrator fetches the taskClassification and current candidate/stage evidence. Run `node .agents/scripts/classify-task.ts` with the exact JSON on stdin; require ROUTING_VALID and that `security` belongs to requiredStages. A missing legacy record, stale authority or wrong route halts. Standard and critical are alternative reviews.
+2. Invoke `@agent-security-auditor` with the bounded task/source extracts, applicable skills, exact candidate commit and prior findings. Inspect only relevant code and evidence. Apply the shared understandability/change-locality checklist in `.agents/docs/task-routing-and-qa.md`. Do not change product code, tests, configuration, authority or private state; do not run Git mutation, install dependencies, or implement fixes.
+3. Return criterion-linked findings and `APPROVED`, `CHANGES_REQUIRED`, or `BLOCKED`. Re-check prior findings in this role's domain after developer remediation. Do not substitute for another required role's validation or approve your own remediation.
+4. The separate orchestrator records the latest stage receipt (sequence, taskFingerprint, inspectedCommit, role/session, verdict, findings) and verifies surviving diffs/observed operations before applying Linear/HUD state. No review agent HUD shell exception is granted.
+5. Derive the next stage with `nextStage` from the validated route. Approved critical always leads to `/security-review`; approved standard/security leads to `/qa-validate` if methods are required, otherwise publication readiness. CHANGES_REQUIRED leads to `/remediate-task`; BLOCKED requires human direction. Status labels alone do not authorize publication.
 
-1. **Security Audit:** Invoke `@agent-security-auditor`.
-2. **Instruction:** Execute a mandatory threat model and security validation on the active branch for Linear Task ID `{{args[0]}}` strictly against the OWASP Top 10 vulnerabilities, the attached active Skills, and the explicit Linear Task Acceptance Criteria. Assume a pessimistic, zero-trust posture. Use the Linear MCP to check the issue's comment history. If this task was previously in 'Changes Requested', review the previous failure notes. IF the previous rejection was a Security failure, explicitly verify that the specific vulnerabilities have been mitigated. IF the rejection originated from Architecture or QA, perform your baseline security audit without attempting to validate non-security UI/UX fixes.
-3. **Execution:** Output findings categorized by severity. Provide remediation directives for any CRITICAL or MAJOR flaws. State a final verdict of APPROVED or CHANGES_REQUIRED.
-4. **Post-Flight Automation:**
-   - If `[APPROVED]`: Check the original task routing fields. If QA is required, use Linear MCP to transition Task `{{args[0]}}` to 'In Review: QA'. If no QA is required, transition to 'Ready for PR'.
-   - If `[CHANGES_REQUIRED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Changes Requested'. Post remediation steps to the ticket.
-   - If `[BLOCKED]`: Use the Linear MCP to transition Task `{{args[0]}}` to 'Blocked'. Output a `[BLOCKER_ENCOUNTERED]` payload detailing the broken environment or missing testing infrastructure, and instruct the Human Orchestrator to update `Context.md`.
-   - **HUD Radar Broadcast (MANDATORY):** Upon transitioning the Linear task, execute `npx tsx .agents/scripts/update-hud.ts --task "{{args[0]}}" --title "[Fetched Task Title]" --tier "senior" --status "[New Linear Status]" --next "[/qa-validate {{args[0]}}, /publish-pr {{args[0]}}, OR /remediate-task {{args[0]}}]"` via `run_command` to synchronize the Orchestrator HUD.
-5. **Handoff Resolution:** If `[APPROVED]`, look up the 'QA Required' metadata field on the active Linear Task.
-   - If QA is 'yes', use Linear MCP to transition to 'In Review: QA'. Output exactly: `[Next Action: /qa-validate {{args[0]}}]`.
-   - If QA is 'no', use Linear MCP to transition to 'Ready for PR'. Output exactly: `[Next Action: /publish-pr {{args[0]}}]`.
+A subsequent code correction requires a new developer commit and a fresh derived review route, then security/QA where required. Actual independence and gate invocation are supervised instructions; no physical IDE prevention is claimed.

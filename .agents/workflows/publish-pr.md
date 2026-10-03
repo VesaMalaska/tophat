@@ -1,17 +1,11 @@
 ---
-description: Generates the final Pull Request, automates Linear task transitions, physically synchronizes Context.md, and binds the updated operational memory to the remote repository.
+description: Publish the exact evidenced feature head for human review after a read-only readiness check.
 ---
 
-**Steps:**
+1. Fetch the exact taskClassification, expected feature branch, explicit human project base policy, applicable latest stage records, task validation report/log and QA attempt evidence or justified QA_NOT_APPLICABLE record. Do not infer approval from Linear status or assume a host's main branch. This TopHat implementation PR targets development.
+2. Run `node .agents/scripts/validate-qa-evidence.ts` with operation publish and the exact closed request from `.agents/docs/task-routing-and-qa.md` on stdin. Require PUBLICATION_READY, approvalAllowed true and the candidate SHA. On DENIED, halt visibly with the issues; do not weaken, skip, repair or rewrite receipts.
+3. Immediately before publication, repeat the read-only check. The orchestrator opens the PR for that exact feature head and explicit base, with a reviewable description and evidence. Inspect the command/API outcome and verify the created PR head/base match the checked candidate/policy using the exported `verifyPublishedPR` invariant. Race or failure halts; no destructive recovery is authorized. Shared mutation preflight belongs to Slice 8.
+4. The orchestrator may separately post the PR URL and apply the authorized Linear transition. Do not write or commit tracked Context/Strategy/HUD after QA. State synchronization needed for the candidate happens before QA; archival or later state commits are new candidates requiring fresh applicable evidence.
+5. Return the PR URL for independent review and separate explicit human merge approval. This workflow creates the PR; it does not authorize or execute a merge.
 
-1. **Initialize Task:** Invoke the system shell (no specific LLM agent required; operate as the TopHat orchestrator).
-2. **Metadata Extraction:** Use the Linear MCP to fetch the full title and description of Linear Task ID `{{args[0]}}`.
-3. **Instruction:** Fetch Linear Task ID `{{args[0]}}`. Verify that the task status is set to 'Ready for PR' or that all mandatory downstream audits have been completed.
-4. **GitHub Execution:** Use the `run_command` tool to execute the GitHub CLI. Inject the fetched Linear Task Title into the command: `gh pr create --title '{{args[0]}}: [Fetched Title Here]' --body 'Automated PR generated and verified by Antigravity Review Swarm. Resolves {{args[0]}}.' --base main`
-5. **Linear Automation:** Use the Linear MCP to transition Task `{{args[0]}}` to 'In Review: Orchestrator'. Post the GitHub PR URL as a comment on the task.
-6. **Context Synchronization & Remote Persistence (Chained):** You must immediately execute the logic of the `/context-sync` workflow. Summarize the completed realization, downstream mandates, and any observed side-effects from this task. Use the `replace_file_content` tool to update the Agent Handoff Notes section in `Context.md`.
-7. **Git Memory Binding (CRITICAL):** Once `Context.md` is modified locally, you MUST execute the following command sequence via `run_command` to ensure the operational memory is pushed to the remote Pull Request:
-   - `git add Context.md`
-   - `git commit -m 'chore(state): sync Context.md handoff notes for {{args[0]}}'`
-   - `git push origin HEAD`
-8. **Handoff Resolution:** Output the GitHub PR URL to the chat for final human sign-off. Then, output exactly: `[Next Action: /sprint-briefing]`. Do not append a hardcoded model recommendation; dynamically rely on the Global Orchestration Mandate.
+Helpers validate supplied evidence consistency when invoked. They do not intercept arbitrary GitHub, Git, terminal or agent actions, authenticate reviewers, or prove actual human consent.

@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const activeFiles = [
+  ".agents/docs/task-routing-and-qa.md", ".agents/workflows/sprint-briefing.md", ".agents/workflows/qa-validate.md", ".agents/workflows/publish-pr.md",
   ".agents/workflows/workspace-attach.md", ".agents/workflows/workspace-attach-assess.md", ".agents/workflows/workspace-attach-finalize.md", ".agents/docs/workspace-attachment.md", ".agents/docs/workspace-detachment.md",
   "README.md", "Strategy.md", "Roadmap.md", "Context.md", "HUD.md",
   ".agents/rules/agent-architect.md", ".agents/rules/workflows.md",

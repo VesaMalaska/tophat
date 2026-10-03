@@ -1,4 +1,4 @@
-# TopHat boundary registry — through Slice 5
+# TopHat boundary registry — through Slice 6
 
 This registry distinguishes current mechanisms from instructions and planned work. A registered hook is not automatically a reliable fail-closed control.
 
@@ -18,7 +18,11 @@ This registry distinguishes current mechanisms from instructions and planned wor
 | Attachment discovery/readiness | Read-only deterministic checks when invoked | Candidate config is inspected in memory; proposal/script/snapshot/package/approval consistency and exact application postconditions are checked. No helper writes host files; agent application is instructed and postchecked. Receipts do not authenticate consent. |
 | Attachment baseline | Authorized host execution and postcondition detection | Runs selected project pnpm scripts with timeout/output bounds and no automatic pnpm setup. Checks all exits for tracked/index/history/artifact changes. Scripts/descendants are not an OS sandbox or memory-isolated. |
 | Manual detachment | Read-only inventory plus instructed human removal | Exact current ownership/removal and preservation checks; helper never deletes. Mixed paths/hooks/exclusions require a new human decision. |
-| Agent context restrictions and role write boundaries | Instructed | No physical read sandbox is claimed. PM and writer mutation gates depend on verified host workflow identity in later slices. |
+| Task route and QA methods | Deterministic when classifier is invoked | Closed declaration, current authority/guidance and fixed tier/method rules; contradicting metadata denies. Trait completeness and exact issue transport remain semantic/instructed. |
+| QA evidence and publication readiness | Deterministic consistency check when invoked | Exact candidate, latest supplied attempts/stages, criterion/method coverage and artifact/runner-log integrity. Every later commit invalidates QA, including private-state commits. Receipts do not authenticate identity, actual execution, complete history, or consent; arbitrary publication can bypass invocation. |
+| QA product-code read-only boundary | Instructed plus postcondition detection | Explicit artifact outputs, bounded pre/post snapshots and reported operation checks; surviving writes or observed forbidden operations reject the result. No OS sandbox, invisible-command proof or physical IDE prevention. Separate developer remediation and independent re-QA are required. |
+| PM/Sprint Briefing | Instructed plus externally supervised detection | No command/file/Git/HUD/Linear mutation exception. Orchestrator captures/verifies outside PM session. Failed/unavailable inspection is visibly unverified. Tested host interception/workflow identity remains unproven, so no role hook is registered. |
+| Agent context restrictions and writer boundary | Instructed | No physical read sandbox is claimed. The bounded writer lifecycle remains Slice 7. |
 | Git mutation safety | Instructed | Existing Git workflows contain instructions and commands; a shared physical preflight is Slice 8. |
 | Workflow postcondition checks | Detection where actually performed | A diff or state audit can reject a result after a mutation; it does not prevent that mutation. Later slices must record both separately. |
 

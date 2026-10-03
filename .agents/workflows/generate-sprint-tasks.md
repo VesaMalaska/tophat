@@ -26,6 +26,8 @@ Before proposing, creating or amending a task, run `node .agents/scripts/validat
    - **Review Tier:** [standard | critical]
    - **Security:** [yes | no]
    - **QA:** [yes | no]
+   - **QA Methods:** [exact derived method set or none]
+   - **Task Fingerprint:** [current classifier result]
    - **Dependencies:** [e.g., JAC-35 | None]
    - **Required Skills Labels:** [validated skill names from the task-guidance check]
    - **ADR Flag:** [Yes | No - STRICT CONSTRAINT: Only flag 'Yes' for irreversible technical paradigms (e.g., security boundaries, database structures, UI constraints). Do NOT flag standard task generation, dev routing, or sprint counts as ADRs.]
@@ -85,3 +87,7 @@ Under Roadmap.md's unique ACTIVE_SPRINT_CHUNK marker, the authorized orchestrato
 ```
 
 The checker matches this private provenance. It validates declared scope relationships, not the semantic completeness of the task. Gate invocation and exact MCP copy remain instructed boundaries.
+
+## Closed routing payload
+
+Embed one fenced JSON `taskClassification` block in every proposal/issue. It contains the exact closed v1 task record documented in `.agents/docs/task-routing-and-qa.md`, alongside the existing bounded source extracts. Run `node .agents/scripts/classify-task.ts` with that record on stdin before proposal and approved issue creation/amendment. Require ROUTING_VALID; copy devTier/reviewTier/securityRequired/qaRequired/qaMethods/requiredStages and fingerprint exactly into display metadata. Empty QA methods require the explicit no-user-facing rationale. Reclassification or changed authority/config requires a newly reviewed proposal. The stable local taskId survives later assignment of a Linear locator.

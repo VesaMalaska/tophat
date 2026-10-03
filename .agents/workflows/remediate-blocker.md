@@ -17,5 +17,9 @@ Before proposing, creating or amending a task, run `node .agents/scripts/validat
 4. **Bounded proposal:** Output the exact proposed task context amendment, source references and authority payload. Run both shared authority checks. Obtain explicit human APPROVED before applying the unchanged payload through Linear; revalidate immediately before amendment. The ordinary Architect never writes public product authority.
 
 5. **State Reset:** "Use the Linear MCP to transition Task `{{args[0]}}` from 'Blocked' back to 'Todo'."
-6. **Separate orchestrator HUD handoff:** "An explicitly authorized orchestrator, not the Architect, may execute `node .agents/scripts/update-hud.ts --task "{{args[0]}}" --title "[Fetched Task Title]" --tier "[Read from task: junior, mid, or senior]" --sec "[yes or no]" --qa "[yes or no]" --status "Todo" --next "/implement-[tier] {{args[0]}}"` via `run_command` to instantly update the visual Orchestrator HUD."
+6. **Separate orchestrator HUD handoff:** "An explicitly authorized orchestrator, not the Architect, may execute `node .agents/scripts/update-hud.ts --task "{{args[0]}}" --title "[Fetched Task Title]" --tier "[Read from task: junior, mid, or senior]" --routing-file "[Exact current task JSON path]" --status "Todo" --next "/implement-[tier] {{args[0]}}"` via `run_command` to instantly update the visual Orchestrator HUD."
 7. **Human Gate:** "Output a summary of the injected context. Prompt the Human Orchestrator to review the patch and re-trigger the appropriate execution agent."
+
+## Slice 6 routing precondition
+
+Every generated/amended task embeds the closed taskClassification record from `.agents/docs/task-routing-and-qa.md`. Run `node .agents/scripts/classify-task.ts` on that exact JSON before proposal and again before approved Linear handoff. Require ROUTING_VALID. Copy only derived route/method fields; a missing record or contradiction halts for reviewed amendment. Preserve the approved source/task payload. A senior smoke task always takes critical review and security; backend smoke does not imply browser QA. Private topology cannot bypass the route.

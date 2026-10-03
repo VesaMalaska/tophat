@@ -1,0 +1,363 @@
+{
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "const": "./manifest.schema.json"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "packageId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "approvalStatus": {
+      "enum": [
+        "draft",
+        "awaiting-human-approval",
+        "approved"
+      ]
+    },
+    "entryGuide": {
+      "const": "README.md"
+    },
+    "readingOrder": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "inactive": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "active",
+        "inactive"
+      ],
+      "additionalProperties": false
+    },
+    "documents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "inactive"
+            ]
+          },
+          "role": {
+            "enum": [
+              "authoritative",
+              "derived"
+            ]
+          },
+          "authority": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+            },
+            "uniqueItems": true,
+            "minItems": 0
+          },
+          "dependsOn": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+            },
+            "uniqueItems": true,
+            "minItems": 0
+          },
+          "scope": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+                },
+                "kind": {
+                  "enum": [
+                    "requirement",
+                    "decision",
+                    "contract",
+                    "acceptance-criterion"
+                  ]
+                },
+                "authority": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+                },
+                "scope": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+                },
+                "acceptanceCriteria": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9._-]*#[A-Za-z][A-Za-z0-9._-]*$"
+                  },
+                  "uniqueItems": true,
+                  "minItems": 1
+                },
+                "decisionState": {
+                  "enum": [
+                    "proposed",
+                    "accepted",
+                    "rejected",
+                    "superseded"
+                  ]
+                },
+                "supersededBy": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9._-]*#[A-Za-z][A-Za-z0-9._-]*$"
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "authority",
+                "scope"
+              ],
+              "additionalProperties": false,
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "requirement"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "acceptanceCriteria"
+                    ]
+                  },
+                  "else": {
+                    "not": {
+                      "required": [
+                        "acceptanceCriteria"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "decision"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "decisionState"
+                    ]
+                  },
+                  "else": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "decisionState"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "supersededBy"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "decisionState": {
+                        "const": "superseded"
+                      }
+                    },
+                    "required": [
+                      "decisionState"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "supersededBy"
+                    ]
+                  },
+                  "else": {
+                    "not": {
+                      "required": [
+                        "supersededBy"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "id",
+          "path",
+          "version",
+          "status",
+          "role",
+          "authority",
+          "dependsOn",
+          "scope",
+          "items"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "role": {
+                  "const": "authoritative"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "authority": {
+                  "minItems": 1
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "authority": {
+                  "maxItems": 0
+                },
+                "items": {
+                  "maxItems": 0
+                }
+              },
+              "not": {
+                "required": [
+                  "sha256"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "approvedAuthorityFingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "packageId",
+    "version",
+    "approvalStatus",
+    "entryGuide",
+    "readingOrder",
+    "scope",
+    "documents"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Product documentation package manifest v1",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "approvalStatus": {
+            "const": "approved"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "approvedAuthorityFingerprint"
+        ],
+        "properties": {
+          "documents": {
+            "items": {
+              "if": {
+                "properties": {
+                  "role": {
+                    "const": "authoritative"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "sha256"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

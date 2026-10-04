@@ -4,6 +4,8 @@ description: Enforces operational handoff state updates for agent memory and gen
 
 **Steps:**
 
+Lifecycle constraint: this is an authorized state-update workflow, not Development Phase/project documentation acceptance. Perform intended tracked updates before sealing review/QA/document readiness; any later Context/HUD commit creates a new candidate. Do not invoke the read-only writer, PM or reviewer to carry out these writes or external actions. Prefer external receipt custody; no automatic post-review commit chain is authorized.
+
 1. **Data Aggregation:** Invoke the last active agent in the current implementation trajectory.
 2. **Instruction:** Summarize the completed realization, downstream mandates, and any observed side-effects (e.g., schema modifications or newly introduced Svelte 5 reactive scopes).
 3. **Context Update (Agent Memory):** Update the Agent Handoff Notes section in Context.md via the replace_file_content tool.

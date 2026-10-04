@@ -62,7 +62,13 @@ export function checkedCapture(value: unknown): RoleCapture {
   declaration(v.declaration);
   const { snapshotFingerprint: fp, ...body } = v;
   if (v.schemaVersion !== 1 || v.status !== "SESSION_CAPTURED" || fp !== fingerprint(body)) fail("POSTCONDITION_UNVERIFIED", "Invalid capture fingerprint");
-  const s = record(v.snapshot, "snapshot"); fields(s, ["rootIdentity", "commit", "branch", "index", "trackedDiff", "tracked", "inputs", "untracked", "hooksPath", "hook", "exclude", "operations", "history", "globalExclude"]);
+  checkedSnapshot(v.snapshot);
+  if (v.artifactRootIdentity !== null) hash(v.artifactRootIdentity);
+  for (const key of ["privateState", "outputs", "externalArtifacts"]) fileInventory(v[key]);
+  return v as unknown as RoleCapture;
+}
+export function checkedSnapshot(value: unknown): Snapshot {
+  const s = record(value, "snapshot"); fields(s, ["rootIdentity", "commit", "branch", "index", "trackedDiff", "tracked", "inputs", "untracked", "hooksPath", "hook", "exclude", "operations", "history", "globalExclude"]);
   for (const key of ["rootIdentity", "index", "trackedDiff", "history"]) hash(s[key]);
   commitSha(s.commit); if (s.branch !== null) text(s.branch); if (s.hooksPath !== null) text(s.hooksPath); strings(s.operations);
   for (const key of ["hook", "exclude"]) {
@@ -71,10 +77,8 @@ export function checkedCapture(value: unknown): RoleCapture {
   }
   const global = record(s.globalExclude, "global exclude"); fields(global, ["path", "sha256"]);
   if (global.path !== null) text(global.path); if (global.sha256 !== null) hash(global.sha256);
-  if (v.artifactRootIdentity !== null) hash(v.artifactRootIdentity);
   for (const key of ["tracked", "inputs", "untracked"]) fileInventory(s[key]);
-  for (const key of ["privateState", "outputs", "externalArtifacts"]) fileInventory(v[key]);
-  return v as unknown as RoleCapture;
+  return s as unknown as Snapshot;
 }
 export function fileInventory(value: unknown): FileState[] {
   const a = array(value);

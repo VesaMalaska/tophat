@@ -31,6 +31,9 @@ function parseRequest(value: unknown): TaskAuthorityRequest {
 }
 export function activeAuthorityContext(root: string): Record<string, unknown> {
   const source = readFileSync(safePath(root, "Roadmap.md"), "utf8");
+  return authorityContextFromSource(source);
+}
+export function authorityContextFromSource(source: string): Record<string, unknown> {
   const start = source.indexOf("[ACTIVE_SPRINT_CHUNK]");
   if (start < 0 || source.indexOf("[ACTIVE_SPRINT_CHUNK]", start + 1) >= 0) deny("TASK_CHUNK_INVALID", "Roadmap must have one active chunk marker");
   const section = source.slice(start).split(/\n#{1,6}\s/)[0];
@@ -44,14 +47,14 @@ export function activeAuthorityContext(root: string): Record<string, unknown> {
   list(context.scopeIds, "scopeIds", idPattern, true);
   return context;
 }
-export function validateTaskAuthority(root: string, input: unknown): TaskAuthorityReport {
+export function validateTaskAuthority(root: string, input: unknown, historicalChunk?: Record<string, unknown>): TaskAuthorityReport {
   try {
     const request = parseRequest(input), { report, snapshot } = inspectDocPackage(root);
     if (!snapshot || !report.planningAllowed) return { schemaVersion: 1, status: "DENIED", issues: report.issues };
     const m = snapshot.manifest;
     if (request.packageId !== m.packageId || request.packageVersion !== m.version || request.authorityFingerprint !== snapshot.authorityFingerprint)
       deny("TASK_AUTHORITY_STALE", "Task package provenance differs from current approved authority");
-    const chunk = activeAuthorityContext(snapshot.root);
+    const chunk = historicalChunk ?? activeAuthorityContext(snapshot.root);
     for (const key of ["packageId", "packageVersion", "authorityFingerprint", "developmentPhaseId", "sprintChunkId"] as const)
       if (chunk[key] !== request[key]) deny("TASK_CHUNK_INVALID", "Task provenance differs from the active chunk", key);
     if (request.scopeIds.some(scope => !(chunk.scopeIds as string[]).includes(scope) || !m.scope.active.includes(scope)))

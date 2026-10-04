@@ -19,7 +19,7 @@ _Format Output:_ `[Next Action: /command-name]`
 
 - `/workspace-init`: Bootstraps environment, verifies Tech Stack constraints, generates initial `Roadmap.md`.
 - `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
-- `/generate-readme`: Disabled legacy rewrite path; bounded replacement belongs to Slice 7.
+- `/generate-readme`: Retired autonomous rewrite; redirect requires an explicit derived-document boundary.
 
 ### Standard Automation Workflows
 
@@ -66,3 +66,11 @@ Do NOT attempt to run implementation as an automated workflow. The Human Orchest
 ## Routing and role evidence
 
 Use `.agents/docs/task-routing-and-qa.md` and `classify-task.ts`: junior → standard; mid/senior → critical + security. QA methods derive from observable effects. No topology/boolean bypass exists. Review/QA return read-only findings; the separate orchestrator persists records and applies external state. PM executes no command or mutation. Readiness checks and postconditions are deterministic when invoked; semantic completeness, actual independence and agent adherence remain instructed/supervised. Every later commit invalidates exact-head QA.
+
+## Derived document commands
+
+- `/sync-derived-docs`: Phase boundary or fingerprinted immediate necessity; exact approved writer plan and externally verified session.
+- `/review-derived-docs`: Existing independent read-only reviewer and complete document checklist.
+- `/verify-project-docs`: Current project-completion/handoff verification after accepted phase history.
+
+Ordinary chunks do not trigger sync. Writer and reviewer execute no commands or Git/Linear/private-state writes. Separate orchestrator owns checks/custody/publication; acceptance and merge require explicit human approval. Documentation-only PRs use their explicit readiness gate; combined task PRs keep fresh Slice 6 exact-HEAD evidence.

@@ -4,6 +4,18 @@ import { inspectDocPackage, isMain, type DocReport } from "./validate-doc-packag
 import { attachmentReadiness } from "./validate-workspace-attachment.ts";
 import { reviewEvidence } from "./finalize-doc-package.ts";
 import { classifyTask, inputJson, fail } from "./classify-task.ts";
+import { validateDerivedDocs, acceptedDocumentHistory } from "./validate-derived-docs.ts";
+
+export function derivedDocumentationOverlay(workspaceRoot: string, evidencePath = process.env.TOPHAT_DOC_EVIDENCE): string {
+  if (!evidencePath) return "Derived documentation: DOCUMENTATION_PENDING — no selected evidence.\n";
+  try {
+    const request = inputJson(fs.readFileSync(evidencePath, "utf8")), result = validateDerivedDocs(workspaceRoot, request);
+    const cfg = JSON.parse(fs.readFileSync(path.join(workspaceRoot, ".agents/tophat.config.json"), "utf8"));
+    const check = cfg.validation?.scripts?.documentation ? "DECLARED" : "DOCUMENTATION_CHECK_NOT_DECLARED";
+    const historical = result.approvalAllowed ? null : acceptedDocumentHistory(workspaceRoot, (request as {receipt?: unknown}).receipt);
+    return `Derived documentation: ${result.status}\nCurrent readiness: ${result.approvalAllowed ? "yes" : "no"}\n${historical ? `Historical accepted candidate: ${historical.candidateCommit} (${historical.mode}; does not grant current readiness)\n` : ""}Documentation check: ${check}\nBlockers: ${result.issues.map(i => `${i.code}: ${i.message}`).join("; ") || "None recorded"}\n`;
+  } catch { return "Derived documentation: DOCUMENTATION_BLOCKED — evidence unavailable; current readiness denied.\n"; }
+}
 
 export function documentationReadiness(workspaceRoot: string): { report: DocReport; reviewRequired: boolean } {
   const approved = inspectDocPackage(workspaceRoot);
@@ -24,7 +36,7 @@ export function overlayDocumentation(content: string, workspaceRoot: string): st
   const state = report.documentationState ?? "UNAVAILABLE — VALIDATION DENIED";
   let previous = content.replace(/\n(?:#{1,6} )?📚 Documentation Authority[\s\S]*$/, "").trimEnd();
   if (!report.planningAllowed || attachment.state === "ATTACHMENT_INVALIDATED") previous = previous.replace(/None\. Workspace is clean and ready\./g, "Documentation readiness denied; inspect the authority report.");
-  return `${previous}\n\n📚 Documentation Authority\n  - State: ${state}\n  - Package: ${report.packageId ?? "Unavailable"} / ${report.packageVersion ?? "Unavailable"}\n  - Planning allowed: ${report.planningAllowed && attachment.state !== "ATTACHMENT_INVALIDATED" ? "yes" : "no"}\n  - Authority fingerprint: ${report.authorityFingerprint ?? "Unavailable"}\n  - Validation: ${report.status} at ${new Date().toISOString()}\n  - Attachment: ${attachment.state} (historical completion evidence; current authority checked separately)\n  - Attachment blockers: ${attachment.issues.join("; ") || "None recorded"}\n  - Review: ${reviewRequired ? "REVIEW REQUIRED" : "No review blocker recorded"}\n  - Blockers: ${report.issues.map(i => `${i.code}: ${i.message}`).join("; ") || (report.planningAllowed ? "None" : "Explicit matching human approval is required before planning")}\n`;
+  return `${previous}\n\n📚 Documentation Authority\n  - State: ${state}\n  - Package: ${report.packageId ?? "Unavailable"} / ${report.packageVersion ?? "Unavailable"}\n  - Planning allowed: ${report.planningAllowed && attachment.state !== "ATTACHMENT_INVALIDATED" ? "yes" : "no"}\n  - Authority fingerprint: ${report.authorityFingerprint ?? "Unavailable"}\n  - Validation: ${report.status} at ${new Date().toISOString()}\n  - Attachment: ${attachment.state} (historical completion evidence; current authority checked separately)\n  - Attachment blockers: ${attachment.issues.join("; ") || "None recorded"}\n  - Review: ${reviewRequired ? "REVIEW REQUIRED" : "No review blocker recorded"}\n  - Blockers: ${report.issues.map(i => `${i.code}: ${i.message}`).join("; ") || (report.planningAllowed ? "None" : "Explicit matching human approval is required before planning")}\n\n${derivedDocumentationOverlay(workspaceRoot)}`;
 }
 export function renderHud(args: string[], workspaceRoot = process.cwd()): string {
 if (args.includes("--sec") || args.includes("--qa")) fail("ROUTING_METADATA_CONFLICT", "Legacy HUD routing bypass flags are unsupported");

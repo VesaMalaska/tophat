@@ -33,3 +33,12 @@ _Waiting for the Sprint Briefing workflow..._
 - Installation mode / ownership inventory: [Human decision required]
 - Existing failures / dispositions: [Never inferred or erased]
 - This mirror is not approval; current attachment records and documentation checks govern readiness.
+
+## Derived documentation lifecycle (mirror)
+
+- Current state: DOCUMENTATION_PENDING
+- Phase/task/project boundary: [Not assessed]
+- Change/no-change rationale: [No record]
+- Current candidate/review/checks: [Evidence required]
+- Accepted history: [No accepted receipt]
+- This mirror never grants readiness or phase acceptance; later candidates require revalidation.

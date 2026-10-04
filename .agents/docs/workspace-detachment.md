@@ -10,3 +10,7 @@ This is a human-reviewed procedure. `inspect-tophat-detachment.ts` reads and che
 6. Invoke the helper in `mode: verify` with the exact plan and approval. Require DETACHED_VERIFIED: selected files removed, retained product/docs/scripts/lockfile bytes/modes and Git history/index/branch unchanged, nominated hook/exclusion delta exact, no unexplained untracked files. Separately authorize any retained host validation commands. Report intentionally retained shared/private material for client handoff review.
 
 Fixtures simulate human-confirmed file removal using test code. That demonstrates the manual plan and preservation rules; it is not an automated detach feature. A denial never performs remediation.
+
+## Shared Git integration boundary
+
+The separately authorized human/execution orchestrator runs `node <pinned-external-TopHat-source>/.agents/scripts/git-preflight.ts` and requires GIT_PREFLIGHT_READY before each nominated hook/exclude removal. Bind exact current branch/HEAD/index, retained classified inputs and original metadata digest using the git-integration profile. Use the pinned external source while host tooling is removed. Preserve prior ownership/removal approval and all host rules. Reinspect the remaining state immediately before each action and verify its exact delta afterwards. Tracked private-file removal/untracking is separate approved normal stage/commit work; detachment performs no history/index mutation.

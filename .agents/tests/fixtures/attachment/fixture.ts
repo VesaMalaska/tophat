@@ -7,6 +7,7 @@ import { digest } from '../../../scripts/validate-doc-package.ts';
 import { discover as inspect, fingerprint, fileState, requiredInfrastructure, type Proposal, type Ownership } from '../../../scripts/inspect-workspace-attachment.ts';
 import { assessAttachment } from '../../../scripts/assess-attachment-baseline.ts';
 import { validateAttachment, verifyAttached, exclusionBlock } from '../../../scripts/validate-workspace-attachment.ts';
+import { hookRequest } from '../git-safety.ts';
 import { installGitHook } from '../../../scripts/install-git-hook.ts';
 const vault=resolve(dirname(fileURLToPath(import.meta.url)),'../../../..');
 export function command(root:string,args:string[]):string {const r=spawnSync('git',args,{cwd:root,encoding:'utf8'});if(r.error||r.status!==0)throw Error(r.stderr);return r.stdout.trim();}
@@ -39,7 +40,7 @@ export function apply(root:string,request:Record<string,any>){const ready=valida
   for(const w of p.writePlan){mkdirSync(dirname(join(root,w.path)),{recursive:true});writeFileSync(join(root,w.path),w.content);}
   for(const [key,value] of Object.entries(ready.evidence)){const path=`.agents/attachment/${p.proposalId}/${key}.json`;mkdirSync(dirname(join(root,path)),{recursive:true});writeFileSync(join(root,path),JSON.stringify(value,null,2)+'\n');}
   if(p.installation.exclusions.length)writeFileSync(join(root,'.git/info/exclude'),readFileSync(join(root,'.git/info/exclude'),'utf8')+exclusionBlock(p));
-  const hook=installGitHook(root);if(hook.status==='DENIED')throw Error(JSON.stringify(hook));
+  const hook=installGitHook(root,hookRequest(root,[...p.writePlan.map(w=>w.path),...p.evidencePaths.slice(0,-1)]));if(hook.status==='DENIED')throw Error(JSON.stringify(hook));
   const result=verifyAttached(root,request);writeFileSync(join(root,p.evidencePaths.at(-1)!),JSON.stringify(result,null,2)+'\n');return result;
 }
 export function detachInput(root:string,p:Proposal){const entries=[...p.ownership,...p.evidencePaths.map(path=>({path,classification:'TOPHAT_OWNED_PRIVATE' as const,evidence:'Generated private attachment evidence',tracked:false,initialSha256:fileState(root,path).sha256}))];

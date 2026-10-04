@@ -15,3 +15,7 @@ description: Strategic architectural audit to identify technical debt and propos
 6.  **Task Proposal:** Below the report, generate a list of atomic, deterministic Linear task blocks designed to resolve the identified debt. Format these using the standard Proposal Stage task template (Title, Priority, Dev Tier, Review Tier, etc.).
 7.  **Human Gate:** As the final line of your output, append this exact call-to-action: '🛑 **ACTION REQUIRED:** Please review the Refactoring Audit Report. Reply with APPROVED to authorize the creation of these refactoring tickets in Linear.'
 8.  **Linear State Enforcement (Post-Approval):** Only upon receiving the 'APPROVED' signal from the Human Orchestrator, invoke the Linear MCP to create the issues and verify they land in the 'Todo' or 'Backlog' column.
+
+## Git mutation boundary
+
+Before every separately authorized Git action, the execution orchestrator invokes `node <pinned-TopHat-source>/.agents/scripts/git-preflight.ts` with the exact closed operation request on stdin; require GIT_PREFLIGHT_READY / ALLOW. Follow `.agents/docs/git-safety.md`: explicit branch/HEAD/base/remote, applicable clean or exact intended state, sequential checked results and operation-specific postchecks. This delegation does not grant Git authority to a read-only role or introduce implicit publication. Failure preserves actual state and halts; no automatic recovery. Candidate-changing commits require fresh applicable review/QA/document evidence.

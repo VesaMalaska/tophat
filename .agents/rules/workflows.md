@@ -51,13 +51,13 @@ Do NOT attempt to run implementation as an automated workflow. The Human Orchest
 
 ### Standard Implementation Sequence:
 
-1. **[Human - Model: Gemini Flash/Pro]**: `/implement-junior [ID]` Use MCP to fetch Linear Task [ID]. Execute and push branch. (Auto-moves to `In Review: Architecture`)
+1. **[Human - Model: Gemini Flash/Pro]**: `/implement-junior [ID]` Use MCP to fetch Linear Task [ID]. Prepare and verify the exact candidate; push is separately authorized and checked. (Auto-moves to `In Review: Architecture`)
 2. **[Human - Model: Claude Sonnet]**: `/review-standard [ID]` Review the active branch against the spec. (Next: classified QA when required, otherwise evidence-checked readiness)
 3. Finalize intended tracked private-state updates before candidate review/QA; independent QA, when required, precedes evidence-checked publication.
 
 ### Critical Implementation Sequence:
 
-1. **[Human - Model: from routingMatrix]**: `/implement-mid [ID]` | `/implement-senior [ID]` Use MCP to fetch Linear Task [ID]. Execute and push branch. (Auto-moves to `In Review: Architecture`)
+1. **[Human - Model: from routingMatrix]**: `/implement-mid [ID]` | `/implement-senior [ID]` Use MCP to fetch Linear Task [ID]. Prepare and verify the exact candidate; push is separately authorized and checked. (Auto-moves to `In Review: Architecture`)
 2. **[Human - Model: Claude Sonnet]**: `/review-critical [ID]` Adversarially review the active branch. (Auto-moves to `In Review: Security`)
 3. **[Human - Model: Claude Sonnet]**: `/security-review [ID]` Execute threat model. (Auto-moves to `In Review: QA` or `Ready for PR`)
 4. **[Human - Model: from routingMatrix]**: `/qa-validate [ID]` only when the classifier requires methods. Validate the exact candidate using those compatible methods; no universal Playwright route.
@@ -74,3 +74,5 @@ Use `.agents/docs/task-routing-and-qa.md` and `classify-task.ts`: junior → sta
 - `/verify-project-docs`: Current project-completion/handoff verification after accepted phase history.
 
 Ordinary chunks do not trigger sync. Writer and reviewer execute no commands or Git/Linear/private-state writes. Separate orchestrator owns checks/custody/publication; acceptance and merge require explicit human approval. Documentation-only PRs use their explicit readiness gate; combined task PRs keep fresh Slice 6 exact-HEAD evidence.
+
+All Git mutation paths use the closed git-preflight.ts contract in `.agents/docs/git-safety.md`. Publication retains current task/document gates; merge needs separate explicit human approval.

@@ -7,5 +7,9 @@ description: Propose private planning reconciliation only after revised product 
 3. Output a bounded reconciliation proposal for ACTIVE_SPRINT_CHUNK and UPCOMING_CHUNKS, including stable IDs and updated authorityContext provenance. Preserve REALIZED_CHUNKS history. If product meaning remains contradictory, halt rather than mutate requirements.
 4. Read the Linear board and output an obsolete/stale task triage report. This does not cancel, rewrite or create issues; new/amended task payloads require fresh package and task-authority checks and their human gates.
 5. After explicit human direction, a separate authorized orchestrator revalidates the proposed authority fingerprint and applies only the named private Roadmap/Context/Strategy/HUD changes. The Architect does not violate its declared file-write boundary.
-6. Do not run the disabled `/generate-readme` path or autonomously rewrite public documentation. Derived-document synchronization is Slice 7. Do not execute Git operations implicitly.
+6. Do not run the disabled `/generate-readme` path or autonomously rewrite public documentation. Derived-document synchronization follows the approved lifecycle. Do not execute Git operations implicitly.
 7. Summarize exact changed private paths, package provenance and triage decisions for the human. Recommend the appropriate authorized workflow/model from routingMatrix.
+
+## Git mutation boundary
+
+Before every separately authorized Git action, the execution orchestrator invokes `node <pinned-TopHat-source>/.agents/scripts/git-preflight.ts` with the exact closed operation request on stdin; require GIT_PREFLIGHT_READY / ALLOW. Follow `.agents/docs/git-safety.md`: explicit branch/HEAD/base/remote, applicable clean or exact intended state, sequential checked results and operation-specific postchecks. This delegation does not grant Git authority to a read-only role or introduce implicit publication. Failure preserves actual state and halts; no automatic recovery. Candidate-changing commits require fresh applicable review/QA/document evidence.

@@ -9,3 +9,7 @@ description: Verify current product documentation and handoff after all Developm
 5. Require DOCUMENTATION_READY from `validate-derived-docs.ts`. Documentation-only publication follows its explicit gate; combined work requires current task evidence. After separate explicit human final acceptance of the exact report/review, operation accept may return PROJECT_DOCUMENTATION_ACCEPTED. A later commit/state change invalidates current readiness; accepted history remains attached to its stated commit.
 
 This workflow does not merge PRs, release to main, certify live multi-framework acceptance, or replace the integrated Slice 9 release gate.
+
+## Git mutation boundary
+
+Before every separately authorized Git action, the execution orchestrator invokes `node <pinned-TopHat-source>/.agents/scripts/git-preflight.ts` with the exact closed operation request on stdin; require GIT_PREFLIGHT_READY / ALLOW. Follow `.agents/docs/git-safety.md`: explicit branch/HEAD/base/remote, applicable clean or exact intended state, sequential checked results and operation-specific postchecks. This delegation does not grant Git authority to a read-only role or introduce implicit publication. Failure preserves actual state and halts; no automatic recovery. Candidate-changing commits require fresh applicable review/QA/document evidence.

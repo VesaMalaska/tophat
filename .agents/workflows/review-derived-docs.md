@@ -11,3 +11,5 @@ Audit SVG scripts, event handlers, unsafe external references and embedded activ
 Review a no-change assessment with equal coverage scrutiny. Material claims cannot pass through a prose-only assertion: examine actual supplied artifacts/procedures and applicable verification. Missing necessary evidence is BLOCKED. Realization/authority conflict is DOCUMENTATION_AUTHORITY_CONFLICT.
 
 Return APPROVED, CHANGES_REQUIRED or BLOCKED with exact candidate identity, checklist and findings. Do not edit documents/product/config/receipts, execute commands or mutate Git/Linear/private state. The orchestrator binds the independent receipt to the final nonrecursive candidate fingerprint after postcheck. Reviewer cannot edit and approve their own correction.
+
+Git policy: this workflow authorizes no Git mutation. Any later Git action belongs to a separately authorized execution workflow under the shared Git safety contract; this does not grant command authority to a read-only role.

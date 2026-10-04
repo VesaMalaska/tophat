@@ -1,45 +1,15 @@
 ---
 name: git-linear-workflow
-description: Enforces strict Git branching, commit conventions, clean-state verification, and Linear task state transitions. Use this at the start and end of every implementation task.
+description: Checked Git identity, exact staging, bounded task handoff and separately authorized publication.
 ---
 
-# Git & Linear Workflow Skill
+# Git and Linear lifecycle
 
-When assigned a Linear task for implementation, you must strictly follow this operational lifecycle. Do not skip steps or defer them to the human orchestrator.
+Use `.agents/docs/git-safety.md`. Before each authorized Git mutation, the execution orchestrator runs `node <pinned-TopHat-source>/.agents/scripts/git-preflight.ts` with the exact closed JSON request on stdin and requires GIT_PREFLIGHT_READY / ALLOW. The helper is read-only; it does not intercept another command or authenticate approval. Read-only roles acquire no Git mutation authority.
 
-## 1. Task Initialization & Dependency Pre-Flight (Before coding)
-
-- **Linear Relation Check and status transition:** Use the Linear MCP to fetch the full task details for `{{args[0]}}`. Parse the description text for the `Blocked By` field (e.g., `Blocked By: JAC-35`). Transition the task status from `Todo` to `In Progress`.
-- **PR Baseline Check (Deterministic):** Use the `run_command` tool to execute `gh pr list --state open --json number,title,headRefName`.
-  - **Hard Stop Condition:** If the `Blocked By` field specifies a task ID (e.g., `JAC-35`) and `gh pr list` shows an open PR for a branch containing that ID (or if that prerequisite task is not in status 'Done'), HALT execution immediately.
-  - **Blocker Payload:** Output `[BLOCKER_ENCOUNTERED]: Cannot start implementation. Prerequisite task [Insert ID] has an open PR that is not yet merged to main. Please merge the PR to synchronize the repository state.`
-- **Git Sync & Branching (CRITICAL):** You must synchronize with the remote source of truth to prevent Git Drift. Execute this exact sequence using the `run_command` tool:
-  1. **Working Tree Audit:** Execute git status --porcelain. If any untracked or modified files (especially Context.md or HUD.md) exist from a previous run, halt instantly with a [GIT_DIRTY_STATE] blocker and instruct the Human Orchestrator to commit or stash the lingering memory files.
-  2. **Fetch:** Execute `git fetch origin main`.
-  3. **Checkout/Recover:** Attempt to execute `git checkout [type]/[linear-issue-id]-[short-description]`.
-  4. **Branch Creation:** If step 3 ('Checkout/Recover') throws an error (e.g., pathspec did not match), execute `git checkout -b [type]/[linear-issue-id]-[short-description] origin/main` to cleanly branch from the remote.
-     - **Types:** `feature/`, `bugfix/`, `chore/`, `refactor/`
-     - **Example:** `feature/ENG-142-electron-sqlite-init`
-
-## 2. Implementation & Committing (During coding)
-
-- Follow Git Best Practices. Group logical changes together.
-- **Commit Messages:** Use Conventional Commits formatting.
-  - **Format:** `[type]([optional scope]): [Linear-ID] [description]`
-  - **Example:** `feat(ipc): ENG-142 setup context bridge for sqlite queries`
-- Ensure code is compiling and saving before committing.
-
-## 3. Task Completion (After coding)
-
-- **Git Push:** Use `run_command` to push your branch to the remote repository.
-  - _Command:_ `git push -u origin [branch-name]`
-- **Linear Status:** Use the Linear MCP to transition the task status from `In Progress` to `In Review: Architecture`.
-- **Handoff:** Only after the push and status update are successful should you yield to the human orchestrator.
-
-## 4. Unhappy Path (Blockers)
-
-If you encounter a hard blocker (missing schema, scope violation) during the Implementation Workflow Stage:
-
-- **Linear Status:** Use the Linear MCP to transition the task to 'Blocked'.
-- **Git State:** If you have written partial code, commit it with `chore(wip): [Linear-ID] partial implementation prior to blocker` and push to origin. If no code was written, you may abandon the branch.
-- **Communication:** Add a detailed comment to the Linear issue explaining the technical blocker so the Human Orchestrator or Lead Architect can resolve it asynchronously.
+1. Read the exact task, prerequisites and human/project Git policy. Require prerequisite completion and integration into the declared base; an open prerequisite PR is a blocker. Do not infer dependency integration from a branch-name substring or a Linear label. For this TopHat repository use development, with main reserved for release. Host base/remote/branch policy is explicit.
+2. Inspect clean attached starting HEAD and branch. Preflight fetch, perform the explicit fetch sequentially, inspect its result and exact fetched base object. Inspect exact local target branch existence before choosing create-branch or switch. Require matching preflight before that action and verify resulting branch/HEAD. Checkout failure is a blocker, never permission to create or overwrite a branch.
+3. Implement only task scope. Finalize intended tracked private-state updates before candidate review/QA. Review the complete exact file plan and content/mode digests. Preflight stage, stage only literal exact paths, verify the whole index; preflight commit, inspect its result and verify parents, committed delta and clean resulting state. Use Conventional Commits with the task ID. No index-wide staging or automatic inclusion of unreviewed work.
+4. Return exact candidate, validation and implementation receipt to the orchestrator for the derived review/security/QA route. A developer commit is not publication approval. A separately authorized push requires clean exact-head preflight, explicit local/destination refs, checked outcome and remote-ref verification. A PR additionally requires the existing publication evidence gate. Preserve distinct commit, push and PR statuses in the task report.
+5. Apply only explicitly authorized Linear comments/transitions after their prerequisites succeed. A failed Git action cannot be described as a pushed candidate. State mirrors are not approval receipts.
+6. On blocker/escalation preserve actual files/index/history. Report the failed step and next human decision; do not automatically commit or push WIP, stash, clean, reset, discard, rewrite history or delete a branch. Separate human-authorized prerequisite/remediation work begins with fresh preflight and applicable evidence.

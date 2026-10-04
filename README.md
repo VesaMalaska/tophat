@@ -202,7 +202,7 @@ Map any selected validation category to a **package-script name**, not a shell c
 After configuring the host and its pnpm scripts, run **from its repository root**:
 
 ```bash
-node .agents/scripts/install-git-hook.ts
+node .agents/scripts/install-git-hook.ts < /absolute/external/hook-preflight-request.json
 ```
 
 The installer denies an existing `pre-commit` hook or configured `core.hooksPath` without changing it; integrate the versioned `.agents/git-hooks/pre-commit` manually if your project already manages hooks. Installation writes to that clone's `.git/hooks/`, which Git does not version; repeat it for each clone. Verify with `git config --get core.hooksPath` (no output when unset) and inspect `.git/hooks/pre-commit`. Before treating the gate as active, make a harmless test commit with a deliberately failing declared script in a disposable clone and confirm `HEAD` does not advance. Run optional phase and completion gates explicitly with `node .agents/scripts/run-validation.ts '{"gate":"developmentPhaseGate"}'` or `'{"gate":"projectCompletionGate"}'`.
@@ -333,3 +333,9 @@ At every Development Phase boundary, `/sync-derived-docs` evaluates declared hos
 The technical writer edits only an exact human-approved plan within validated derived targets. It cannot run commands or change product code/tests/config, authority, package infrastructure or private orchestration. A separately authorized orchestrator captures/verifies the session, runs host-declared checks, persists external evidence and publishes. The independent document reviewer checks correspondence, coverage, links/examples and private leakage, including SVG active content. These are instructed boundaries with deterministic postcondition/readiness checks when invoked, not an OS sandbox or verified Antigravity role hook.
 
 Documentation-only PRs have an explicit candidate-bound review/check/claim-evidence gate from accepted integrated task work. Combined product/documentation PRs retain fresh Slice 6 exact-HEAD QA after documentation commits. Old QA is historical, never refreshed implicitly. Phase/final acceptance and PR merge each require explicit human approval. No post-review private-state commit chain is automatic. See [.agents/docs/derived-documentation.md](.agents/docs/derived-documentation.md) for exact interfaces, limits and custody.
+
+### Git safety
+
+All authorized Git mutations follow [the shared Git contract](.agents/docs/git-safety.md): read-only preflight checks exact branch/HEAD, index and intended bytes, remote policy and conflicts; execution checks each result and postcondition. Stage only exact reviewed files. Conflict reconciliation is limited to an explicitly authorized existing merge. Hook installation now requires the exact git-integration request on stdin, including approved current host state and native hook digest; missing input denies before writes.
+
+These checks run when invoked. They do not intercept arbitrary terminal/IDE/GitHub commands, eliminate races or authenticate consent. Publication retains exact-candidate QA/document evidence and merge requires separate human approval. No automatic destructive recovery or WIP publication. The [adoption inventory](.agents/docs/git-adoption.json) covers active workflow instructions.

@@ -9,3 +9,5 @@ description: Independent read-only review-standard inspection of the exact class
 5. Derive the next stage with `nextStage` from the validated route. Approved critical always leads to `/security-review`; approved standard/security leads to `/qa-validate` if methods are required, otherwise publication readiness. CHANGES_REQUIRED leads to `/remediate-task`; BLOCKED requires human direction. Status labels alone do not authorize publication.
 
 A subsequent code correction requires a new developer commit and a fresh derived review route, then security/QA where required. Actual independence and gate invocation are supervised instructions; no physical IDE prevention is claimed.
+
+Git policy: this workflow authorizes no Git mutation. Any later Git action belongs to a separately authorized execution workflow under the shared Git safety contract; this does not grant command authority to a read-only role.

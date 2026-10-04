@@ -36,3 +36,7 @@ Lifecycle constraint: this is an authorized state-update workflow, not Developme
    - [None | Describe any blocker stopping the swarm]
 
 5. **External Sync:** Post the identical Agent Handoff summary as a comment to the active Linear task to ensure external tracking is maintained.
+
+## Git mutation boundary
+
+Before every separately authorized Git action, the execution orchestrator invokes `node <pinned-TopHat-source>/.agents/scripts/git-preflight.ts` with the exact closed operation request on stdin; require GIT_PREFLIGHT_READY / ALLOW. Follow `.agents/docs/git-safety.md`: explicit branch/HEAD/base/remote, applicable clean or exact intended state, sequential checked results and operation-specific postchecks. This delegation does not grant Git authority to a read-only role or introduce implicit publication. Failure preserves actual state and halts; no automatic recovery. Candidate-changing commits require fresh applicable review/QA/document evidence.

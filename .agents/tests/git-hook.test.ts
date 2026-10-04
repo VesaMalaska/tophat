@@ -4,6 +4,7 @@ import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } f
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import test from "node:test";
+import { hookRequest } from "./fixtures/git-safety.ts";
 import { installGitHook } from "../scripts/install-git-hook.ts";
 
 function fixture(callback: (root: string) => void): void {
@@ -32,8 +33,8 @@ function commit(root: string, name: string) {
 }
 
 test("installed native hook denies failed validation before commit and permits passing validation", () => fixture((root) => {
-  assert.equal(installGitHook(root).status, "INSTALLED");
-  assert.equal(installGitHook(root).status, "ALREADY_INSTALLED");
+  assert.equal(installGitHook(root, hookRequest(root)).status, "INSTALLED");
+  assert.equal(installGitHook(root, hookRequest(root)).status, "ALREADY_INSTALLED");
   const baseline = execFileSync("git", ["-C", root, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
   writeFileSync(join(root, "package.json"), JSON.stringify({ scripts: { unit: "node -e 'process.exit(7)'" } }));
   execFileSync("git", ["-C", root, "add", "package.json"]);
@@ -51,8 +52,18 @@ test("installed native hook denies failed validation before commit and permits p
 test("installer refuses existing hook and redirected hooksPath", () => fixture((root) => {
   const dest = join(root, ".git/hooks/pre-commit");
   writeFileSync(dest, "#!/bin/sh\nexit 0\n");
-  assert.equal(installGitHook(root).code, "HOOK_CONFLICT");
+  assert.equal(installGitHook(root, hookRequest(root)).code, "HOOK_CONFLICT");
   assert.equal(readFileSync(dest, "utf8"), "#!/bin/sh\nexit 0\n");
   execFileSync("git", ["-C", root, "config", "core.hooksPath", ".custom-hooks"]);
-  assert.equal(installGitHook(root).code, "GIT_HOOKS_PATH_CONFIGURED");
+  assert.equal(installGitHook(root, hookRequest(root)).code, "GIT_HOOKS_PATH_CONFIGURED");
+}));
+
+test("installer missing approval or stale intended host state never writes a hook", () => fixture((root) => {
+  const baseline = execFileSync("git", ["-C", root, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+  assert.equal(installGitHook(root).status, "DENIED");
+  const approved = hookRequest(root);
+  writeFileSync(join(root, "unexpected.txt"), "unapproved\n");
+  assert.equal(installGitHook(root, approved).status, "DENIED");
+  assert.throws(() => readFileSync(join(root, ".git/hooks/pre-commit")));
+  assert.equal(execFileSync("git", ["-C", root, "rev-parse", "HEAD"], { encoding: "utf8" }).trim(), baseline);
 }));

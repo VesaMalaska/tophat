@@ -1,27 +1,13 @@
 ---
-description: Resolves git merge conflicts on an active feature branch and verifies with the host's declared checks.
+description: Reconcile only an already identified, human-authorized merge conflict for an exact task candidate.
 ---
 
-**Steps:**
+1. Read `.agents/docs/git-safety.md`, exact task/feature branch, current HEAD, MERGE_HEAD, all unmerged entries and already staged incoming merge paths. `/resolve-conflict <task-id>` is scoped human authorization for this recorded merge, not permission to initiate a merge or recover history. Preserve the approved complete snapshot and consent locator externally.
+2. The separate execution orchestrator invokes `node <pinned-TopHat-source>/.agents/scripts/git-preflight.ts` operation resolve-conflict with that exact conflict authorization. Require GIT_PREFLIGHT_READY. Missing/extra operation markers, unrelated changes, changed parents or ambiguous reconciliation halt. No wildcard checkout, fetch/merge initiation, rebase/cherry-pick recovery, abort or destructive rollback.
+3. The assigned developer resolves only the nominated conflict files while preserving both approved contracts. No semantic guess where the correct resolution is ambiguous. Incoming nonconflict staged paths must remain unchanged.
+4. Run project-declared applicable checks through run-validation.ts; preserve failure evidence. Preflight stage with the original conflict snapshot and complete intended merge delta; stage only the resolved literal conflict paths. Reinspect index, require no unmerged entries and run preflight commit with the same authorization and complete approved bytes. Inspect commit outcome and verify both parents, complete delta and cleared merge state.
+5. Return the new commit for fresh derived standard/critical review, security when required and independent QA when required. No automatic push before publication prerequisites. Separately authorized push/PR uses the existing evidence gates and shared preflight. New candidate invalidates prior exact-HEAD approvals; no automatic state commit after QA.
 
-1. **Initialize Task:** Invoke `@agent-senior-dev`.
-2. **Context Ingestion:** Use the Linear MCP to fetch Task ID `{{args[0]}}`. Identify the active feature branch (e.g., `feature/{{args[0]}}-...`).
-3. **Branch Sync & Pull:** Use the `run_command` tool to execute the following sequentially:
-   - `git checkout feature/{{args[0]}}-*`
-   - `git fetch origin main`
-   - `git merge origin/main`
-4. **Conflict Discovery:** If merge conflicts occur:
-   - Run `git status` and `git diff --name-only --diff-filter=U` to isolate all conflicted files.
-   - Read the conflict files using the `view_file` tool.
-5. **Surgical Reconciliation:**
-   - Analyze both sides of the conflict markers (`<<<<<<< HEAD`, `=======`, `>>>>>>>`).
-   - Preserve the functional contracts of both the incoming `main` changes and the current task implementation.
-   - Remove all git conflict markers and write the resolved files using the `replace_file_content` tool.
-6. **Validation Gate (Mandatory):**
-   - Run `node .agents/scripts/run-validation.ts '{"gate":"commitGate"}'` from the host root; request additional declared categories through its JSON request when required by this task. Stop on denial. Do not assume Vitest or fixed package-script names.
-7. **Post-Flight Automation:**
-   - Run `git add .`
-   - Run `git commit -m 'chore(git): resolve merge conflicts with main for {{args[0]}}'`
-   - Run `git push origin HEAD`
-8. **HUD Radar Broadcast:**
-   - Execute `npx tsx .agents/scripts/update-hud.ts --task "{{args[0]}}" --title "Conflict Resolution" --tier "senior" --status "In Review: Architecture" --next "/review-critical {{args[0]}}"` via `run_command`.
+## Git mutation boundary
+
+Before every separately authorized Git action, the execution orchestrator invokes `node <pinned-TopHat-source>/.agents/scripts/git-preflight.ts` with the exact closed operation request on stdin; require GIT_PREFLIGHT_READY / ALLOW. Follow `.agents/docs/git-safety.md`: explicit branch/HEAD/base/remote, applicable clean or exact intended state, sequential checked results and operation-specific postchecks. This delegation does not grant Git authority to a read-only role or introduce implicit publication. Failure preserves actual state and halts; no automatic recovery. Candidate-changing commits require fresh applicable review/QA/document evidence.

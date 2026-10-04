@@ -8,3 +8,5 @@ description: Advisory read-only sprint briefing; no PM execution or state mutati
 4. PM executes no shell command, Git inspection, validation helper, test, build, installation, file write, HUD update, Linear/task mutation, remediation or subagent invocation. No HUD exception exists.
 5. After leaving the PM session, the orchestrator verifies the original snapshot and observed operations. A violation rejects the briefing result and requires human direction. Unavailable verification stays POSTCONDITION_UNVERIFIED; a diff cannot prove that invisible operations never occurred.
 6. The human selects a separate authorized workflow to apply any recommendation. Antigravity workflow identity/interception remains unverified; this is an instructed boundary plus postcondition detection, not physical prevention.
+
+Git policy: this workflow authorizes no Git mutation. Any later Git action belongs to a separately authorized execution workflow under the shared Git safety contract; this does not grant command authority to a read-only role.

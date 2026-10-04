@@ -1,4 +1,4 @@
-# TopHat boundary registry — through Slice 7
+# TopHat boundary registry — through Slice 8
 
 This registry distinguishes current mechanisms from instructions and planned work. A registered hook is not automatically a reliable fail-closed control.
 
@@ -26,7 +26,8 @@ This registry distinguishes current mechanisms from instructions and planned wor
 | Technical writer | Instructed plus externally supervised detection | No command/Git/Linear/product/authority/private-state mutation. Git/filesystem comparison rejects surviving or reported forbidden actions, but no physical IDE interception/read sandbox/invisible-action proof or automatic rollback exists. SVG active content remains independent semantic review. |
 | Document publication | Explicit invoked workflow gate | Documentation-only candidates start from accepted integrated tasks and contain only authorized derived diffs; combined candidates retain fresh Slice 6 task evidence. Later commits invalidate readiness; historical approval is not refreshed QA. No server-enforced GitHub publication policy. |
 | Agent context restrictions | Instructed | No physical read sandbox is claimed. |
-| Git mutation safety | Instructed | Existing Git workflows contain instructions and commands; a shared physical preflight is Slice 8. |
+| Git mutation safety | Deterministic read-only preflight when invoked; mutation execution is instructed | Closed operation profiles inspect exact branch/HEAD/index/intended bytes, conflicts, remotes and metadata. Workflows require sequential checked actions and postconditions. No universal interception, atomic transaction, consent authentication or autonomous recovery; another process can race. |
+| Hook installer Git safety | Invoked precondition at the existing write boundary | Installer requires explicit metadata request and calls shared preflight immediately before write/chmod; it retains existing hook/hooksPath refusals. It does not intercept other Git mutations. |
 | Workflow postcondition checks | Detection where actually performed | A diff or state audit can reject a result after a mutation; it does not prevent that mutation. Later slices must record both separately. |
 
 The work hierarchy is **Development Phase → Sprint Chunk → Task**. A **Workflow Stage** identifies operational progress, such as session start, implementation, review, or QA. The Architect's Proposal Stage and Issue Creation Stage are operational stages, not roadmap segments.

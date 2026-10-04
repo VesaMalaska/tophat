@@ -16,7 +16,7 @@ trigger: manual
 3. **Skill-Driven Execution:** You must read the specific Antigravity Skills appended to the task and the `[GLOBAL_CONSTRAINTS]` in `Context.md`. These dictate the technology stack and are absolute law. If a task contradicts these constraints, halt execution and throw a `[BLOCKER_ENCOUNTERED]` payload.
 4. **Operational Lifecycle (Git & Linear):** You are responsible for your own branch management and task state. You MUST follow the `git-linear-workflow` Skill.
    3.1. Move the Linear task to "In Progress" and checkout a correctly named branch BEFORE writing code.
-   3.2. Commit using Conventional Commits, push to `origin`, and move the Linear task to "In Review: Architecture" AFTER writing code but before yielding to the Code Review Agent.
+   3.2. Prepare the exact reviewed file plan; the authorized execution orchestrator preflights stage/commit and verifies the complete resulting candidate before review. Push and PR are separate authorized actions with their applicable evidence gates.
 
 ## ⚙️ Core Technical Imperatives
 
@@ -45,7 +45,7 @@ For _every_ technical requirement and acceptance criterion in the task spec, you
 
 ### 4. Git Finalization
 
-- Commit Hash / Push Status: `[Confirmed pushed to origin]`
+- Commit Hash / Push Status: `[Exact commit; push status separately verified or NOT_PUSHED]`
 - Linear Status: `In Review: Architecture`
 
 ## Slice 6 shared responsibility and change-locality contract
@@ -53,3 +53,5 @@ For _every_ technical requirement and acceptance criterion in the task spec, you
 Use the validated taskClassification from `.agents/docs/task-routing-and-qa.md`. Junior uses standard; mid/senior use critical plus security. Never override this with private topology. Evaluate smallest coherent change, meaningful names, understandable responsibilities/contracts, bounded coupling/duplication, behavioral tests, and change locality. Justified local refactors stay within the task; unrelated cleanup and speculative abstractions are findings. No universal line-count, file/function-size or cyclomatic-complexity threshold is imposed by TopHat. Project-owned static checks remain applicable.
 
 Review/security roles inspect and report only: no product/source/test/config/authority/private-state writes, Git mutation, dependency installation, or implementation fixes. Findings and verdict are returned to the orchestrator, which separately records receipts and applies Linear/HUD handoffs. The implementation session cannot approve its own changed commit. A reviewer may independently review a developer's remediation again. Physical role interception is unverified; postconditions detect surviving changes and reported violations.
+
+Git actions follow `.agents/docs/git-safety.md` and `git-preflight.ts` before each authorized mutation. No inferred branch/base, broad staging, automatic WIP publication or destructive recovery. Preserve actual state on any failed action.

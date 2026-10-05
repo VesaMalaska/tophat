@@ -1,3 +1,5 @@
+import { spawnSync } from "node:child_process";
+import { realpathSync, lstatSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -31,11 +33,24 @@ export function evaluateSwarmLock(action: string, lockType: string, input: strin
   let owner: string;
   try { owner = ownerFromPayload(input, lockType as LockType); }
   catch { return deny("LOCK_INPUT_INVALID", "Cannot identify the supported hook call and lock owner"); }
-  const lockDir = join(root, ".git", "locks");
-  const lockFile = join(lockDir, `${lockType}.lock`);
   try {
-    if (!statSync(join(root, ".git")).isDirectory())
-      return deny("LOCK_REPOSITORY_INVALID", "The host .git directory is unavailable");
+    const inspect = (args: string[]): string => {
+      const result = spawnSync("git", ["--no-optional-locks", "rev-parse", ...args], {
+        cwd: root, encoding: "utf8", timeout: 10000, maxBuffer: 65536,
+      });
+      if (result.error || result.status !== 0 || !result.stdout.trim() || /[\r\n\0]/.test(result.stdout.trim())) throw new Error("Invalid Git location");
+      return result.stdout.trim();
+    };
+    if (realpathSync(root) !== realpathSync(inspect(["--show-toplevel"])))
+      return deny("LOCK_REPOSITORY_INVALID", "Choose the actual host worktree root");
+    const common = realpathSync(resolve(root, inspect(["--git-common-dir"])));
+    if (!statSync(common).isDirectory()) return deny("LOCK_REPOSITORY_INVALID", "Git common directory is unavailable");
+    const lockDir = join(common, "locks");
+    try { if (lstatSync(lockDir).isSymbolicLink() || !lstatSync(lockDir).isDirectory()) throw new Error("Unsafe lock directory"); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+    const lockFile = join(lockDir, `${lockType}.lock`);
+    try { if (lstatSync(lockFile).isSymbolicLink() || !lstatSync(lockFile).isFile()) throw new Error("Unsafe lock file"); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
     if (action === "acquire") {
       mkdirSync(lockDir, { recursive: true });
       try { writeFileSync(lockFile, JSON.stringify({ owner, pid: process.pid }), { flag: "wx" }); }

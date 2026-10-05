@@ -47,50 +47,32 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
 - `/project-define`, `/project-definition-review`, `/project-definition-finalize`: Optional draft → independent review → exact-candidate human approval. Models come from routingMatrix; review independence is human-supervised.
 
 - `/workspace-init`: Validates the host and approved authority, then proposes private planning state.
-  - **Recommended Model:** Claude Opus (Uses semantic mapping of the approved package).
 - `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
-  - **Recommended Model:** Claude Opus (Requires high adversarial precision to prevent data loss).
 - `/generate-readme`: Retired autonomous rewrite; use the explicit derived-document lifecycle.
-  - **Recommended Model:** Gemini Pro High (Required for advanced cross-referencing and rigid template adherence).
 
 ### Standard Automation Workflows
 
 - `/sprint-briefing`: Invokes `@agent-pm` to output the sprint briefing.
-  - **Recommended Model:** Gemini Flash High (Optimized for fast state-checking).
 - `/generate-sprint-tasks`: Invokes `@agent-architect` to JIT-compile the active sprint chunk.
-  - **Recommended Model:** Gemini Pro High (Optimized for massive context window / directory RAG).
 - `/roadmap-sync`: Synchronizes master timeline based on completed chunks.
-  - **Recommended Model:** Gemini Pro High (Requires deep context alignment).
 - `/context-sync` & `/strategy-sync`: Summarizes decisions and compresses state memory.
-  - **Recommended Model:** Gemini Flash Medium (Optimized for token compression).
 - `/triage-bug [Log/Description]`: Invokes `@agent-architect` for a multi-turn diagnostic interview to forensically isolate root causes before generating a Linear bug ticket.
-  - **Recommended Model:** Claude Sonnet (Optimized for deep conversational reasoning, diagnostic inquiry, and strict phase gating).
 
 ### Implementation & Remediation Commands
 
 - `/implement-senior [ID]`: Invokes `@agent-senior-dev` to execute backend, database, or security tasks.
-  - **Recommended Model:** Gemini Pro High (Optimized for deep reasoning and severe constraint adherence).
 - `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute reactive frontend logic and client state transformations.
-  - **Recommended Model:** Gemini Flash High (Optimized for rapid instruction following and sub-second TDD cycles).
 - `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute structural layouts and declared styling passes.
-  - **Recommended Model:** Gemini Flash Low (Optimized for high-speed, low-cost deterministic layout compilation).
 - `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
-  - **Recommended Model:** Gemini Pro High (Bounded extraction from validated authority).
 - `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
-  - **Recommended Model:** Gemini Pro High (Cross-references approved requirements with audit failures).
 
 ### Validation & Pipeline Commands
 
 - `/review-standard [ID]`: Validates stateless UI and frontend code against project specifications.
-  - **Recommended Model:** Claude Sonnet (Cross-model validation against Gemini implementations).
 - `/review-critical [ID]`: Adversarially audits load-bearing backend code for race conditions.
-  - **Recommended Model:** Claude Sonnet (Cross-model validation against Gemini implementations).
 - `/security-review [ID]`: Enforces OWASP Top 10 mitigation and strict RLS constraints.
-  - **Recommended Model:** Claude Sonnet (Adversarial security posture).
 - `/qa-validate [ID]`: Applies the derived QA methods with exact-commit evidence.
-  - **Recommended Model:** Gemini Pro Low (Requires Vision-enabled UI analysis).
 - `/publish-pr [ID]`: Checks candidate evidence and creates a PR for separate human merge approval.
-  - **Recommended Model:** Gemini Flash Medium (Lightweight API/CLI execution).
 
 ---
 
@@ -153,7 +135,7 @@ Instead, pull the diagnostic emergency brake by initiating `/triage-bug`. This t
 
 **The Diagnostic Choreography:**
 
-1. **The Interview Loop:** Route the chat to **Claude Sonnet** and pass the raw error log, stack trace, or behavioral description to `/triage-bug`. The Architect will not immediately guess a solution or write a task. It will analyze the compiled artifacts, check system boundaries (e.g., IPC bridges, ESM/CJS compilation layers), and ask you targeted clarifying questions across multiple conversational turns.
+1. **The Interview Loop:** Select the model from host `routingMatrix["/triage-bug"]` and pass the raw error log, stack trace, or behavioral description to `/triage-bug`. The Architect will not immediately guess a solution or write a task. It will analyze the compiled artifacts, check system boundaries (e.g., IPC bridges, ESM/CJS compilation layers), and ask you targeted clarifying questions across multiple conversational turns.
 2. **The Synthesis Trigger:** Answer the Architect's questions to narrow down the blast radius. Once you and the Architect have forensically confirmed the root cause, reply with the exact command **`GENERATE BUGFIX`**.
 3. **The Authorization Gate:** The Architect will compile a standalone, defensible Linear bug specification with regression criteria for the host's declared test runner. Review the task block and reply **`APPROVED`** to push the ticket to your Linear Todo column.
 4. **Execution Handoff:** Once the ticket is on the board, route it to the appropriate Dev Tier (e.g., `/implement-mid [BUG-ID]` or `/implement-senior [BUG-ID]`) to let the swarm self-heal under automated CI/CD enforcement.
@@ -342,6 +324,6 @@ These checks run when invoked. They do not intercept arbitrary terminal/IDE/GitH
 
 ### Integrated acceptance and release readiness
 
-TopHat 1.0 acceptance is tracked against all 30 approved criteria in `.agents/docs/acceptance-criteria.json`. Install the isolated runner fixture with `pnpm --dir .agents/tests/fixtures/runner-neutral install --frozen-lockfile`, then run `pnpm test:tophat`. The fixture proves actual Node/Vitest TDD and host-owned coverage outcomes; framework guidance fixtures do not certify complete applications or native OS support.
+TopHat 1.0 acceptance is tracked against all 30 approved criteria in `.agents/docs/acceptance-criteria.json`. Install the isolated runner fixture with `pnpm --dir .agents/tests/fixtures/runner-neutral install --frozen-lockfile`, install guidance fixtures with `pnpm --dir .agents/tests/fixtures/guidance-runtime install --frozen-lockfile`, then run `pnpm run test:tophat`. The fixture proves actual Node/Vitest TDD and host-owned coverage outcomes; framework guidance fixtures do not certify complete applications or native OS support.
 
 See [.agents/docs/acceptance-evidence.md](.agents/docs/acceptance-evidence.md) for the read-only dossier verifier and [.agents/docs/release-readiness.md](.agents/docs/release-readiness.md) for v0.8.0 migration and separate release approvals. A green suite is not a release decision. Live host project initialization, task/route/QA evidence, phase synchronization and final project-documentation acceptance remain required before TopHat 1.0 release readiness.

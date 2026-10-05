@@ -19,4 +19,8 @@ When building view layers for desktop targets, adhere to these structural constr
 
 ## 3. Strict Utility Composition
 
-- Utilize Tailwind utility classes exclusively. Ban the creation of custom CSS files or `<style>` blocks within components unless strictly required for complex `@keyframes` or third-party canvas layer overrides.
+- Follow approved host styling policy and permitted CSS exceptions. Use Tailwind utilities where declared; accessibility and safe rendering remain required.
+
+## Approved host policy and security bounds
+
+Implementation choices follow the approved host package supplied through authorized task extracts; this does not expand ordinary execution roles into full product docs browsing. Shared `.agents/docs` safety contracts remain mandatory resources. Validation at trust boundaries, authorization, secret protection, safe IPC and declared isolation remain security invariants. If approved host choices conflict with these bounds, halt for human resolution rather than silently waive them.

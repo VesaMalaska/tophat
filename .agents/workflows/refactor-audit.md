@@ -1,21 +1,9 @@
 ---
-description: Strategic architectural audit to identify technical debt and propose atomic refactoring tasks without mutating code.
+description: Read-only architectural debt findings; no task creation or execution authority.
 ---
 
-**Steps:**
-
-1.  **Initialize Audit:** Invoke `@agent-architect`.
-2.  **Context Ingestion:** Read the `[GLOBAL_CONSTRAINTS]` in `Context.md` to establish the active tech stack boundaries. Use the `run_command` tool to execute `ls -R src/` (or your primary source directory) to map the codebase structure.
-3.  **Targeted Inspection:** Use the view_file tool to sample highly trafficked or complex files. Evaluate the implementation against the active Antigravity Skills appended to the workspace. Look specifically for legacy syntax, broken state boundaries, or inefficient data/IPC bridges.
-4.  **The Read-Only Mandate:** You are strictly an observer during this phase. You must NOT use `write_to_file` or `replace_file_content`.
-5.  **Audit Synthesis:** Compile a detailed Refactoring Audit Report. Structure your output exactly as follows:
-    - **CRITICAL DEBT:** [Security flaws, severe architectural drift blocking future Development Phases]
-    - **MAJOR DEBT:** [Framework syntax violations, bloated state management]
-    - **MINOR DEBT:** [File organization, dead code, naming conventions]
-6.  **Task Proposal:** Below the report, generate a list of atomic, deterministic Linear task blocks designed to resolve the identified debt. Format these using the standard Proposal Stage task template (Title, Priority, Dev Tier, Review Tier, etc.).
-7.  **Human Gate:** As the final line of your output, append this exact call-to-action: '🛑 **ACTION REQUIRED:** Please review the Refactoring Audit Report. Reply with APPROVED to authorize the creation of these refactoring tickets in Linear.'
-8.  **Linear State Enforcement (Post-Approval):** Only upon receiving the 'APPROVED' signal from the Human Orchestrator, invoke the Linear MCP to create the issues and verify they land in the 'Todo' or 'Backlog' column.
-
-## Git mutation boundary
-
-Before every separately authorized Git action, the execution orchestrator invokes `node <pinned-TopHat-source>/.agents/scripts/git-preflight.ts` with the exact closed operation request on stdin; require GIT_PREFLIGHT_READY / ALLOW. Follow `.agents/docs/git-safety.md`: explicit branch/HEAD/base/remote, applicable clean or exact intended state, sequential checked results and operation-specific postchecks. This delegation does not grant Git authority to a read-only role or introduce implicit publication. Failure preserves actual state and halts; no automatic recovery. Candidate-changing commits require fresh applicable review/QA/document evidence.
+1. Load `.agents/rules/agent-architect.md` for a distinct read-only audit session. Read Context, approved criterion/contract inputs and applicable guidance. Inspect authorized source paths with file readers; do not execute shell commands or assume a source directory named src.
+2. Return findings grouped as CRITICAL, MAJOR or MINOR debt. Each finding includes affected path, observed behavior, evidence, relevant criterion/contract, uncertainty and scope implications. Do not produce ready-to-create Linear task blocks.
+3. This command authorizes no Git mutation, file write, HUD update or Linear mutation. An APPROVED response to an audit is not ticket-creation authorization. The external orchestrator checks the captured Architect session through the existing role-session procedure; missing evidence remains unverified.
+4. If work is desired, the Human Orchestrator resolves missing/out-of-scope authority through documentation/roadmap approval first. `/generate-sprint-tasks` then follows its own source extracts, authorityContext, `validate-task-authority.ts`, `classify-task.ts` and human ticket gate. No automatic downstream invocation.
+5. Return findings, checked scope, blockers and permitted next command with host-configured model advice.

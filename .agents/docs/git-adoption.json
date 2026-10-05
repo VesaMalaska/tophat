@@ -55,7 +55,7 @@
     },
     {
       "path": ".agents/workflows/refactor-audit.md",
-      "classification": "optional-publication"
+      "classification": "no-git-mutation"
     },
     {
       "path": ".agents/workflows/remediate-blocker.md",

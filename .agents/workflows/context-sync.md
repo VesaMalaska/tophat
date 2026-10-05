@@ -6,10 +6,10 @@ description: Enforces operational handoff state updates for agent memory and gen
 
 Lifecycle constraint: this is an authorized state-update workflow, not Development Phase/project documentation acceptance. Perform intended tracked updates before sealing review/QA/document readiness; any later Context/HUD commit creates a new candidate. Do not invoke the read-only writer, PM or reviewer to carry out these writes or external actions. Prefer external receipt custody; no automatic post-review commit chain is authorized.
 
-1. **Data Aggregation:** Invoke the last active agent in the current implementation trajectory.
+1. **Data Aggregation:** Read the supplied read-only handoff from the completed role session; do not invoke the last active role to perform writes. The separately authorized execution orchestrator checks current inputs and applies the declared state changes.
 2. **Instruction:** Summarize the completed realization, downstream mandates, and any observed side-effects (e.g., schema modifications or newly introduced Svelte 5 reactive scopes).
-3. **Context Update (Agent Memory):** Update the Agent Handoff Notes section in Context.md via the replace_file_content tool.
-4. **HUD Generation (Human Memory):** Use the write_to_file tool to entirely overwrite a file named HUD.md at the workspace root. You MUST use this exact formatting to create a highly visual dashboard for the human operator:
+3. **Context Update (Agent Memory):** The authorized orchestrator updates only the approved Agent Handoff Notes section in Context.md via the replace_file_content tool.
+4. **HUD Generation (Human Memory):** The authorized orchestrator presents and applies the exact approved dashboard content to a file named HUD.md at the workspace root. You MUST use this exact formatting to create a highly visual dashboard for the human operator:
 
    # 🛸 TopHat Orchestrator HUD
 
@@ -35,7 +35,7 @@ Lifecycle constraint: this is an authorized state-update workflow, not Developme
    ### 🚧 Active Blockers
    - [None | Describe any blocker stopping the swarm]
 
-5. **External Sync:** Post the identical Agent Handoff summary as a comment to the active Linear task to ensure external tracking is maintained.
+5. **External Sync:** Only under explicit Linear comment authorization, the external orchestrator posts the identical Agent Handoff summary as a comment to the active Linear task to ensure external tracking is maintained.
 
 ## Git mutation boundary
 

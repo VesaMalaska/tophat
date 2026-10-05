@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, existsSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { cpSync, readFileSync, existsSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -46,4 +46,12 @@ test('both actual runners reproduce red then green without changing the shared e
       assert.equal(f.run('unit', script).status, 'PASSED');
     }
   } finally { f.close(); }
+});
+
+test('unit category resolves an arbitrary host check:behavior script through pnpm', () => {
+ const f=host(false);try{
+  const pkg=JSON.parse(readFileSync(join(f.root,'package.json'),'utf8'));pkg.scripts['check:behavior']=pkg.scripts['unit:node'];writeFileSync(join(f.root,'package.json'),JSON.stringify(pkg));
+  writeFileSync(join(f.root,'sum.js'),'export function sum(a,b){return a-b;}\n');assert.equal(f.run('unit','check:behavior').status,'FAILED');
+  writeFileSync(join(f.root,'sum.js'),'export function sum(a,b){return a+b;}\n');const result=f.run('unit','check:behavior');assert.equal(result.status,'PASSED',JSON.stringify(result));assert.match(result.results[0].stdout!,/sum/);
+ }finally{f.close();}
 });

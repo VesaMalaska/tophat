@@ -8,10 +8,10 @@ trigger: always_on
 
 The file `Strategy.md` at the workspace root contains long-term sprint planning, backlog health, and architectural sequencing. Access to this file is strictly gated by agent role.
 
-## 2. Authorized Agents (Read/Write)
+## 2. Advisory access and authorized application
 
 - `@agent-architect`: You translate the approved selected package into private Roadmap proposals. You do not own or autonomously write product authority; named authorized orchestrator steps apply private changes after their human gates.
-- `@agent-pm`: You have Read-Only access to `Roadmap.md` to inform your sprint briefings. You own `Strategy.md` and must compress it during updates to prevent token bloat.
+- `@agent-pm`: You have Read-Only access to `Roadmap.md` to inform your sprint briefings. You have read-only advisory access to Strategy and Context. Return proposals preserving authority references and unresolved decisions; a separately authorized orchestrator applies exact human-approved edits after current-input and role-session checks.
 
 ## 3. Unauthorized Agents (Blind Execution)
 

@@ -6,7 +6,7 @@ trigger: always_on
 
 ## 🛑 GLOBAL ORCHESTRATION MANDATE
 
-Whenever you suggest a subsequent slash command or assign a downstream task to another agent, you MUST explicitly state the Recommended LLM Model required to execute that command, referencing the mappings defined below.
+Whenever you suggest a subsequent slash command or assign a downstream task to another agent, you MUST explicitly state the Recommended LLM Model required to execute that command, reading the selected active command's model key from host `.agents/tophat.config.json` routingMatrix. Missing mapping blocks advice/execution; never guess a fallback. Model values do not grant role permissions.
 _Format Output:_ `[Next Action: /command-name]`
 
 ## TopHat Workflow Commands for Orchestrating the Engine Flow
@@ -33,7 +33,7 @@ _Format Output:_ `[Next Action: /command-name]`
 - `/implement-senior [ID]`: Invokes `@agent-senior-dev` to execute backend, database, or security tasks.
 - `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute compatible frontend logic and client state transformations.
 - `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute static layouts and project-declared styling passes.
-- `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
+- `/remediate-blocker [ID]`: Architect proposes authority-bound extraction of missing schema context for a blocked task.
 - `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
 - `/triage-bug [Error Description / Log]`: Invokes `@agent-architect` for a multi-turn analytical diagnostic interview to isolate root causes before generating a Linear bug ticket.
 
@@ -41,7 +41,7 @@ _Format Output:_ `[Next Action: /command-name]`
 
 - `/review-standard [ID]`: Validates stateless UI and frontend code against project specifications.
 - `/review-critical [ID]`: Adversarially audits load-bearing backend code for race conditions.
-- `/security-review [ID]`: Enforces OWASP Top 10 mitigation and strict RLS constraints.
+- `/security-review [ID]`: Enforces OWASP Top 10 mitigation and approved access-control constraints.
 - `/qa-validate [ID]`: Executes the derived compatible QA profile and records exact-commit evidence.
 - `/publish-pr [ID]`: Checks exact-candidate evidence and creates the PR; merge requires separate explicit human approval.
 
@@ -51,15 +51,15 @@ Do NOT attempt to run implementation as an automated workflow. The Human Orchest
 
 ### Standard Implementation Sequence:
 
-1. **[Human - Model: Gemini Flash/Pro]**: `/implement-junior [ID]` Use MCP to fetch Linear Task [ID]. Prepare and verify the exact candidate; push is separately authorized and checked. (Auto-moves to `In Review: Architecture`)
-2. **[Human - Model: Claude Sonnet]**: `/review-standard [ID]` Review the active branch against the spec. (Next: classified QA when required, otherwise evidence-checked readiness)
+1. **[Human - Model: from routingMatrix]**: `/implement-junior [ID]` Use MCP to fetch Linear Task [ID]. Prepare and verify the exact candidate; push is separately authorized and checked. (Auto-moves to `In Review: Architecture`)
+2. **[Human - Model: from routingMatrix]**: `/review-standard [ID]` Review the active branch against the spec. (Next: classified QA when required, otherwise evidence-checked readiness)
 3. Finalize intended tracked private-state updates before candidate review/QA; independent QA, when required, precedes evidence-checked publication.
 
 ### Critical Implementation Sequence:
 
 1. **[Human - Model: from routingMatrix]**: `/implement-mid [ID]` | `/implement-senior [ID]` Use MCP to fetch Linear Task [ID]. Prepare and verify the exact candidate; push is separately authorized and checked. (Auto-moves to `In Review: Architecture`)
-2. **[Human - Model: Claude Sonnet]**: `/review-critical [ID]` Adversarially review the active branch. (Auto-moves to `In Review: Security`)
-3. **[Human - Model: Claude Sonnet]**: `/security-review [ID]` Execute threat model. (Auto-moves to `In Review: QA` or `Ready for PR`)
+2. **[Human - Model: from routingMatrix]**: `/review-critical [ID]` Adversarially review the active branch. (Auto-moves to `In Review: Security`)
+3. **[Human - Model: from routingMatrix]**: `/security-review [ID]` Execute threat model. (Auto-moves to `In Review: QA` or `Ready for PR`)
 4. **[Human - Model: from routingMatrix]**: `/qa-validate [ID]` only when the classifier requires methods. Validate the exact candidate using those compatible methods; no universal Playwright route.
 5. `/publish-pr [ID]` checks the current required stage/validation/QA records; no post-QA private-state commit chain.
 

@@ -7,7 +7,6 @@
     "/workspace-init": "Claude Opus",
     "/architecture-pivot": "Claude Opus",
     "/generate-smoke-test": "Gemini Pro High",
-    "/generate-readme": "Gemini Pro High",
     "/sprint-briefing": "Gemini Flash High",
     "/generate-sprint-tasks": "Gemini Pro High",
     "/roadmap-sync": "Gemini Pro High",
@@ -33,6 +32,7 @@
     "/workspace-attach-finalize": "Claude Opus",
     "/sync-derived-docs": "Gemini Pro High",
     "/verify-project-docs": "Gemini Pro High",
-    "/review-derived-docs": "Claude Sonnet"
+    "/review-derived-docs": "Claude Sonnet",
+    "/triage-bug": "Claude Sonnet"
   }
 }

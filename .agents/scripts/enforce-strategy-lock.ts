@@ -3,7 +3,8 @@ import { fileURLToPath } from "node:url";
 
 type Decision = { decision: "allow" | "deny" | "ask"; status: string; reason: string };
 const deny = (status: string, reason: string): Decision => ({ decision: "deny", status, reason });
-const chunkHeader = "##### 🎯 Active Sprint Chunk:";
+const chunkHeader = "### 🎯 Active Sprint Chunk:";
+const markerCount = (text: string): number => text.split(/\r?\n/).filter(line => line === chunkHeader || line.startsWith(chunkHeader + " ") || line.startsWith(chunkHeader + "\t")).length;
 const writeTools = ["write_to_file", "replace_file_content", "multi_replace_file_content"];
 
 export function evaluateProtectedWrite(input: string): Decision {
@@ -41,12 +42,20 @@ export function evaluateProtectedWrite(input: string): Decision {
     reason: "Strategy.md is protected. Ask the Human Orchestrator before this write.",
   };
   if (target === "Context.md") {
-    if (name === "write_to_file" && !content.includes(chunkHeader))
-      return deny("ACTIVE_CHUNK_MISSING", "Context.md rewrite must preserve the Active Sprint Chunk header");
-    if (name !== "write_to_file" && content.includes(chunkHeader)) return {
-      decision: "ask", status: "HUMAN_APPROVAL_REQUIRED",
-      reason: "Replacement of the Active Sprint Chunk needs Human Orchestrator approval.",
-    };
+    if (name === "write_to_file") {
+      const count = markerCount(content);
+      if (count !== 1) return deny(count === 0 ? "ACTIVE_CHUNK_MISSING" : "ACTIVE_CHUNK_DUPLICATE",
+        "Context.md rewrite requires exactly one canonical Active Sprint Chunk header; presence does not prove unchanged content or approval");
+    } else {
+      const chunks = name === "multi_replace_file_content" ? values.ReplacementChunks as Record<string, unknown>[] : [values];
+      for (const chunk of chunks) {
+        if (Object.hasOwn(chunk, "TargetContent") && typeof chunk.TargetContent !== "string")
+          return deny("HOOK_INPUT_INVALID", "TargetContent, when supplied, must be a string");
+        if (typeof chunk.TargetContent !== "string" || markerCount(chunk.TargetContent) || markerCount(chunk.ReplacementContent as string))
+          return { decision: "ask", status: "HUMAN_APPROVAL_REQUIRED",
+            reason: "Original context is absent or a protected marker is affected; inspect chunk preservation and obtain approval." };
+      }
+    }
   }
   return { decision: "allow", status: "PASSED", reason: "Protected-write rule checked" };
 }

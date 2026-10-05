@@ -15,10 +15,10 @@ export const evidenceKinds = ['mechanism', 'configuration-fixture', 'command-exe
 const groups = ['configuration', 'capability-isolation', 'validation', 'documentation-package', 'routing', 'qa', 'git', 'boundary-honesty', 'project-definition', 'attachment', 'documentation-lifecycle', 'role-boundaries', 'terminology', 'detachment'];
 const liveIds = [1, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 27, 28];
 type Kind = typeof evidenceKinds[number];
-export interface Criterion { id: number; requirement: string; tests: { path: string; name: string }[]; requiredKinds: Kind[]; bunnyHopRequired: boolean }
+export interface Criterion { id: number; requirement: string; tests: { path: string; name: string }[]; requiredKinds: Kind[]; hostIntegrationRequired: boolean }
 export interface AcceptanceIndex { schemaVersion: 1; authority: string; groups: { id: string; path: string }[]; criteria: Criterion[] }
 export interface Artifact { id: string; path: string; sha256: string; kind: Kind; provenance: 'observed' | 'synthetic' | 'configuration'; result: 'PASSED' | 'FAILED' | 'SKIPPED_NOT_APPLICABLE'; rationale: string }
-export interface AcceptanceOptions { root: string; candidate: string; index: string; evidenceRoot: string; dossier: string; bunnyHopRoot: string; bunnyHopCandidate: string }
+export interface AcceptanceOptions { root: string; candidate: string; index: string; evidenceRoot: string; dossier: string; hostRoot: string; hostCandidate: string }
 export interface AcceptanceResult { status: 'EVIDENCE_COMPLETE' | 'EVIDENCE_INCOMPLETE'; candidate: string | null; criterionResults: { id: number; status: string }[]; errors: { code: string; message: string }[] }
 class Refusal extends Error { code: string; constructor(code: string, message: string) { super(message); this.code = code; } }
 const fail = (code: string, message: string): never => { throw new Refusal(code, message); };
@@ -100,7 +100,7 @@ export function checkedIndex(input: unknown, source: (path: string) => string): 
   for (const g of gs) { path(g.path); if (!g.path.startsWith('.agents/tests/') || !g.path.endsWith('.test.ts') || !source(g.path).includes('test(')) invalid('Unresolved test group'); }
   const criteria = array(v.criteria, 30); if (criteria.length !== 30) fail('ACCEPTANCE_CRITERION_MISSING', 'Exactly 30 criteria required');
   criteria.forEach((raw, n) => {
-    const c = object(raw, ['id', 'requirement', 'tests', 'requiredKinds', 'bunnyHopRequired']); if (c.id !== n + 1) fail('ACCEPTANCE_CRITERION_MISSING', 'Ordered unique IDs 1–30 required'); text(c.requirement);
+    const c = object(raw, ['id', 'requirement', 'tests', 'requiredKinds', 'hostIntegrationRequired']); if (c.id !== n + 1) fail('ACCEPTANCE_CRITERION_MISSING', 'Ordered unique IDs 1–30 required'); text(c.requirement);
     const kinds = strings(c.requiredKinds); if (!kinds.includes('mechanism') || kinds.some(k => !evidenceKinds.includes(k as Kind))) invalid('Unsupported/missing evidence kind');
     const expectedKinds: string[] = ['mechanism'];
     if ([1, 2, 3, 4, 5, 11].includes(c.id)) expectedKinds.push('configuration-fixture');
@@ -108,7 +108,7 @@ export function checkedIndex(input: unknown, source: (path: string) => string): 
     if ([3, 5, 15, 16, 20, 26, 27, 28, 29].includes(c.id)) expectedKinds.push('semantic-review');
     if (liveIds.includes(c.id)) expectedKinds.push('live-integration');
     equal([...kinds].sort(), expectedKinds.sort());
-    if (typeof c.bunnyHopRequired !== 'boolean' || c.bunnyHopRequired !== liveIds.includes(c.id) || kinds.includes('live-integration') !== c.bunnyHopRequired) invalid('Live obligations differ');
+    if (typeof c.hostIntegrationRequired !== 'boolean' || c.hostIntegrationRequired !== liveIds.includes(c.id) || kinds.includes('live-integration') !== c.hostIntegrationRequired) invalid('Live obligations differ');
     const refs = array(c.tests, 32); if (!refs.length) invalid('Missing fixture references'); const identities: string[] = [];
     for (const raw of refs) { const ref = object(raw, ['path', 'name']); path(ref.path); text(ref.name); identities.push(`${ref.path}:${ref.name}`);
       if (!ref.path.startsWith('.agents/tests/') || !ref.path.endsWith('.test.ts')) invalid('Invalid test path');
@@ -127,7 +127,7 @@ function identity(root: string, expectedCommit: string, value: unknown): void {
 export function validateAcceptance(options: AcceptanceOptions): AcceptanceResult {
   const result: AcceptanceResult = { status: 'EVIDENCE_INCOMPLETE', candidate: options.candidate, criterionResults: [], errors: [] };
   try {
-    oid(options.candidate); oid(options.bunnyHopCandidate); const root = rootPath(options.root), evidenceRoot = rootPath(options.evidenceRoot);
+    oid(options.candidate); oid(options.hostCandidate); const root = rootPath(options.root), evidenceRoot = rootPath(options.evidenceRoot);
     if (!isAbsolute(options.index) || !isAbsolute(options.dossier)) invalid('Index and dossier paths must be explicit absolute paths');
     const indexFile = safeFile(root, path(options.index.slice(root.length + 1)));
     if (indexFile !== options.index || options.index !== resolve(root, '.agents/docs/acceptance-criteria.json')) invalid('Index must be the tracked candidate index');
@@ -136,7 +136,7 @@ export function validateAcceptance(options: AcceptanceOptions): AcceptanceResult
     const sources = new Map<string, string>();
     const index = checkedIndex(jsonBytes(indexData.content!), p => { if (!sources.has(p)) sources.set(p, blob(root, options.candidate, p)); return sources.get(p)!; });
     const dossierFile = safeFile(evidenceRoot, path(options.dossier.slice(evidenceRoot.length + 1))); if (dossierFile !== options.dossier) invalid('Dossier must lie inside evidence root');
-    const v = object(readJson(dossierFile), ['schemaVersion', 'identity', 'indexSha256', 'runtime', 'attempts', 'currentAttempt', 'artifacts', 'criteria', 'bunnyHop', 'review', 'limitations']);
+    const v = object(readJson(dossierFile), ['schemaVersion', 'identity', 'indexSha256', 'runtime', 'attempts', 'currentAttempt', 'artifacts', 'criteria', 'hostProject', 'review', 'limitations']);
     if (v.schemaVersion !== 1) invalid('Unsupported dossier version'); equal(hash(v.indexSha256), indexData.sha256, 'ACCEPTANCE_CANDIDATE_STALE'); identity(root, options.candidate, v.identity);
     const runtime = object(v.runtime, ['node', 'pnpm', 'os']); if (!/^\d+\.\d+\.\d+$/.test(text(runtime.node)) || Number(runtime.node.split('.')[0]) < 24 || !/^\d+\.\d+\.\d+$/.test(text(runtime.pnpm))) invalid('Unsupported runtime'); text(runtime.os); strings(v.limitations);
     const artifacts = array(v.artifacts, limits.artifacts).map(raw => {
@@ -175,10 +175,10 @@ export function validateAcceptance(options: AcceptanceOptions): AcceptanceResult
     if (review.artifactId !== null) artifact(review.artifactId, 'semantic-review');
     if (review.verdict !== 'APPROVED' || review.findings.length || review.artifactId === null || artifact(review.artifactId).result !== 'PASSED') result.errors.push({ code: 'ACCEPTANCE_REQUIRED_RESULT_FAILED', message: 'Independent review unresolved' });
     else equal(artifactJson(review.artifactId, 'semantic-review'), { candidate: options.candidate, indexSha256: v.indexSha256, verdict: review.verdict, locator: review.locator, findings: review.findings }, 'ACCEPTANCE_CANDIDATE_STALE');
-    if (v.bunnyHop === null) {
-      if (rows.some(r => liveIds.includes(r.id) && r.status === 'PASSED')) fail('ACCEPTANCE_LIVE_EVIDENCE_MISSING', 'Live criteria cannot pass without BunnyHop');
-      result.errors.push({ code: 'ACCEPTANCE_LIVE_EVIDENCE_MISSING', message: 'Approved BunnyHop integrated run is pending' });
-    } else validateBunny(options, v.bunnyHop, artifactJson);
+    if (v.hostProject === null) {
+      if (rows.some(r => liveIds.includes(r.id) && r.status === 'PASSED')) fail('ACCEPTANCE_LIVE_EVIDENCE_MISSING', 'Live criteria cannot pass without host project');
+      result.errors.push({ code: 'ACCEPTANCE_LIVE_EVIDENCE_MISSING', message: 'Approved host project integrated run is pending' });
+    } else validateHostProject(options, v.hostProject, artifactJson);
     if (!result.errors.length) result.status = 'EVIDENCE_COMPLETE'; return result;
   } catch (e) {
     if (e instanceof Refusal) { result.errors.push({ code: e.code, message: e.message }); return result; }
@@ -189,24 +189,24 @@ export function validateAcceptance(options: AcceptanceOptions): AcceptanceResult
     throw e;
   }
 }
-function validateBunny(options: AcceptanceOptions, input: unknown, json: (id: unknown, kind?: Kind) => any): void {
+function validateHostProject(options: AcceptanceOptions, input: unknown, json: (id: unknown, kind?: Kind) => any): void {
   const b = object(input, ['identity', 'baselineCommit', 'scope', 'authorityFingerprint', 'configFingerprint', 'packageValidatedAt', 'planningStartedAt', 'roadmapSha256', 'initializationArtifactId', 'tasks', 'phaseArtifactId', 'completionArtifactId']);
-  const root = rootPath(options.bunnyHopRoot); identity(root, options.bunnyHopCandidate, b.identity); oid(b.baselineCommit);
-  equal(git(root, ['merge-base', b.baselineCommit, options.bunnyHopCandidate]), b.baselineCommit, 'ACCEPTANCE_CANDIDATE_STALE');
-  const cfg = loadTophatConfig(root); if (cfg.workspace.kind !== 'web' || cfg.workspace.framework !== 'sveltekit') invalid('Integrated host must be SvelteKit');
+  const root = rootPath(options.hostRoot); identity(root, options.hostCandidate, b.identity); oid(b.baselineCommit);
+  equal(git(root, ['merge-base', b.baselineCommit, options.hostCandidate]), b.baselineCommit, 'ACCEPTANCE_CANDIDATE_STALE');
+  const cfg = loadTophatConfig(root); // The validated host contract selects the workspace profile; no product/framework is hardcoded.
   equal(hash(b.configFingerprint), fingerprint(cfg), 'ACCEPTANCE_CANDIDATE_STALE'); const pkg = inspectDocPackage(root);
-  if (!pkg.snapshot || !pkg.report.planningAllowed) fail('ACCEPTANCE_LIVE_EVIDENCE_MISSING', 'BunnyHop approved package invalid');
+  if (!pkg.snapshot || !pkg.report.planningAllowed) fail('ACCEPTANCE_LIVE_EVIDENCE_MISSING', 'host project approved package invalid');
   equal(hash(b.authorityFingerprint), pkg.snapshot.authorityFingerprint, 'ACCEPTANCE_CANDIDATE_STALE');
   const scope = object(b.scope, ['packageId', 'activeScopes', 'completionDeclaration', 'approvalLocator']); text(scope.completionDeclaration); text(scope.approvalLocator);
   equal(scope.packageId, pkg.snapshot.manifest.packageId); equal(strings(scope.activeScopes).sort(), [...pkg.snapshot.manifest.scope.active].sort());
   if (time(b.packageValidatedAt) > time(b.planningStartedAt)) invalid('Planning preceded package validation');
-  equal(hash(b.roadmapSha256), digest(blob(root, options.bunnyHopCandidate, 'Roadmap.md')), 'ACCEPTANCE_CANDIDATE_STALE');
+  equal(hash(b.roadmapSha256), digest(blob(root, options.hostCandidate, 'Roadmap.md')), 'ACCEPTANCE_CANDIDATE_STALE');
   const init = object(json(b.initializationArtifactId, 'live-integration'), ['packageValidatedAt', 'planningStartedAt', 'authorityFingerprint', 'roadmapSha256']);
   equal(init, { packageValidatedAt: b.packageValidatedAt, planningStartedAt: b.planningStartedAt, authorityFingerprint: b.authorityFingerprint, roadmapSha256: b.roadmapSha256 });
   const taskIds: string[] = [], tasks = strings(b.tasks); if (!tasks.length) invalid('Representative tasks missing');
   for (const id of tasks) {
     const task = object(json(id, 'live-integration'), ['task', 'testedCommit', 'stages', 'qa']); oid(task.testedCommit);
-    equal(git(root, ['merge-base', task.testedCommit, options.bunnyHopCandidate]), task.testedCommit, 'ACCEPTANCE_CANDIDATE_STALE');
+    equal(git(root, ['merge-base', task.testedCommit, options.hostCandidate]), task.testedCommit, 'ACCEPTANCE_CANDIDATE_STALE');
     const route = classifyTask(root, task.task, task.testedCommit); taskIds.push(route.task.taskId); validateStages(task.stages, route, task.testedCommit);
     if (route.qaRequired) { if (!task.qa || !validateQAEvidence(root, task.qa, task.testedCommit).approvalAllowed) fail('ACCEPTANCE_LIVE_EVIDENCE_MISSING', 'Task QA missing/denied'); }
     else if (task.qa !== null) invalid('Unexpected task QA');
@@ -214,15 +214,15 @@ function validateBunny(options: AcceptanceOptions, input: unknown, json: (id: un
   const phase = json(b.phaseArtifactId, 'live-integration'), completion = json(b.completionArtifactId, 'live-integration');
   if (phase?.receipt?.candidate?.identity?.mode !== 'phase' || validateDerivedDocs(root, phase).status !== 'DOCUMENTATION_ACCEPTED') fail('ACCEPTANCE_LIVE_EVIDENCE_MISSING', 'Development Phase acceptance missing');
   if (completion?.receipt?.candidate?.identity?.mode !== 'project-completion' || validateDerivedDocs(root, completion).status !== 'PROJECT_DOCUMENTATION_ACCEPTED') fail('ACCEPTANCE_LIVE_EVIDENCE_MISSING', 'Final project verification missing');
-  if (completion.receipt.candidate.identity.candidateCommit !== options.bunnyHopCandidate || !taskIds.every(id => phase.receipt.candidate.membership.includes(id) && completion.receipt.candidate.membership.includes(id))) fail('ACCEPTANCE_CANDIDATE_STALE', 'Task/phase/final candidate membership differs');
+  if (completion.receipt.candidate.identity.candidateCommit !== options.hostCandidate || !taskIds.every(id => phase.receipt.candidate.membership.includes(id) && completion.receipt.candidate.membership.includes(id))) fail('ACCEPTANCE_CANDIDATE_STALE', 'Task/phase/final candidate membership differs');
 }
 export function acceptanceCLI(args: string[]): { result: AcceptanceResult; exitCode: number } {
   let candidate: string | null = null;
   try {
-    const names = ['root', 'candidate', 'index', 'evidence-root', 'dossier', 'bunnyhop-root', 'bunnyhop-candidate']; const parsed: Record<string, string> = {};
+    const names = ['root', 'candidate', 'index', 'evidence-root', 'dossier', 'host-root', 'host-candidate']; const parsed: Record<string, string> = {};
     for (let i = 0; i < args.length; i += 2) { const flag = args[i]; if (!flag.startsWith('--') || !names.includes(flag.slice(2)) || parsed[flag.slice(2)] || !args[i + 1] || args[i + 1].startsWith('--')) invalid('Explicit nonduplicate CLI arguments required'); parsed[flag.slice(2)] = args[i + 1]; }
     if (Object.keys(parsed).length !== names.length) invalid('All seven CLI arguments required'); candidate = parsed.candidate;
-    const result = validateAcceptance({ root: parsed.root, candidate: parsed.candidate, index: parsed.index, evidenceRoot: parsed['evidence-root'], dossier: parsed.dossier, bunnyHopRoot: parsed['bunnyhop-root'], bunnyHopCandidate: parsed['bunnyhop-candidate'] });
+    const result = validateAcceptance({ root: parsed.root, candidate: parsed.candidate, index: parsed.index, evidenceRoot: parsed['evidence-root'], dossier: parsed.dossier, hostRoot: parsed['host-root'], hostCandidate: parsed['host-candidate'] });
     return { result, exitCode: result.status === 'EVIDENCE_COMPLETE' ? 0 : 1 };
   } catch (e) { return { exitCode: 2, result: { status: 'EVIDENCE_INCOMPLETE', candidate, criterionResults: [], errors: [{ code: e instanceof Refusal ? e.code : 'ACCEPTANCE_INTERNAL_FAILURE', message: e instanceof Refusal ? e.message : 'Acceptance inspection could not complete' }] } }; }
 }

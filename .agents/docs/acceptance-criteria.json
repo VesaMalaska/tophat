@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "authority": "TopHat-1.0-Definition Review 4, Section 8",
+  "authority": "TopHat-1.0-Definition Review 4, Section 8; consumer-independent acceptance clarification",
   "groups": [
     {
       "id": "configuration",
@@ -78,7 +78,7 @@
         "configuration-fixture",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 2,
@@ -101,7 +101,7 @@
         "mechanism",
         "configuration-fixture"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 3,
@@ -121,7 +121,7 @@
         "configuration-fixture",
         "semantic-review"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 4,
@@ -140,7 +140,7 @@
         "mechanism",
         "configuration-fixture"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 5,
@@ -160,7 +160,7 @@
         "configuration-fixture",
         "semantic-review"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 6,
@@ -184,7 +184,7 @@
         "command-execution",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 7,
@@ -207,7 +207,7 @@
         "mechanism",
         "command-execution"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 8,
@@ -222,7 +222,7 @@
         "mechanism",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 9,
@@ -237,7 +237,7 @@
         "mechanism",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 10,
@@ -256,7 +256,7 @@
         "mechanism",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 11,
@@ -279,11 +279,11 @@
         "mechanism",
         "configuration-fixture"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 12,
-      "requirement": "BunnyHop can be initialized as a SvelteKit project and receive valid, bounded, traceable implementation tasks.",
+      "requirement": "A supported host project can be initialized from its approved contract and receive valid, bounded, traceable implementation tasks.",
       "tests": [
         {
           "path": ".agents/tests/task-authority.test.ts",
@@ -294,7 +294,7 @@
         "mechanism",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 13,
@@ -325,7 +325,7 @@
         "mechanism",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 14,
@@ -340,7 +340,7 @@
         "mechanism",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 15,
@@ -356,7 +356,7 @@
         "semantic-review",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 16,
@@ -376,7 +376,7 @@
         "semantic-review",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 17,
@@ -399,7 +399,7 @@
         "mechanism",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 18,
@@ -422,7 +422,7 @@
         "mechanism",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 19,
@@ -449,7 +449,7 @@
         "mechanism",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 20,
@@ -464,7 +464,7 @@
         "mechanism",
         "semantic-review"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 21,
@@ -500,7 +500,7 @@
         "command-execution",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 22,
@@ -515,7 +515,7 @@
         "mechanism",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 23,
@@ -533,7 +533,7 @@
       "requiredKinds": [
         "mechanism"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 24,
@@ -559,7 +559,7 @@
       "requiredKinds": [
         "mechanism"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 25,
@@ -578,7 +578,7 @@
         "mechanism",
         "command-execution"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 26,
@@ -605,7 +605,7 @@
         "mechanism",
         "semantic-review"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 27,
@@ -637,7 +637,7 @@
         "semantic-review",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 28,
@@ -673,7 +673,7 @@
         "semantic-review",
         "live-integration"
       ],
-      "bunnyHopRequired": true
+      "hostIntegrationRequired": true
     },
     {
       "id": 29,
@@ -696,7 +696,7 @@
         "mechanism",
         "semantic-review"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     },
     {
       "id": 30,
@@ -727,7 +727,7 @@
         "mechanism",
         "command-execution"
       ],
-      "bunnyHopRequired": false
+      "hostIntegrationRequired": false
     }
   ]
 }

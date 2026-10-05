@@ -4,7 +4,7 @@ Baseline: merged Slice 8 development commit `16d40fa86a8cf293378334ef8120aeaeb76
 
 ## Implemented scope
 
-The closed v1 index covers all 30 Definition criteria and 14 design test groups, resolving exact existing test references. The read-only verifier binds the candidate/index, classifies/hashes supplied artifacts, compares summary/raw suite counts, preserves failed/aborted attempt history, checks independent-review candidate bytes, and delegates BunnyHop task/QA/phase/final verification to existing validators. Streaming artifact bounds and strict CLI rejection have negative fixtures. The positive dossier is explicitly synthetic unit-test data, not real BunnyHop acceptance or authenticated human evidence.
+The closed v1 index covers all 30 Definition criteria and 14 design test groups, resolving exact existing test references. The read-only verifier binds the candidate/index, classifies/hashes supplied artifacts, compares summary/raw suite counts, preserves failed/aborted attempt history, checks independent-review candidate bytes, and delegates host project task/QA/phase/final verification to existing validators. Streaming artifact bounds and strict CLI rejection have negative fixtures. The positive dossier is explicitly synthetic unit-test data, not real host project acceptance or authenticated human evidence.
 
 The fixture-local locked Vitest/V8 provider and native Node coverage commands produce actual coverage. Both runner families reproduce red then green through `runValidation`. The example 40% branch policy passes and 100% fails: Node counts 66.67%, Vitest counts 50%. No universal threshold or coverage-specific hook is introduced.
 
@@ -23,7 +23,7 @@ pnpm test:tophat
 
 ## Pending integrated acceptance
 
-No live BunnyHop acceptance was performed. Exact host repository/location, branch/commit, approved active package, permitted working branch, installation mode, genuinely completed project scope, and applicable independent QA/review environment remain required. No fixture substitutes for criterion 12, phase synchronization or final project-documentation verification. The current PR is a draft progress PR; criteria needing live execution/semantic approval stay pending.
+No live host project acceptance was performed. Exact host repository/location, branch/commit, approved active package, permitted working branch, installation mode, genuinely completed project scope, and applicable independent QA/review environment remain required. No fixture substitutes for criterion 12, phase synchronization or final project-documentation verification. Framework implementation review and its separate approved merge can proceed before live host testing; integrated release criteria stay pending.
 
 No completed acceptance dossier or release-readiness claim is issued. Once live inputs and genuine completion evidence exist, construct the external v1 dossier and run the explicit seven-argument verifier. Keep public review copies redacted and separately hashed; do not alter private raw evidence beneath existing receipt digests.
 

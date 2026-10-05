@@ -3,11 +3,11 @@
 The private `tophat-vault-tests` package is a test harness. The reusable vault is unconfigured and is not an npm application or CLI release.
 
 1. Run all 14 fixture groups and map all 30 approved criteria to evidence.
-2. Complete the authorized BunnyHop integration: approved package before planning; traceable bounded tasks; derived guidance/route; applicable pnpm validation, independent security/QA; Development Phase synchronization; final project-doc verification and public/private review.
+2. Complete the authorized host project integration: approved package before planning; traceable bounded tasks; derived guidance/route; applicable pnpm validation, independent security/QA; Development Phase synchronization; final project-doc verification and public/private review.
 3. Generate the immutable external dossier at the exact resulting TopHat and host candidates. Resolve failed tests, stale evidence and independent review findings. Fixture counts alone do not establish acceptance.
 4. Present concrete release metadata/artifacts and limitations to Vesku for separate release-preparation approval. Agree the vault version/tag and metadata location; do not automatically version the private harness.
 5. Apply only approved preparation changes, then rerun/rebind candidate evidence and obtain independent review.
-6. A Slice 9 PR targets `development`. While live acceptance is blocked it remains a draft progress PR. Geogy's implementation review and Vesku's separate APPROVED are required for merge.
+6. A Slice 9 implementation PR targets `development`. Independent implementation review and a separate human APPROVED are required for merge. Live host testing is a subsequent, separately managed activity; its absence does not prevent the reviewed implementation merge, but release validation stays pending.
 7. Main integration, a tag and GitHub release publication require separately scoped authorization and current-candidate Git safety/evidence checks. Verify the actual integrated commit after any merge; earlier commit evidence does not test the resulting merge identity.
 
 Keep v0.8.0 intact as the historical baseline. No release action is performed by the acceptance helper.

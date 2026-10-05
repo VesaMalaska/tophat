@@ -1,6 +1,6 @@
 # TopHat 1.0 integrated acceptance
 
-Slice 9 assembles evidence for the 30 approved Definition criteria. The vault remains an unconfigured template. A green fixture suite is not live BunnyHop acceptance or release authorization.
+Slice 9 assembles evidence for the 30 approved Definition criteria. The vault remains an unconfigured template. A green fixture suite is not live host project acceptance or release authorization.
 
 ## Reproduce the focused suite
 
@@ -17,9 +17,9 @@ The runner clears the internal `NODE_TEST_CONTEXT` marker before launching an in
 
 ## Static criterion index
 
-`.agents/docs/acceptance-criteria.json` contains exactly IDs 1–30, the approved requirement text, exact file/test names, required evidence kinds, and live BunnyHop obligations. Its 14 groups match the approved design. No runtime verdict is stored in the index. The checker rejects unknown/duplicate JSON keys, unresolved tests and weakened evidence-kind obligations. Test-name resolution is a static instruction check, not proof of execution.
+`.agents/docs/acceptance-criteria.json` contains exactly IDs 1–30, the approved requirement text, exact file/test names, required evidence kinds, and live host project obligations. Its 14 groups match the approved design. No runtime verdict is stored in the index. The checker rejects unknown/duplicate JSON keys, unresolved tests and weakened evidence-kind obligations. Test-name resolution is a static instruction check, not proof of execution.
 
-The five evidence kinds are `mechanism`, `configuration-fixture`, `command-execution`, `semantic-review`, and `live-integration`. Artifact provenance is `observed`, `synthetic`, or `configuration`. Command, semantic and live artifacts require the recorded provenance `observed`. That declaration is not authenticated: the positive unit-test dossier explicitly simulates it and never establishes real people or live BunnyHop acceptance.
+The five evidence kinds are `mechanism`, `configuration-fixture`, `command-execution`, `semantic-review`, and `live-integration`. Artifact provenance is `observed`, `synthetic`, or `configuration`. Command, semantic and live artifacts require the recorded provenance `observed`. That declaration is not authenticated: the positive unit-test dossier explicitly simulates it and never establishes real people or live host project acceptance.
 
 ## Explicit verifier interface
 
@@ -30,15 +30,15 @@ node .agents/scripts/validate-acceptance-evidence.ts \
   --index /absolute/tophat-checkout/.agents/docs/acceptance-criteria.json \
   --evidence-root /absolute/private-evidence \
   --dossier /absolute/private-evidence/dossier.json \
-  --bunnyhop-root /absolute/approved-bunnyhop-checkout \
-  --bunnyhop-candidate FULL_BUNNYHOP_COMMIT
+  --host-root /absolute/approved-host-checkout \
+  --host-candidate FULL_HOST_COMMIT
 ```
 
 All seven flags are required once actual identities are known; no current-directory, branch or newest-file inference occurs. Missing CLI arguments or internal Git/subprocess failures exit 2. Incomplete/invalid records exit 1. Only consistent complete evidence exits 0 with `EVIDENCE_COMPLETE`. None of these results authorizes merge, release preparation, tagging or publication.
 
 ## Closed v1 dossier
 
-Top-level fields are `schemaVersion`, `identity`, `indexSha256`, `runtime`, `attempts`, `currentAttempt`, `artifacts`, `criteria`, `bunnyHop`, `review`, and `limitations`. Unknown fields and duplicate keys deny. Timestamps use canonical UTC ISO strings with milliseconds; hashes are lowercase SHA-256 and commits are full object IDs.
+Top-level fields are `schemaVersion`, `identity`, `indexSha256`, `runtime`, `attempts`, `currentAttempt`, `artifacts`, `criteria`, `hostProject`, `review`, and `limitations`. Unknown fields and duplicate keys deny. Timestamps use canonical UTC ISO strings with milliseconds; hashes are lowercase SHA-256 and commits are full object IDs.
 
 | Record | Exact fields and meaning |
 | --- | --- |
@@ -55,17 +55,17 @@ The summary JSON artifact has exactly `command`, `exitStatus`, `passed`, `failed
 
 `currentAttempt` must select the last supplied attempt at the expected TopHat commit. A latest failed/blocked run prevents readiness. Preserve prior failures and raw output; do not rewrite an attempt to fit. A required criterion cannot be waived as not applicable. Optional script-category skips remain visible in the underlying host validation reports and cannot satisfy a mandatory evidence requirement.
 
-### BunnyHop integration record
+### Host-project integration record
 
-`bunnyHop` is null while live work is pending. It cannot coexist with passed live criteria. A full record contains exactly `identity`, `baselineCommit`, `scope`, `authorityFingerprint`, `configFingerprint`, `packageValidatedAt`, `planningStartedAt`, `roadmapSha256`, `initializationArtifactId`, `tasks`, `phaseArtifactId`, and `completionArtifactId`.
+`hostProject` is null while live work is pending. It cannot coexist with passed live criteria. A full record contains exactly `identity`, `baselineCommit`, `scope`, `authorityFingerprint`, `configFingerprint`, `packageValidatedAt`, `planningStartedAt`, `roadmapSha256`, `initializationArtifactId`, `tasks`, `phaseArtifactId`, and `completionArtifactId`.
 
-- `identity` has the same checkout fields above and must match the supplied BunnyHop candidate. The baseline must be its ancestor. The active host must declare web/SvelteKit, with a valid approved package and current config/authority fingerprints.
+- `identity` has the same checkout fields above and must match the supplied host project candidate. The baseline must be its ancestor. The active host selects any supported workspace profile through its validated configuration, with a valid approved package and current config/authority fingerprints.
 - `scope` contains `packageId`, `activeScopes`, `completionDeclaration`, and `approvalLocator`. Package/scopes must equal approved public authority. Human scope approval and actual completeness are reviewed obligations, not inferred from a receipt.
 - `initializationArtifactId` identifies a live artifact with exactly `packageValidatedAt`, `planningStartedAt`, `authorityFingerprint`, and `roadmapSha256`. These values must match the dossier, validation must precede planning, and roadmap bytes must match the final checkout. This is a consistency check on reported ordering, not an authenticated execution history.
 - `tasks` contains artifact IDs. Each task artifact has exactly `task`, `testedCommit`, `stages`, and `qa`. Existing classification/authority and stage validators inspect historical source/config and derive the route. QA, when required, must pass the existing historical QA validator with preserved artifacts. The tested commit must be integrated into the final host candidate.
 - `phaseArtifactId` and `completionArtifactId` contain the existing `validate-derived-docs.ts` request format. Their statuses must be `DOCUMENTATION_ACCEPTED` and `PROJECT_DOCUMENTATION_ACCEPTED`, respectively. Immediate sync cannot substitute for phase acceptance. Representative tasks must belong to both records, and final documentation must bind to the supplied final host candidate.
 
-A representative task or completed Development Phase cannot establish project completion. Use a genuinely approved BunnyHop scope and its actual completion gate. Incomplete scope keeps release readiness pending; a fixture cannot replace the live obligation.
+A representative task or completed Development Phase cannot establish project completion. Use a genuinely approved host project scope and its actual completion gate. Incomplete scope keeps release readiness pending; a fixture cannot replace the live obligation.
 
 ## Integrity and custody
 
@@ -78,3 +78,7 @@ Before artifact collection, the orchestrator excludes environment/credential fil
 The verifier reads local files and invokes existing read-only validators/Git readers. It executes no host test scripts, performs no fetch/install, and writes no host files or Git metadata. It does not authenticate actors, prove actual execution or complete attempt history, establish a process sandbox, or eliminate races. Report `EVIDENCE_COMPLETE` as consistency of supplied evidence only. Genuine independent review, complete custody and explicit human decisions remain necessary.
 
 An aborted nonpassing attempt may retain a raw error log without a complete test summary. Record its actual nonzero/null exit and only the counts reported (zero for missing counters); it stays failed/blocked. This preserves failure history without manufacturing a passing summary. Any reported counters must match. Passing attempts always require a complete raw summary and zero failed/skipped results.
+
+## Repository independence
+
+TopHat publishes generic host-project contracts and synthetic fixtures only. Consumer-project identities, document packages, live execution logs and test-project selection belong in external acceptance custody. No client product is a runtime dependency or a named requirement in this repository. Framework implementation review and its separately approved development merge can precede live host testing; release validation remains pending until independently reviewed integration evidence exists.

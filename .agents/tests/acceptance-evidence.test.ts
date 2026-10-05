@@ -11,9 +11,9 @@ function run(fn: (f: ReturnType<typeof acceptanceFixture>) => void, full = false
 test('criterion index resolves exactly 30 approved IDs and all 14 test groups', () => {
   const root = resolve('.'); const index = JSON.parse(readFileSync(join(root, '.agents/docs/acceptance-criteria.json'), 'utf8'));
   assert.equal(checkedIndex(index, p => readFileSync(join(root, p), 'utf8')).criteria.length, 30);
-  for (const mutate of [(v: any) => v.criteria.pop(), (v: any) => v.criteria[1].id = 1, (v: any) => v.criteria[0].tests[0].name = 'nonexistent test', (v: any) => v.groups.pop(), (v: any) => v.criteria[11].bunnyHopRequired = false, (v: any) => v.extra = true]) { const v = structuredClone(index); mutate(v); assert.throws(() => checkedIndex(v, p => readFileSync(join(root, p), 'utf8'))); }
+  for (const mutate of [(v: any) => v.criteria.pop(), (v: any) => v.criteria[1].id = 1, (v: any) => v.criteria[0].tests[0].name = 'nonexistent test', (v: any) => v.groups.pop(), (v: any) => v.criteria[11].hostIntegrationRequired = false, (v: any) => v.extra = true]) { const v = structuredClone(index); mutate(v); assert.throws(() => checkedIndex(v, p => readFileSync(join(root, p), 'utf8'))); }
 });
-test('missing live BunnyHop leaves aggregate acceptance pending without mutating hosts', () => run(f => {
+test('missing live host project leaves aggregate acceptance pending without mutating hosts', () => run(f => {
   const before = spawnSync('git', ['status', '--porcelain'], { cwd: f.options.root, encoding: 'utf8' }).stdout;
   const result = check(f); assert.equal(result.status, 'EVIDENCE_INCOMPLETE'); assert.ok(result.errors.some(e => e.code === 'ACCEPTANCE_LIVE_EVIDENCE_MISSING')); assert.equal(result.criterionResults.length, 30);
   assert.equal(spawnSync('git', ['status', '--porcelain'], { cwd: f.options.root, encoding: 'utf8' }).stdout, before);
@@ -21,7 +21,7 @@ test('missing live BunnyHop leaves aggregate acceptance pending without mutating
 test('fully consistent synthetic dossier invokes real lifecycle validators; it does not authenticate live execution', () => run(f => {
   const result = check(f); assert.equal(result.status, 'EVIDENCE_COMPLETE', JSON.stringify(result));
 }, true));
-test('claimed live pass without integrated BunnyHop is denied', () => run(f => { f.dossier.criteria[11].status = 'PASSED'; assert.equal(code(f), 'ACCEPTANCE_LIVE_EVIDENCE_MISSING'); }));
+test('claimed live pass without integrated host project is denied', () => run(f => { f.dossier.criteria[11].status = 'PASSED'; assert.equal(code(f), 'ACCEPTANCE_LIVE_EVIDENCE_MISSING'); }));
 test('malformed, duplicate-key, unknown-field and oversized dossier JSON deny', () => run(f => {
   for (const bytes of ['{', '{"schemaVersion":1,"schemaVersion":1}', JSON.stringify({ ...f.dossier, extra: true }), ' '.repeat(limits.json + 1)]) { writeFileSync(f.options.dossier, bytes); assert.equal(validateAcceptance(f.options).status, 'EVIDENCE_INCOMPLETE'); }
 }));
@@ -71,10 +71,10 @@ test('unresolved independent review and optional artifacts cannot satisfy mandat
   f.dossier.review.verdict = 'CHANGES_REQUIRED'; f.dossier.review.findings = ['Unresolved criterion']; assert.ok(check(f).errors.some(e => e.code === 'ACCEPTANCE_REQUIRED_RESULT_FAILED'));
   f.artifacts[0].result = 'SKIPPED_NOT_APPLICABLE'; assert.equal(code(f), 'ACCEPTANCE_CRITERION_MISSING');
 }));
-test('BunnyHop final scope, initialization order, config and final project receipt are checked', () => run(f => {
-  for (const mutate of [(v: any) => v.bunnyHop.configFingerprint = '0'.repeat(64), (v: any) => v.bunnyHop.authorityFingerprint = '0'.repeat(64), (v: any) => v.bunnyHop.scope.activeScopes = ['fabricated'], (v: any) => v.bunnyHop.planningStartedAt = '2026-10-03T17:00:00.000Z', (v: any) => v.bunnyHop.completionArtifactId = v.bunnyHop.phaseArtifactId]) { const old = structuredClone(f.dossier); mutate(f.dossier); assert.equal(check(f).status, 'EVIDENCE_INCOMPLETE'); Object.assign(f.dossier, old); }
+test('host project final scope, initialization order, config and final project receipt are checked', () => run(f => {
+  for (const mutate of [(v: any) => v.hostProject.configFingerprint = '0'.repeat(64), (v: any) => v.hostProject.authorityFingerprint = '0'.repeat(64), (v: any) => v.hostProject.scope.activeScopes = ['fabricated'], (v: any) => v.hostProject.planningStartedAt = '2026-10-03T17:00:00.000Z', (v: any) => v.hostProject.completionArtifactId = v.hostProject.phaseArtifactId]) { const old = structuredClone(f.dossier); mutate(f.dossier); assert.equal(check(f).status, 'EVIDENCE_INCOMPLETE'); Object.assign(f.dossier, old); }
 }, true));
-test('BunnyHop stale task and missing phase cannot be replaced by immediate synchronization', () => run(f => {
+test('host project stale task and missing phase cannot be replaced by immediate synchronization', () => run(f => {
   f.changeArtifact('phase', v => v.receipt.candidate.identity.mode = 'immediate'); assert.equal(code(f), 'ACCEPTANCE_LIVE_EVIDENCE_MISSING');
 }, true));
 test('CLI requires all explicit nonduplicate arguments and maps internal failures to exit 2', () => {
@@ -82,7 +82,7 @@ test('CLI requires all explicit nonduplicate arguments and maps internal failure
   const script = resolve('.agents/scripts/validate-acceptance-evidence.ts'); const p = spawnSync(process.execPath, [script], { encoding: 'utf8' }); assert.equal(p.status, 2); assert.equal(JSON.parse(p.stdout).status, 'EVIDENCE_INCOMPLETE');
 });
 test('CLI gives exit 0 only for complete consistent evidence and exit 1 for missing live prerequisites', () => {
-  const args = (f: ReturnType<typeof acceptanceFixture>) => ['--root', f.options.root, '--candidate', f.options.candidate, '--index', f.options.index, '--evidence-root', f.options.evidenceRoot, '--dossier', f.options.dossier, '--bunnyhop-root', f.options.bunnyHopRoot, '--bunnyhop-candidate', f.options.bunnyHopCandidate];
+  const args = (f: ReturnType<typeof acceptanceFixture>) => ['--root', f.options.root, '--candidate', f.options.candidate, '--index', f.options.index, '--evidence-root', f.options.evidenceRoot, '--dossier', f.options.dossier, '--host-root', f.options.hostRoot, '--host-candidate', f.options.hostCandidate];
   run(f => assert.equal(acceptanceCLI(args(f)).exitCode, 1));
   run(f => { assert.equal(acceptanceCLI(args(f)).exitCode, 0); const old = process.env.PATH; try { process.env.PATH = ''; assert.equal(acceptanceCLI(args(f)).exitCode, 2); } finally { process.env.PATH = old; } }, true);
 });
@@ -105,3 +105,10 @@ test('aborted attempts preserve raw failure logs and cannot supersede a required
 test('detached candidates deny as unsafe records without treating them as successful inspection', () => run(f => {
   const p = spawnSync('git', ['switch', '--detach', f.options.candidate], { cwd: f.options.root }); assert.equal(p.status, 0); assert.equal(code(f), 'ACCEPTANCE_CANDIDATE_STALE');
 }));
+test('host integration is selected by contract rather than a fixed product or framework', () => {
+  for (const workspace of [{ kind: 'web', framework: 'react' }, { kind: 'backend', framework: 'none' }, { kind: 'desktop', framework: 'react' }]) {
+    const f = acceptanceFixture(true, workspace);
+    try { assert.equal(check(f).status, 'EVIDENCE_COMPLETE', JSON.stringify(check(f))); }
+    finally { f.close(); }
+  }
+});

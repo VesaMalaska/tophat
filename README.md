@@ -339,3 +339,9 @@ Documentation-only PRs have an explicit candidate-bound review/check/claim-evide
 All authorized Git mutations follow [the shared Git contract](.agents/docs/git-safety.md): read-only preflight checks exact branch/HEAD, index and intended bytes, remote policy and conflicts; execution checks each result and postcondition. Stage only exact reviewed files. Conflict reconciliation is limited to an explicitly authorized existing merge. Hook installation now requires the exact git-integration request on stdin, including approved current host state and native hook digest; missing input denies before writes.
 
 These checks run when invoked. They do not intercept arbitrary terminal/IDE/GitHub commands, eliminate races or authenticate consent. Publication retains exact-candidate QA/document evidence and merge requires separate human approval. No automatic destructive recovery or WIP publication. The [adoption inventory](.agents/docs/git-adoption.json) covers active workflow instructions.
+
+### Integrated acceptance and release readiness
+
+TopHat 1.0 acceptance is tracked against all 30 approved criteria in `.agents/docs/acceptance-criteria.json`. Install the isolated runner fixture with `pnpm --dir .agents/tests/fixtures/runner-neutral install --frozen-lockfile`, then run `pnpm test:tophat`. The fixture proves actual Node/Vitest TDD and host-owned coverage outcomes; framework guidance fixtures do not certify complete applications or native OS support.
+
+See [.agents/docs/acceptance-evidence.md](.agents/docs/acceptance-evidence.md) for the read-only dossier verifier and [.agents/docs/release-readiness.md](.agents/docs/release-readiness.md) for v0.8.0 migration and separate release approvals. A green suite is not a release decision. Live BunnyHop initialization, task/route/QA evidence, phase synchronization and final project-documentation acceptance remain required before TopHat 1.0 release readiness.

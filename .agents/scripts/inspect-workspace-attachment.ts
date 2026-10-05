@@ -1,3 +1,4 @@
+import { catalogResources, loadCommandCatalog } from './validate-command-catalog.ts';
 import { spawnSync } from 'node:child_process';
 import { lstatSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
 import { resolve, relative, dirname, isAbsolute, sep } from 'node:path';
@@ -30,7 +31,9 @@ export function relativeName(v: unknown): string {
   if (isAbsolute(p) || /^[A-Za-z]:/.test(p) || p.includes('\\') || /[\x00-\x1f\x7f]/.test(p) || p.split('/').some(x => !x || x === '.' || x === '..') || p === '.git' || p.startsWith('.git/')) stop('ATTACHMENT_PATH_INVALID', 'Path must be a safe relative host path');
   return p;
 }
-export const requiredInfrastructure = ['.agents/scripts/load-tophat-config.ts','.agents/scripts/run-validation.ts','.agents/scripts/validate-doc-package.ts','.agents/scripts/validate-task-authority.ts','.agents/scripts/finalize-doc-package.ts','.agents/scripts/inspect-workspace-attachment.ts','.agents/scripts/assess-attachment-baseline.ts','.agents/scripts/validate-workspace-attachment.ts','.agents/scripts/inspect-tophat-detachment.ts','.agents/scripts/install-git-hook.ts','.agents/scripts/git-preflight.ts','.agents/scripts/update-hud.ts','.agents/scripts/watch-hud.ts','.agents/scripts/select-task-guidance.ts','.agents/scripts/classify-task.ts','.agents/scripts/inspect-role-session.ts','.agents/scripts/validate-qa-evidence.ts','.agents/scripts/inspect-derived-doc-session.ts','.agents/scripts/validate-derived-docs.ts','.agents/schemas/doc-manifest.schema.json'];
+const baseInfrastructure = ['.agents/scripts/load-tophat-config.ts','.agents/scripts/run-validation.ts','.agents/scripts/validate-doc-package.ts','.agents/scripts/validate-task-authority.ts','.agents/scripts/finalize-doc-package.ts','.agents/scripts/inspect-workspace-attachment.ts','.agents/scripts/assess-attachment-baseline.ts','.agents/scripts/validate-workspace-attachment.ts','.agents/scripts/inspect-tophat-detachment.ts','.agents/scripts/install-git-hook.ts','.agents/scripts/git-preflight.ts','.agents/scripts/update-hud.ts','.agents/scripts/watch-hud.ts','.agents/scripts/select-task-guidance.ts','.agents/scripts/classify-task.ts','.agents/scripts/inspect-role-session.ts','.agents/scripts/validate-qa-evidence.ts','.agents/scripts/inspect-derived-doc-session.ts','.agents/scripts/validate-derived-docs.ts','.agents/schemas/doc-manifest.schema.json'];
+export const requiredInfrastructure = baseInfrastructure;
+export const installationInfrastructure = (): string[] => [...new Set([...baseInfrastructure, ...catalogResources(resolve(dirname(fileURLToPath(import.meta.url)), '../..'), true)])];
 export const supportedNode = (version: string): boolean => /^\d+\.\d+\.\d+$/.test(version) && Number(version.split('.')[0]) >= 24;
 export const fingerprint = (v: unknown): string => digest(canonical(v));
 export const strip = (v: Record<string, any>, names: string[]): Record<string, any> => Object.fromEntries(Object.entries(v).filter(([k]) => !names.includes(k)));
@@ -212,8 +215,9 @@ export function discover(root: string, input: unknown): { schemaVersion: 1; stat
     if(plan.installation.hookContent!==canonicalHook)stop('ATTACHMENT_HOOK_SOURCE_INVALID','Hook content must match the versioned source');
     const sourceHookWrite=plan.writePlan.find(w=>w.path==='.agents/git-hooks/pre-commit');
     if(sourceHookWrite?sourceHookWrite.content!==canonicalHook:fileState(root,'.agents/git-hooks/pre-commit').sha256!==digest(canonicalHook))stop('ATTACHMENT_WRITE_PLAN_INCOMPLETE','Versioned native hook source is required');
-    for(const path of requiredInfrastructure){const canonicalBytes=readFileSync(resolve(dirname(fileURLToPath(import.meta.url)),'../..',path));const entry=plan.writePlan.find(w=>w.path===path);if(entry?entry.sha256!==digest(canonicalBytes):fileState(root,path).sha256!==digest(canonicalBytes))stop('ATTACHMENT_INFRASTRUCTURE_INCOMPLETE',`Required versioned tooling is missing or differs: ${path}`);}
-    const protectedInputs=[...new Set([...inputPaths,...requiredInfrastructure,...plan.writePlan.map(x=>x.path),...plan.ownership.map(x=>x.path), 'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','tsconfig.json','.agents/tophat.config.json'])];
+    const completeInfrastructure=installationInfrastructure();
+    for(const path of completeInfrastructure){const canonicalBytes=readFileSync(resolve(dirname(fileURLToPath(import.meta.url)),'../..',path));const entry=plan.writePlan.find(w=>w.path===path);if(entry?entry.sha256!==digest(canonicalBytes):fileState(root,path).sha256!==digest(canonicalBytes))stop('ATTACHMENT_INFRASTRUCTURE_INCOMPLETE',`Required versioned tooling is missing or differs: ${path}`);}
+    const protectedInputs=[...new Set([...inputPaths,...completeInfrastructure,...plan.writePlan.map(x=>x.path),...plan.ownership.map(x=>x.path), 'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','tsconfig.json','.agents/tophat.config.json'])];
     // The selected public package's files, including ignored/untracked files, are always snapshot inputs.
     const docs=inspectDocPackage(root,'approved',undefined,config);
     if(docs.snapshot)protectedInputs.push(...['manifest.schema.json','README.md',config.documentation.manifest,...docs.snapshot.manifest.documents.map(d=>d.path)].map(p=>`${docs.snapshot!.packagePath}/${p}`));
@@ -233,6 +237,7 @@ export function discover(root: string, input: unknown): { schemaVersion: 1; stat
     if(plan.boundary.scopeIds.some(x=>!docs.snapshot?.manifest.scope.active.includes(x)))blockers.push('ATTACHMENT_SCOPE_INVALID');
     if(selected.some(x=>!x.body))blockers.push('SCRIPT_MISSING');
     const required=['.agents/tophat.config.json','Context.md','Strategy.md','Roadmap.md','HUD.md'];if(required.some(p=>!plan.writePlan.some(x=>x.path===p)))blockers.push('ATTACHMENT_WRITE_PLAN_INCOMPLETE');
+    for(const command of loadCommandCatalog(resolve(dirname(fileURLToPath(import.meta.url)), '../..'), true).commands.filter(c=>c.state==='active')) if(!(raw.candidateConfig as any).routingMatrix[command.modelKey!]?.trim()) blockers.push(`ATTACHMENT_MODEL_MISSING:${command.modelKey}`);
     const cfgWrite=plan.writePlan.find(x=>x.path==='.agents/tophat.config.json');if(cfgWrite&&canonical(strictJson(cfgWrite.content,'config write'))!==canonical(raw.candidateConfig))blockers.push('ATTACHMENT_CONFIG_WRITE_MISMATCH');
     try{cleanSnapshot(s, s.branch??'',inputs);}catch(e){blockers.push((e as AttachmentError).code);}
     const proposed={schemaVersion:1 as const,proposalId:id,sourceCommit:raw.sourceCommit,hostSnapshotFingerprint:fingerprint(s),facts:{snapshot:s,runtime:f},candidateConfig:raw.candidateConfig,documentation:docs.report,

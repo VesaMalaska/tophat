@@ -90,3 +90,7 @@ Use 1 MiB JSON records, 256 history entries, inherited 16,384 tracked-file / 128
 Clean-code review evaluates meaningful names, responsibility/contract boundaries, limited unnecessary coupling/duplication, behavioral tests, smallest coherent change and change locality. A local refactor needs a concrete task/correctness/maintainability reason; no unrelated cleanup/speculative abstraction or universal line/file/function/complexity metric is imposed.
 
 Fixtures test deterministic behavior and reviewed instruction examples. Synthetic reports do not claim actual web/Electron QA. Native fixtures run on Linux/Node 24; Windows-shaped paths do not prove Windows execution. Actual UI acceptance belongs to the later integrated acceptance slice.
+
+## Command packaging integration
+
+Consult [command migration](command-migration.md) and the pinned command catalog. Fresh installation requires the full catalog resource closure; upgrade/detachment uses exact confirmed ownership/digests, preserves host routing overrides/custom skills and historical receipts, and stops visibly on partial application. No broad directory removal or automatic rollback. Handoff writes precede final candidate sealing. Map actual applicable criterion IDs to behavior and meaningful evidence, and map every changed behavior back to approved scope; independent review judges relevance.

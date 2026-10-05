@@ -19,9 +19,11 @@ When assigned a logic implementation task, you MUST execute a strict Test-Driven
 
 ## 3. The Execution Loop
 
-- Step A (Red): Write the tests. Run `npx vitest run [filename]`. Expect it to fail.
-- Step B (Green): Write the minimum implementation code required to pass the test. Run `npx vitest run [filename]`.
+- Step A (Red): Write the tests. Resolve host `validation.scripts.unit` and use the established `run-validation.ts` gate request with the applicable unit category. Run the mapped `pnpm run <script>` as declared; unit is a category, not a script name. Expect it to fail.
+- Step B (Green): Write the minimum implementation code required to pass the test. Resolve host `validation.scripts.unit` and use the established `run-validation.ts` gate request with the applicable unit category. Run the mapped `pnpm run <script>` as declared; unit is a category, not a script name.
 - Step C (Refactor): Clean up the code while ensuring the tests remain green.
+
+The shared executor accepts gate/additionalCategories, not arbitrary filename arguments. If no approved scoped script exists, execute the declared full script unchanged. Use this skill only for a compatible installed Vitest runner; restricted roles cannot install tools.
 
 ## 4. Artifact Handoff
 

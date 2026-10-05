@@ -55,3 +55,7 @@ Use the validated taskClassification from `.agents/docs/task-routing-and-qa.md`.
 Review/security roles inspect and report only: no product/source/test/config/authority/private-state writes, Git mutation, dependency installation, or implementation fixes. Findings and verdict are returned to the orchestrator, which separately records receipts and applies Linear/HUD handoffs. The implementation session cannot approve its own changed commit. A reviewer may independently review a developer's remediation again. Physical role interception is unverified; postconditions detect surviving changes and reported violations.
 
 Git actions follow `.agents/docs/git-safety.md` and `git-preflight.ts` before each authorized mutation. No inferred branch/base, broad staging, automatic WIP publication or destructive recovery. Preserve actual state on any failed action.
+
+## Bidirectional criterion trace
+
+Use actual stable criterion IDs from approved task extracts. Map each applicable criterion to behavior/file/function and meaningful automated, visual/manual or semantic evidence with rationale. Map every changed behavior back to an authorized criterion or necessary in-scope support. Missing behavior, vacuous tests and unexplained changes are findings; source citations alone do not prove completeness. Preserve failed attempts. Reviewers independently verify relevance and coverage without fixing their own findings; remediation follows `/remediate-task` or authority-bound `/remediate-blocker`.

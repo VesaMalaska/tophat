@@ -22,4 +22,11 @@ When implementing frontend components or server routes, enforce the following pa
 ## 3. Type Safety
 
 - Export explicit `PageServerLoad` and `Action` types for all server files.
-- Ensure data passed to `+page.svelte` is properly typed via `export let data: PageData;` (or the Runes equivalent).
+- Ensure data passed to `+page.svelte` is properly typed with typed rune props:
+
+```svelte
+<script lang="ts">
+  import type { PageData } from './$types';
+  let { data }: { data: PageData } = $props();
+</script>
+```

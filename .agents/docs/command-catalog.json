@@ -1,0 +1,1173 @@
+{
+  "schemaVersion": 1,
+  "commands": [
+    {
+      "name": "architecture-pivot",
+      "state": "active",
+      "entryPath": ".agents/skills/architecture-pivot/SKILL.md",
+      "modelKey": "/architecture-pivot",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/agent-architect.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-doc-package.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Propose private planning reconciliation only after revised product authority is approved and valid."
+    },
+    {
+      "name": "context-sync",
+      "state": "active",
+      "entryPath": ".agents/skills/context-sync/SKILL.md",
+      "modelKey": "/context-sync",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Enforces operational handoff state updates for agent memory and generates a visual HUD for the Human Orchestrator."
+    },
+    {
+      "name": "generate-readme",
+      "state": "retired",
+      "entryPath": null,
+      "modelKey": null,
+      "inputContract": {
+        "kind": "none",
+        "required": false,
+        "description": "Retired; choose an explicit documentation boundary."
+      },
+      "roleRules": [],
+      "mandatoryResources": [],
+      "actors": {
+        "proposal": "none",
+        "checks": "none",
+        "writes": "none",
+        "externalActions": "none"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [
+        "project-define",
+        "sync-derived-docs",
+        "verify-project-docs"
+      ],
+      "summary": "Retired autonomous README generation; explicit redirect to bounded derived-document lifecycle."
+    },
+    {
+      "name": "generate-smoke-test",
+      "state": "active",
+      "entryPath": ".agents/skills/generate-smoke-test/SKILL.md",
+      "modelKey": "/generate-smoke-test",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/agent-architect.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/select-task-guidance.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-doc-package.ts",
+        ".agents/scripts/validate-task-authority.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Generates the environment-specific CI/CD smoke test ticket in Linear."
+    },
+    {
+      "name": "generate-sprint-tasks",
+      "state": "active",
+      "entryPath": ".agents/skills/generate-sprint-tasks/SKILL.md",
+      "modelKey": "/generate-sprint-tasks",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/agent-architect.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/select-task-guidance.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-doc-package.ts",
+        ".agents/scripts/validate-task-authority.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Lead Architect task compilation targeting the Active Sprint Chunk, with strict context isolation and Just-In-Time (JIT) schema injection."
+    },
+    {
+      "name": "implement-junior",
+      "state": "active",
+      "entryPath": ".agents/skills/implement-junior/SKILL.md",
+      "modelKey": "/implement-junior",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/agent-junior-dev.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "mutation",
+      "replacementCommands": [],
+      "summary": "UI/Tailwind implementation pipeline with automated Git and Linear handoff."
+    },
+    {
+      "name": "implement-mid",
+      "state": "active",
+      "entryPath": ".agents/skills/implement-mid/SKILL.md",
+      "modelKey": "/implement-mid",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/agent-mid-dev.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "mutation",
+      "replacementCommands": [],
+      "summary": "Frontend component logic and client-side reactive state implementation pipeline."
+    },
+    {
+      "name": "implement-senior",
+      "state": "active",
+      "entryPath": ".agents/skills/implement-senior/SKILL.md",
+      "modelKey": "/implement-senior",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/agent-senior-dev.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "mutation",
+      "replacementCommands": [],
+      "summary": "Secure data and server-authoritative logic implementation pipeline."
+    },
+    {
+      "name": "project-define",
+      "state": "active",
+      "entryPath": ".agents/skills/project-define/SKILL.md",
+      "modelKey": "/project-define",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/project-definition.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-doc-package.ts",
+        ".agents/templates/documentation-package/01-decisions.md",
+        ".agents/templates/documentation-package/02-product.md",
+        ".agents/templates/documentation-package/03-contracts.md",
+        ".agents/templates/documentation-package/04-usage.md",
+        ".agents/templates/documentation-package/README.md",
+        ".agents/templates/documentation-package/manifest.json",
+        ".agents/templates/documentation-package/manifest.schema.json"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Prepare a bounded draft product documentation package from incomplete human input."
+    },
+    {
+      "name": "project-definition-finalize",
+      "state": "active",
+      "entryPath": ".agents/skills/project-definition-finalize/SKILL.md",
+      "modelKey": "/project-definition-finalize",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/project-definition.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/finalize-doc-package.ts",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-doc-package.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Finalize only a reviewed documentation candidate explicitly approved by the human."
+    },
+    {
+      "name": "project-definition-review",
+      "state": "active",
+      "entryPath": ".agents/skills/project-definition-review/SKILL.md",
+      "modelKey": "/project-definition-review",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/project-definition.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-doc-package.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [],
+      "summary": "Independent read-only semantic review of the exact draft documentation candidate."
+    },
+    {
+      "name": "publish-pr",
+      "state": "active",
+      "entryPath": ".agents/skills/publish-pr/SKILL.md",
+      "modelKey": "/publish-pr",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-derived-docs.ts",
+        ".agents/scripts/validate-qa-evidence.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "mutation",
+      "replacementCommands": [],
+      "summary": "Publish the exact evidenced feature head for human review after a read-only readiness check."
+    },
+    {
+      "name": "qa-validate",
+      "state": "active",
+      "entryPath": ".agents/skills/qa-validate/SKILL.md",
+      "modelKey": "/qa-validate",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/agent-qa.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/inspect-role-session.ts",
+        ".agents/scripts/run-validation.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-qa-evidence.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [],
+      "summary": "Independent proportionate QA with reproducible exact-commit evidence and role postconditions."
+    },
+    {
+      "name": "refactor-audit",
+      "state": "active",
+      "entryPath": ".agents/skills/refactor-audit/SKILL.md",
+      "modelKey": "/refactor-audit",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/agent-architect.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-task-authority.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [],
+      "summary": "Read-only architectural debt findings; no task creation or execution authority."
+    },
+    {
+      "name": "remediate-blocker",
+      "state": "active",
+      "entryPath": ".agents/skills/remediate-blocker/SKILL.md",
+      "modelKey": "/remediate-blocker",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/agent-architect.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/update-hud.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-doc-package.ts",
+        ".agents/scripts/validate-task-authority.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Surgical JIT context healing for tasks halted by execution agents due to missing schemas or documentation gaps."
+    },
+    {
+      "name": "remediate-task",
+      "state": "active",
+      "entryPath": ".agents/skills/remediate-task/SKILL.md",
+      "modelKey": "/remediate-task",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/agent-junior-dev.md",
+        ".agents/rules/agent-mid-dev.md",
+        ".agents/rules/agent-senior-dev.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "mutation",
+      "replacementCommands": [],
+      "summary": "Separate assigned-tier developer remediation followed by a fresh derived review route."
+    },
+    {
+      "name": "resolve-conflict",
+      "state": "active",
+      "entryPath": ".agents/skills/resolve-conflict/SKILL.md",
+      "modelKey": "/resolve-conflict",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/agent-junior-dev.md",
+        ".agents/rules/agent-mid-dev.md",
+        ".agents/rules/agent-senior-dev.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/run-validation.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "mutation",
+      "replacementCommands": [],
+      "summary": "Reconcile only an already identified, human-authorized merge conflict for an exact task candidate."
+    },
+    {
+      "name": "review-critical",
+      "state": "active",
+      "entryPath": ".agents/skills/review-critical/SKILL.md",
+      "modelKey": "/review-critical",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/agent-review-critical.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [],
+      "summary": "Independent read-only review-critical inspection of the exact classified candidate."
+    },
+    {
+      "name": "review-derived-docs",
+      "state": "active",
+      "entryPath": ".agents/skills/review-derived-docs/SKILL.md",
+      "modelKey": "/review-derived-docs",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-derived-docs.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [],
+      "summary": "Independent read-only document review bound to the finalized documentation candidate."
+    },
+    {
+      "name": "review-standard",
+      "state": "active",
+      "entryPath": ".agents/skills/review-standard/SKILL.md",
+      "modelKey": "/review-standard",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/agent-review-standard.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [],
+      "summary": "Independent read-only review-standard inspection of the exact classified candidate."
+    },
+    {
+      "name": "roadmap-sync",
+      "state": "active",
+      "entryPath": ".agents/skills/roadmap-sync/SKILL.md",
+      "modelKey": "/roadmap-sync",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/agent-architect.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-doc-package.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Propose private chunk advancement from completed work and current approved authority."
+    },
+    {
+      "name": "security-review",
+      "state": "active",
+      "entryPath": ".agents/skills/security-review/SKILL.md",
+      "modelKey": "/security-review",
+      "inputContract": {
+        "kind": "task-locator",
+        "required": true,
+        "description": "Exactly one explicit task locator, preserved verbatim from the human invocation; missing/extra locators halt."
+      },
+      "roleRules": [
+        ".agents/rules/agent-security-auditor.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [],
+      "summary": "Independent read-only security inspection of the exact classified candidate."
+    },
+    {
+      "name": "sprint-briefing",
+      "state": "active",
+      "entryPath": ".agents/skills/sprint-briefing/SKILL.md",
+      "modelKey": "/sprint-briefing",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/agent-pm.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/inspect-role-session.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [],
+      "summary": "Advisory read-only sprint briefing; no PM execution or state mutation."
+    },
+    {
+      "name": "strategy-sync",
+      "state": "active",
+      "entryPath": ".agents/skills/strategy-sync/SKILL.md",
+      "modelKey": "/strategy-sync",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/agent-pm.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/inspect-role-session.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Read-only PM proposals for Strategy and Context, applied by a separately authorized orchestrator."
+    },
+    {
+      "name": "sync-derived-docs",
+      "state": "active",
+      "entryPath": ".agents/skills/sync-derived-docs/SKILL.md",
+      "modelKey": "/sync-derived-docs",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/agent-technical-writer.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/derived-documentation.md",
+        ".agents/docs/git-safety.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/inspect-derived-doc-session.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-derived-docs.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "mutation",
+      "replacementCommands": [],
+      "summary": "Evaluate and synchronize one Development Phase's derived documents, or one explicitly classified immediate task exception."
+    },
+    {
+      "name": "triage-bug",
+      "state": "active",
+      "entryPath": ".agents/skills/triage-bug/SKILL.md",
+      "modelKey": "/triage-bug",
+      "inputContract": {
+        "kind": "diagnostic-text",
+        "required": true,
+        "description": "Diagnostic description/log is inert text, never shell code."
+      },
+      "roleRules": [
+        ".agents/rules/agent-architect.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/task-routing-and-qa.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/classify-task.ts",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-doc-package.ts",
+        ".agents/scripts/validate-task-authority.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Conversational, multi-turn bug diagnostic pipeline. The Lead Architect conducts an analytical root-cause interview with the Human Orchestrator before compiling a Linear bug ticket."
+    },
+    {
+      "name": "verify-project-docs",
+      "state": "active",
+      "entryPath": ".agents/skills/verify-project-docs/SKILL.md",
+      "modelKey": "/verify-project-docs",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-derived-docs.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "mutation",
+      "replacementCommands": [],
+      "summary": "Verify current product documentation and handoff after all Development Phases have accepted documentation evidence."
+    },
+    {
+      "name": "workspace-attach-assess",
+      "state": "active",
+      "entryPath": ".agents/skills/workspace-attach-assess/SKILL.md",
+      "modelKey": "/workspace-attach-assess",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/workspace-attachment.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/assess-attachment-baseline.ts",
+        ".agents/scripts/validate-command-catalog.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [],
+      "summary": "Run only the explicitly authorized proposed host baseline and preserve failures honestly."
+    },
+    {
+      "name": "workspace-attach-finalize",
+      "state": "active",
+      "entryPath": ".agents/skills/workspace-attach-finalize/SKILL.md",
+      "modelKey": "/workspace-attach-finalize",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/docs/workspace-attachment.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-workspace-attachment.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "mutation",
+      "replacementCommands": [],
+      "summary": "Explicit human approval and exact orchestrator application of an assessed attachment plan."
+    },
+    {
+      "name": "workspace-attach",
+      "state": "active",
+      "entryPath": ".agents/skills/workspace-attach/SKILL.md",
+      "modelKey": "/workspace-attach",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/workspace-attachment.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/inspect-workspace-attachment.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/templates/workspace-attachment/README.md",
+        ".agents/templates/workspace-attachment/approval.example.json",
+        ".agents/templates/workspace-attachment/authorization.example.json"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "none in advisory/review role; exact approved application by orchestrator",
+        "externalActions": "none for audit/PM/review; separately authorized orchestrator custody/transitions"
+      },
+      "gitClassification": "no-git-mutation",
+      "replacementCommands": [],
+      "summary": "Read-only discovery and explicit proposed contract for an existing supported host."
+    },
+    {
+      "name": "workspace-init",
+      "state": "active",
+      "entryPath": ".agents/skills/workspace-init/SKILL.md",
+      "modelKey": "/workspace-init",
+      "inputContract": {
+        "kind": "scope-evidence",
+        "required": true,
+        "description": "Explicit selected root, scope, authority/candidate and evidence required by the procedure; do not infer these from cwd or trailing tokens."
+      },
+      "roleRules": [
+        ".agents/rules/agent-architect.md",
+        ".agents/rules/workflows.md",
+        ".agents/rules/workspace-context.md",
+        ".agents/rules/workspace-strategy.md"
+      ],
+      "mandatoryResources": [
+        ".agents/docs/command-catalog.json",
+        ".agents/docs/command-migration.md",
+        ".agents/docs/git-safety.md",
+        ".agents/schemas/command-catalog.schema.json",
+        ".agents/scripts/git-preflight.ts",
+        ".agents/scripts/install-git-hook.ts",
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/scripts/validate-doc-package.ts"
+      ],
+      "actors": {
+        "proposal": "loaded role in its declared scope",
+        "checks": "separate execution orchestrator; permitted role checks only",
+        "writes": "assigned developer or authorized orchestrator within existing exact plan",
+        "externalActions": "separately authorized orchestrator after current gates"
+      },
+      "gitClassification": "optional-publication",
+      "replacementCommands": [],
+      "summary": "Validate an existing supported host and approved package before proposing private roadmap and task state."
+    }
+  ],
+  "guidanceSkills": [
+    {
+      "name": "electron-secure-ipc",
+      "entryPath": ".agents/skills/electron-secure-ipc/SKILL.md"
+    },
+    {
+      "name": "git-linear-workflow",
+      "entryPath": ".agents/skills/git-linear-workflow/SKILL.md"
+    },
+    {
+      "name": "nextjs-architecture",
+      "entryPath": ".agents/skills/nextjs-architecture/SKILL.md"
+    },
+    {
+      "name": "nodejs-backend-architecture",
+      "entryPath": ".agents/skills/nodejs-backend-architecture/SKILL.md"
+    },
+    {
+      "name": "nodejs-main-process",
+      "entryPath": ".agents/skills/nodejs-main-process/SKILL.md"
+    },
+    {
+      "name": "owasp-top-10",
+      "entryPath": ".agents/skills/owasp-top-10/SKILL.md"
+    },
+    {
+      "name": "playwright-qa-flows-desktop",
+      "entryPath": ".agents/skills/playwright-qa-flows-desktop/SKILL.md"
+    },
+    {
+      "name": "playwright-qa-flows-web",
+      "entryPath": ".agents/skills/playwright-qa-flows-web/SKILL.md"
+    },
+    {
+      "name": "react-architecture",
+      "entryPath": ".agents/skills/react-architecture/SKILL.md"
+    },
+    {
+      "name": "sqlite-high-performance",
+      "entryPath": ".agents/skills/sqlite-high-performance/SKILL.md"
+    },
+    {
+      "name": "supabase-multitenant-data",
+      "entryPath": ".agents/skills/supabase-multitenant-data/SKILL.md"
+    },
+    {
+      "name": "svelte5-kit-architecture",
+      "entryPath": ".agents/skills/svelte5-kit-architecture/SKILL.md"
+    },
+    {
+      "name": "svelte5-runes-architecture",
+      "entryPath": ".agents/skills/svelte5-runes-architecture/SKILL.md"
+    },
+    {
+      "name": "tailwind-desktop-ui",
+      "entryPath": ".agents/skills/tailwind-desktop-ui/SKILL.md"
+    },
+    {
+      "name": "tailwind-semantic-ui",
+      "entryPath": ".agents/skills/tailwind-semantic-ui/SKILL.md"
+    },
+    {
+      "name": "tdd-workflow",
+      "entryPath": ".agents/skills/tdd-workflow/SKILL.md"
+    },
+    {
+      "name": "vitest-tdd",
+      "entryPath": ".agents/skills/vitest-tdd/SKILL.md"
+    }
+  ]
+}

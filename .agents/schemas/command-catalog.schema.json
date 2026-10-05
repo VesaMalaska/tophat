@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "commands",
+    "guidanceSkills"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "state",
+          "entryPath",
+          "modelKey",
+          "inputContract",
+          "roleRules",
+          "mandatoryResources",
+          "actors",
+          "gitClassification",
+          "replacementCommands",
+          "summary"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 63,
+            "enum": [
+              "architecture-pivot",
+              "context-sync",
+              "generate-readme",
+              "generate-smoke-test",
+              "generate-sprint-tasks",
+              "implement-junior",
+              "implement-mid",
+              "implement-senior",
+              "project-define",
+              "project-definition-finalize",
+              "project-definition-review",
+              "publish-pr",
+              "qa-validate",
+              "refactor-audit",
+              "remediate-blocker",
+              "remediate-task",
+              "resolve-conflict",
+              "review-critical",
+              "review-derived-docs",
+              "review-standard",
+              "roadmap-sync",
+              "security-review",
+              "sprint-briefing",
+              "strategy-sync",
+              "sync-derived-docs",
+              "triage-bug",
+              "verify-project-docs",
+              "workspace-attach-assess",
+              "workspace-attach-finalize",
+              "workspace-attach",
+              "workspace-init"
+            ]
+          },
+          "state": {
+            "enum": [
+              "active",
+              "retired"
+            ]
+          },
+          "entryPath": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "modelKey": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "inputContract": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "required",
+              "description"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "none",
+                  "task-locator",
+                  "diagnostic-text",
+                  "scope-evidence"
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              }
+            }
+          },
+          "roleRules": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "minItems": 0,
+            "maxItems": 16,
+            "uniqueItems": true
+          },
+          "mandatoryResources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "minItems": 0,
+            "maxItems": 128,
+            "uniqueItems": true
+          },
+          "actors": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "proposal",
+              "checks",
+              "writes",
+              "externalActions"
+            ],
+            "properties": {
+              "proposal": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "checks": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "writes": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "externalActions": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              }
+            }
+          },
+          "gitClassification": {
+            "enum": [
+              "mutation",
+              "optional-publication",
+              "no-git-mutation"
+            ]
+          },
+          "replacementCommands": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 63,
+              "enum": [
+                "architecture-pivot",
+                "context-sync",
+                "generate-readme",
+                "generate-smoke-test",
+                "generate-sprint-tasks",
+                "implement-junior",
+                "implement-mid",
+                "implement-senior",
+                "project-define",
+                "project-definition-finalize",
+                "project-definition-review",
+                "publish-pr",
+                "qa-validate",
+                "refactor-audit",
+                "remediate-blocker",
+                "remediate-task",
+                "resolve-conflict",
+                "review-critical",
+                "review-derived-docs",
+                "review-standard",
+                "roadmap-sync",
+                "security-review",
+                "sprint-briefing",
+                "strategy-sync",
+                "sync-derived-docs",
+                "triage-bug",
+                "verify-project-docs",
+                "workspace-attach-assess",
+                "workspace-attach-finalize",
+                "workspace-attach",
+                "workspace-init"
+              ]
+            },
+            "minItems": 0,
+            "maxItems": 8,
+            "uniqueItems": true
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        }
+      },
+      "minItems": 31,
+      "maxItems": 31,
+      "uniqueItems": true
+    },
+    "guidanceSkills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "entryPath"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 63,
+            "enum": [
+              "electron-secure-ipc",
+              "git-linear-workflow",
+              "nextjs-architecture",
+              "nodejs-backend-architecture",
+              "nodejs-main-process",
+              "owasp-top-10",
+              "playwright-qa-flows-desktop",
+              "playwright-qa-flows-web",
+              "react-architecture",
+              "sqlite-high-performance",
+              "supabase-multitenant-data",
+              "svelte5-kit-architecture",
+              "svelte5-runes-architecture",
+              "tailwind-desktop-ui",
+              "tailwind-semantic-ui",
+              "tdd-workflow",
+              "vitest-tdd"
+            ]
+          },
+          "entryPath": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      },
+      "minItems": 17,
+      "maxItems": 17,
+      "uniqueItems": true
+    }
+  }
+}

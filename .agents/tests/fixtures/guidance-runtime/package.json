@@ -1,0 +1,1 @@
+{"name":"tophat-guidance-runtime-fixture","private":true,"type":"module","engines":{"node":">=24"},"devDependencies":{"@playwright/test":"1.61.1","@sparticuz/chromium":"153.0.0","svelte":"5.57.1"}}

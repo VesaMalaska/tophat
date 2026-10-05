@@ -14,8 +14,8 @@ When validating web UI implementations, construct robust, network-aware tests:
 ## 2. Network & Latency Resilience
 
 - **CRITICAL:** Never use hardcoded `page.waitForTimeout()`.
-- Explicitly await network boundaries before asserting state changes. Use `await page.waitForLoadState('networkidle')` for full page navigations.
-- For asynchronous data fetching (e.g., submitting a form, loading a list), explicitly await the API response: `await Promise.all([ page.waitForResponse('**/api/target-route'), page.getByRole('button', { name: 'Submit' }).click() ]);`
+- After navigation, assert the criterion-relevant observable UI state with web-first assertions, such as `await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible()`. Ongoing background requests must not prevent a ready UI from passing; delayed required UI must not pass early.
+- For asynchronous data fetching (e.g., submitting a form, loading a list), await a relevant API response only when the criterion requires that boundary, then assert the resulting UI: `await Promise.all([ page.waitForResponse('**/api/target-route'), page.getByRole('button', { name: 'Submit' }).click() ]);`
 
 ## 3. Unhappy Paths & API Mocking
 

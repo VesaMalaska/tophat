@@ -1,3 +1,4 @@
+import { catalog, readCommand } from './fixtures/commands.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -6,9 +7,9 @@ test('every workflow is explicitly classified and mutation/delegation requires t
   const inventory=JSON.parse(read('.agents/docs/git-adoption.json'));
   assert.equal(inventory.schemaVersion,1);
   const paths=inventory.surfaces.map((x:any)=>x.path);assert.equal(new Set(paths).size,paths.length);
-  const workflows=readdirSync('.agents/workflows').filter(x=>x.endsWith('.md')).map(x=>'.agents/workflows/'+x).sort();
-  assert.deepEqual(paths.filter((x:string)=>x.startsWith('.agents/workflows/')).sort(),workflows);
-  for(const entry of inventory.surfaces){
+  const commandSurfaces=catalog.commands.filter(c=>c.state==='active').map(c=>({path:c.entryPath!,classification:c.gitClassification}));
+  assert.ok(!paths.some((x:string)=>x.startsWith('.agents/workflows/')));
+  for(const entry of [...inventory.surfaces,...commandSurfaces]){
     assert.ok(['mutation','optional-publication','no-git-mutation','internal-preflight','manual-integration'].includes(entry.classification));
     const s=read(entry.path);
     if(entry.classification==='no-git-mutation')assert.match(s,/authorizes no Git mutation/);
@@ -19,7 +20,7 @@ test('every workflow is explicitly classified and mutation/delegation requires t
 });
 test('role rules contain no automatic WIP publication and developer mutation uses shared contract',()=>{
   for(const tier of ['junior','mid','senior']){const s=read(`.agents/rules/agent-${tier}-dev.md`);assert.match(s,/git-preflight\.ts/);assert.doesNotMatch(s,/Push your current WIP|Commit using Conventional Commits, push/);}
-  assert.match(read('.agents/workflows/publish-pr.md'),/PUBLICATION_READY/);
-  assert.match(read('.agents/workflows/publish-pr.md'),/DOCUMENTATION_READY/);
+  assert.match(readCommand('publish-pr'),/PUBLICATION_READY/);
+  assert.match(readCommand('publish-pr'),/DOCUMENTATION_READY/);
   assert.match(read('.agents/docs/git-safety.md'),/does not merge/);
 });

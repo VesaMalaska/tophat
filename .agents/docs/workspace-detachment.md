@@ -14,3 +14,7 @@ Fixtures simulate human-confirmed file removal using test code. That demonstrate
 ## Shared Git integration boundary
 
 The separately authorized human/execution orchestrator runs `node <pinned-external-TopHat-source>/.agents/scripts/git-preflight.ts` and requires GIT_PREFLIGHT_READY before each nominated hook/exclude removal. Bind exact current branch/HEAD/index, retained classified inputs and original metadata digest using the git-integration profile. Use the pinned external source while host tooling is removed. Preserve prior ownership/removal approval and all host rules. Reinspect the remaining state immediately before each action and verify its exact delta afterwards. Tracked private-file removal/untracking is separate approved normal stage/commit work; detachment performs no history/index mutation.
+
+## Command packaging integration
+
+Consult [command migration](command-migration.md) and the pinned command catalog. Fresh installation requires the full catalog resource closure; upgrade/detachment uses exact confirmed ownership/digests, preserves host routing overrides/custom skills and historical receipts, and stops visibly on partial application. No broad directory removal or automatic rollback. Handoff writes precede final candidate sealing. Map actual applicable criterion IDs to behavior and meaningful evidence, and map every changed behavior back to approved scope; independent review judges relevance.

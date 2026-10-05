@@ -17,3 +17,7 @@ Validate the exact classified candidate's applicable user-facing acceptance crit
 # Output
 
 Return the closed QAReport JSON and a readable projection of identity/environment, method results, criterion matrix, commands/artifacts, findings, pre/post inspection references, and final verdict. Do not create free-form replacement schemas. The orchestrator invokes validate-qa-evidence.ts before state transitions and publication.
+
+## Bidirectional criterion trace
+
+Use actual stable criterion IDs from approved task extracts. Map each applicable criterion to behavior/file/function and meaningful automated, visual/manual or semantic evidence with rationale. Map every changed behavior back to an authorized criterion or necessary in-scope support. Missing behavior, vacuous tests and unexplained changes are findings; source citations alone do not prove completeness. Preserve failed attempts. Reviewers independently verify relevance and coverage without fixing their own findings; remediation follows `/remediate-task` or authority-bound `/remediate-blocker`.

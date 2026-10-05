@@ -47,50 +47,32 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
 - `/project-define`, `/project-definition-review`, `/project-definition-finalize`: Optional draft → independent review → exact-candidate human approval. Models come from routingMatrix; review independence is human-supervised.
 
 - `/workspace-init`: Validates the host and approved authority, then proposes private planning state.
-  - **Recommended Model:** Claude Opus (Uses semantic mapping of the approved package).
 - `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
-  - **Recommended Model:** Claude Opus (Requires high adversarial precision to prevent data loss).
 - `/generate-readme`: Retired autonomous rewrite; use the explicit derived-document lifecycle.
-  - **Recommended Model:** Gemini Pro High (Required for advanced cross-referencing and rigid template adherence).
 
 ### Standard Automation Workflows
 
 - `/sprint-briefing`: Invokes `@agent-pm` to output the sprint briefing.
-  - **Recommended Model:** Gemini Flash High (Optimized for fast state-checking).
 - `/generate-sprint-tasks`: Invokes `@agent-architect` to JIT-compile the active sprint chunk.
-  - **Recommended Model:** Gemini Pro High (Optimized for massive context window / directory RAG).
 - `/roadmap-sync`: Synchronizes master timeline based on completed chunks.
-  - **Recommended Model:** Gemini Pro High (Requires deep context alignment).
 - `/context-sync` & `/strategy-sync`: Summarizes decisions and compresses state memory.
-  - **Recommended Model:** Gemini Flash Medium (Optimized for token compression).
 - `/triage-bug [Log/Description]`: Invokes `@agent-architect` for a multi-turn diagnostic interview to forensically isolate root causes before generating a Linear bug ticket.
-  - **Recommended Model:** Claude Sonnet (Optimized for deep conversational reasoning, diagnostic inquiry, and strict phase gating).
 
 ### Implementation & Remediation Commands
 
 - `/implement-senior [ID]`: Invokes `@agent-senior-dev` to execute backend, database, or security tasks.
-  - **Recommended Model:** Gemini Pro High (Optimized for deep reasoning and severe constraint adherence).
 - `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute reactive frontend logic and client state transformations.
-  - **Recommended Model:** Gemini Flash High (Optimized for rapid instruction following and sub-second TDD cycles).
 - `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute structural layouts and declared styling passes.
-  - **Recommended Model:** Gemini Flash Low (Optimized for high-speed, low-cost deterministic layout compilation).
-- `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
-  - **Recommended Model:** Gemini Pro High (Bounded extraction from validated authority).
+- `/remediate-blocker [ID]`: Architect proposes extraction of missing schema context for a blocked task.
 - `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
-  - **Recommended Model:** Gemini Pro High (Cross-references approved requirements with audit failures).
 
 ### Validation & Pipeline Commands
 
 - `/review-standard [ID]`: Validates stateless UI and frontend code against project specifications.
-  - **Recommended Model:** Claude Sonnet (Cross-model validation against Gemini implementations).
 - `/review-critical [ID]`: Adversarially audits load-bearing backend code for race conditions.
-  - **Recommended Model:** Claude Sonnet (Cross-model validation against Gemini implementations).
-- `/security-review [ID]`: Enforces OWASP Top 10 mitigation and strict RLS constraints.
-  - **Recommended Model:** Claude Sonnet (Adversarial security posture).
+- `/security-review [ID]`: Enforces OWASP Top 10 mitigation and approved access-control constraints.
 - `/qa-validate [ID]`: Applies the derived QA methods with exact-commit evidence.
-  - **Recommended Model:** Gemini Pro Low (Requires Vision-enabled UI analysis).
 - `/publish-pr [ID]`: Checks candidate evidence and creates a PR for separate human merge approval.
-  - **Recommended Model:** Gemini Flash Medium (Lightweight API/CLI execution).
 
 ---
 
@@ -100,7 +82,7 @@ The swarm's memory is isolated into specific operational files:
 
 - `Roadmap.md`** & **`Strategy.md`** (Long-term Memory):** Private derived sequencing and memory. The Architect proposes changes; named authorized orchestrator steps apply them. PM reads and advises only; separate orchestrator steps apply state.
 - `Context.md`** (Short-term Working Memory):** The live operational handoff document. It tracks the active phase and immediate blockers. Updated by authorized orchestrator steps before the candidate QA run; later commits require fresh approval.
-- `.agents/`** (The Vault):** The directory containing the active Skills (`.agents/skills/skill-1-name/SKILL.md`), Rules (`.agents/rules/*.md`), Workflows (`.agents/workflows/*.md`), and tool interception scripts.
+- `.agents/`** (The Vault):** The directory containing the active Skills (`.agents/skills/skill-1-name/SKILL.md`), Rules (`.agents/rules/*.md`), command skills (`.agents/skills/<command>/SKILL.md`), and tool interception scripts.
 
 ---
 
@@ -113,7 +95,7 @@ The human orchestrator drives the swarm through distinct Workflow Stages. Do not
 These commands are run once at the beginning of a project, or immediately following a full `/architecture-pivot`.
 
 1. `/workspace-init`: Validates the host and selected approved package, then proposes private Roadmap/Context/Strategy initialization for human authorization.
-2. If product input is incomplete, use `/project-define`, independent `/project-definition-review`, and exact-candidate human-gated `/project-definition-finalize` before initialization. The legacy `/generate-readme` workflow is disabled.
+2. If product input is incomplete, use `/project-define`, independent `/project-definition-review`, and exact-candidate human-gated `/project-definition-finalize` before initialization. The retired `/generate-readme` command has no discoverable skill.
 
 Existing projects use `/workspace-attach`, explicitly authorized `/workspace-attach-assess`, and approval-gated `/workspace-attach-finalize`. Discovery writes nothing; assessment runs only declared host scripts and checks all exits for side effects. See [attachment](.agents/docs/workspace-attachment.md) and the [record contract](.agents/templates/workspace-attachment/README.md). Missing/legacy host config is reviewed in memory, never silently migrated.
 
@@ -153,7 +135,7 @@ Instead, pull the diagnostic emergency brake by initiating `/triage-bug`. This t
 
 **The Diagnostic Choreography:**
 
-1. **The Interview Loop:** Route the chat to **Claude Sonnet** and pass the raw error log, stack trace, or behavioral description to `/triage-bug`. The Architect will not immediately guess a solution or write a task. It will analyze the compiled artifacts, check system boundaries (e.g., IPC bridges, ESM/CJS compilation layers), and ask you targeted clarifying questions across multiple conversational turns.
+1. **The Interview Loop:** Select the model from host `routingMatrix["/triage-bug"]` and pass the raw error log, stack trace, or behavioral description to `/triage-bug`. The Architect will not immediately guess a solution or write a task. It will analyze the compiled artifacts, check system boundaries (e.g., IPC bridges, ESM/CJS compilation layers), and ask you targeted clarifying questions across multiple conversational turns.
 2. **The Synthesis Trigger:** Answer the Architect's questions to narrow down the blast radius. Once you and the Architect have forensically confirmed the root cause, reply with the exact command **`GENERATE BUGFIX`**.
 3. **The Authorization Gate:** The Architect will compile a standalone, defensible Linear bug specification with regression criteria for the host's declared test runner. Review the task block and reply **`APPROVED`** to push the ticket to your Linear Todo column.
 4. **Execution Handoff:** Once the ticket is on the board, route it to the appropriate Dev Tier (e.g., `/implement-mid [BUG-ID]` or `/implement-senior [BUG-ID]`) to let the swarm self-heal under automated CI/CD enforcement.
@@ -244,7 +226,7 @@ node .agents/scripts/validate-task-authority.ts < private-task-authority-request
 node .agents/scripts/finalize-doc-package.ts < private-finalization-request.json
 ```
 
-The validators are read-only. Draft success is DRAFT_VALID with planningAllowed false; approved success is APPROVED_VALID. Denials are nonzero and identify the failure; hash mismatch reports expected/calculated hashes without repairing files. The finalizer requires matching private review/approval receipts for the exact candidate and atomically writes only the approved manifest. It does not create tasks, initialize a roadmap, commit or publish. See the three [definition workflows](.agents/workflows/project-define.md) and [task contract](.agents/workflows/generate-sprint-tasks.md) for exact receipt/request fields.
+The validators are read-only. Draft success is DRAFT_VALID with planningAllowed false; approved success is APPROVED_VALID. Denials are nonzero and identify the failure; hash mismatch reports expected/calculated hashes without repairing files. The finalizer requires matching private review/approval receipts for the exact candidate and atomically writes only the approved manifest. It does not create tasks, initialize a roadmap, commit or publish. See the three [definition workflows](.agents/skills/project-define/SKILL.md) and [task contract](.agents/skills/generate-sprint-tasks/SKILL.md) for exact receipt/request fields.
 
 The published package schema must match `.agents/schemas/doc-manifest.schema.json` structurally; the closed v1 validator rejects weakened schemas, duplicate JSON members, unknown fields, unresolved ownership/dependencies, cycles, invalid status/scope/decision relationships and unsafe paths. Package paths use POSIX `/` separators, must stay below docs, and cannot contain traversal, backslashes, symlink components or case-folded/file-identity collisions. Windows-shaped absolute/drive paths are rejected before native path resolution.
 
@@ -342,6 +324,12 @@ These checks run when invoked. They do not intercept arbitrary terminal/IDE/GitH
 
 ### Integrated acceptance and release readiness
 
-TopHat 1.0 acceptance is tracked against all 30 approved criteria in `.agents/docs/acceptance-criteria.json`. Install the isolated runner fixture with `pnpm --dir .agents/tests/fixtures/runner-neutral install --frozen-lockfile`, then run `pnpm test:tophat`. The fixture proves actual Node/Vitest TDD and host-owned coverage outcomes; framework guidance fixtures do not certify complete applications or native OS support.
+TopHat 1.0 acceptance is tracked against all 30 approved criteria in `.agents/docs/acceptance-criteria.json`. Install the isolated runner fixture with `pnpm --dir .agents/tests/fixtures/runner-neutral install --frozen-lockfile`, install guidance fixtures with `pnpm --dir .agents/tests/fixtures/guidance-runtime install --frozen-lockfile`, then run `pnpm run test:tophat`. The fixture proves actual Node/Vitest TDD and host-owned coverage outcomes; framework guidance fixtures do not certify complete applications or native OS support.
 
 See [.agents/docs/acceptance-evidence.md](.agents/docs/acceptance-evidence.md) for the read-only dossier verifier and [.agents/docs/release-readiness.md](.agents/docs/release-readiness.md) for v0.8.0 migration and separate release approvals. A green suite is not a release decision. Live host project initialization, task/route/QA evidence, phase synchronization and final project-documentation acceptance remain required before TopHat 1.0 release readiness.
+
+### Command catalog and packaging
+
+The [static catalog](.agents/docs/command-catalog.json) defines 30 active commands, one retired redirect and 17 topical guidance skills. Host `.agents/tophat.config.json` routingMatrix owns model recommendations; choose models manually at role transitions. Use the [manual upgrade and compatibility probe](.agents/docs/command-migration.md) for owned-path conversion and recovery. No active legacy workflow files are shipped.
+
+Run `node .agents/scripts/validate-command-catalog.ts --root <pinned-source>` for vault validation; add `--host-root <host>` to inspect a configured installed copy. Shared dependencies, roles and helpers belong to the reviewed installation inventory. Source checks and Linux compiler/browser fixtures do not establish Antigravity activation, argument transport or interception: compatibility is pending live observations. Merge, real host acceptance and release remain separate approvals.

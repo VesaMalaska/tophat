@@ -27,12 +27,15 @@ export function evaluateProtectedWrite(input: string): Decision {
   if (name === "multi_replace_file_content") {
     if (!Array.isArray(values.ReplacementChunks) || !values.ReplacementChunks.length ||
         values.ReplacementChunks.some((chunk) => !chunk || typeof chunk !== "object" ||
-          typeof chunk.ReplacementContent !== "string"))
+          (typeof chunk.ReplacementContent !== "string" ||
+            (Object.hasOwn(chunk, "TargetContent") && typeof chunk.TargetContent !== "string"))))
       return deny("HOOK_INPUT_INVALID", "ReplacementChunks must contain replacement strings");
     content = values.ReplacementChunks.map((chunk) => chunk.ReplacementContent).join("\n");
   } else {
     const key = name === "write_to_file" ? "CodeContent" : "ReplacementContent";
     if (typeof values[key] !== "string") return deny("HOOK_INPUT_INVALID", `${key} must be a string`);
+    if (name === "replace_file_content" && Object.hasOwn(values, "TargetContent") && typeof values.TargetContent !== "string")
+      return deny("HOOK_INPUT_INVALID", "TargetContent, when supplied, must be a string");
     content = values[key] as string;
   }
 

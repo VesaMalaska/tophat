@@ -1,10 +1,11 @@
+import { catalog, readCommand } from './fixtures/commands.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { fixture, approve } from './fixtures/documentation/fixture.ts';
 import { validateDocPackage } from '../scripts/validate-doc-package.ts';
-const read = (name: string) => readFileSync(`.agents/workflows/${name}.md`, 'utf8');
+const read = (name: string) => readCommand(name);
 test('all scoped planning workflows declare fresh approved package validation before side effects', () => {
   for (const name of ['workspace-init', 'architecture-pivot', 'roadmap-sync', 'generate-sprint-tasks', 'generate-smoke-test', 'triage-bug', 'remediate-blocker']) {
     const s = read(name); assert.match(s, /validate-doc-package\.ts/); assert.match(s, /APPROVED_VALID/); assert.match(s, /Halt|halt|STOP/);
@@ -18,7 +19,7 @@ test('definition instructions separate drafter, read-only reviewer, and explicit
   assert.match(read('project-definition-review'), /reviewer outputs evidence but writes nothing/);
   assert.match(read('project-definition-finalize'), /STOP for the human's explicit APPROVED/);
   assert.match(read('project-definition-finalize'), /do not fabricate consent/);
-  assert.match(read('generate-readme'), /LEGACY_README_WORKFLOW_DISABLED/);
+  assert.equal(catalog.commands.find(c=>c.name==='generate-readme')!.state,'retired');
 });
 test('an explicitly invoked planning gate refuses draft without planning side effects', () => {
   const f = fixture(); try {

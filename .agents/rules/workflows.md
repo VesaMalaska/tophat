@@ -2,7 +2,7 @@
 trigger: always_on
 ---
 
-# TopHat Workflow Engine Specifications
+# TopHat Command Procedures
 
 ## 🛑 GLOBAL ORCHESTRATION MANDATE
 
@@ -80,3 +80,7 @@ All Git mutation paths use the closed git-preflight.ts contract in `.agents/docs
 ## Consumer-project independence
 
 TopHat code, schemas, CLI flags, fixtures, rules and public documentation use generic host-project contracts. Do not introduce consumer-product names, repository identities, client document packages or live client logs into this vault. Keep selection and evidence from actual acceptance projects in external custody. Host public product documentation must stand on its own without explaining private framework orchestration. Framework implementation review/merge and subsequent live host acceptance are separate activities; release validation requires the latter.
+
+## Static command catalog
+
+Read `.agents/docs/command-catalog.json` before selecting an entry and load its declared role/resources. The catalog owns identity, retirement, input contract and Git classification; `.agents/tophat.config.json` routingMatrix owns model values. No table here overrides the catalog or host. Semantic discovery supplies guidance only; command actions require explicit invocation plus the existing later approvals. Mandatory reads precede dependent actions, and read-only roles never run the external catalog/session checker themselves. Setup discovery uses pinned external tooling before host installation.

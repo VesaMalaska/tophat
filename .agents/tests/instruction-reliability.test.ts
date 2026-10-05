@@ -1,9 +1,10 @@
+import { catalog, readCommand } from './fixtures/commands.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 const read=(p:string)=>readFileSync(p,'utf8');
 test('advisory state and audit instructions cannot authorize role writes or tickets',()=>{
- const strategy=read('.agents/workflows/strategy-sync.md'),audit=read('.agents/workflows/refactor-audit.md'),context=read('.agents/rules/workspace-context.md');
+ const strategy=readCommand('strategy-sync'),audit=readCommand('refactor-audit'),context=read('.agents/rules/workspace-context.md');
  assert.match(strategy,/unchanged source inputs and unchanged approved proposal/);assert.match(strategy,/inspect-role-session\.ts/);assert.doesNotMatch(strategy,/inject it directly|aggressively prune|You own/);
  assert.match(audit,/no Git mutation/);assert.match(audit,/not ticket-creation authorization/);assert.doesNotMatch(audit,/Task Proposal|create the issues|ls -R/);
  assert.doesNotMatch(context,/workflow-context-sync/);assert.match(context,/before final review\/security\/QA sealing/);

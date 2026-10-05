@@ -63,14 +63,14 @@ Do NOT attempt to run implementation as an automated, continuous script. The Hum
 - `/implement-senior [ID]`: Invokes `@agent-senior-dev` to execute backend, database, or security tasks.
 - `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute reactive frontend logic and client state transformations.
 - `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute structural layouts and declared styling passes.
-- `/remediate-blocker [ID]`: Architect autonomously extracts missing schema context for a blocked task.
+- `/remediate-blocker [ID]`: Architect proposes extraction of missing schema context for a blocked task.
 - `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
 
 ### Validation & Pipeline Commands
 
 - `/review-standard [ID]`: Validates stateless UI and frontend code against project specifications.
 - `/review-critical [ID]`: Adversarially audits load-bearing backend code for race conditions.
-- `/security-review [ID]`: Enforces OWASP Top 10 mitigation and strict RLS constraints.
+- `/security-review [ID]`: Enforces OWASP Top 10 mitigation and approved access-control constraints.
 - `/qa-validate [ID]`: Applies the derived QA methods with exact-commit evidence.
 - `/publish-pr [ID]`: Checks candidate evidence and creates a PR for separate human merge approval.
 
@@ -82,7 +82,7 @@ The swarm's memory is isolated into specific operational files:
 
 - `Roadmap.md`** & **`Strategy.md`** (Long-term Memory):** Private derived sequencing and memory. The Architect proposes changes; named authorized orchestrator steps apply them. PM reads and advises only; separate orchestrator steps apply state.
 - `Context.md`** (Short-term Working Memory):** The live operational handoff document. It tracks the active phase and immediate blockers. Updated by authorized orchestrator steps before the candidate QA run; later commits require fresh approval.
-- `.agents/`** (The Vault):** The directory containing the active Skills (`.agents/skills/skill-1-name/SKILL.md`), Rules (`.agents/rules/*.md`), Workflows (`.agents/workflows/*.md`), and tool interception scripts.
+- `.agents/`** (The Vault):** The directory containing the active Skills (`.agents/skills/skill-1-name/SKILL.md`), Rules (`.agents/rules/*.md`), command skills (`.agents/skills/<command>/SKILL.md`), and tool interception scripts.
 
 ---
 
@@ -95,7 +95,7 @@ The human orchestrator drives the swarm through distinct Workflow Stages. Do not
 These commands are run once at the beginning of a project, or immediately following a full `/architecture-pivot`.
 
 1. `/workspace-init`: Validates the host and selected approved package, then proposes private Roadmap/Context/Strategy initialization for human authorization.
-2. If product input is incomplete, use `/project-define`, independent `/project-definition-review`, and exact-candidate human-gated `/project-definition-finalize` before initialization. The legacy `/generate-readme` workflow is disabled.
+2. If product input is incomplete, use `/project-define`, independent `/project-definition-review`, and exact-candidate human-gated `/project-definition-finalize` before initialization. The retired `/generate-readme` command has no discoverable skill.
 
 Existing projects use `/workspace-attach`, explicitly authorized `/workspace-attach-assess`, and approval-gated `/workspace-attach-finalize`. Discovery writes nothing; assessment runs only declared host scripts and checks all exits for side effects. See [attachment](.agents/docs/workspace-attachment.md) and the [record contract](.agents/templates/workspace-attachment/README.md). Missing/legacy host config is reviewed in memory, never silently migrated.
 
@@ -226,7 +226,7 @@ node .agents/scripts/validate-task-authority.ts < private-task-authority-request
 node .agents/scripts/finalize-doc-package.ts < private-finalization-request.json
 ```
 
-The validators are read-only. Draft success is DRAFT_VALID with planningAllowed false; approved success is APPROVED_VALID. Denials are nonzero and identify the failure; hash mismatch reports expected/calculated hashes without repairing files. The finalizer requires matching private review/approval receipts for the exact candidate and atomically writes only the approved manifest. It does not create tasks, initialize a roadmap, commit or publish. See the three [definition workflows](.agents/workflows/project-define.md) and [task contract](.agents/workflows/generate-sprint-tasks.md) for exact receipt/request fields.
+The validators are read-only. Draft success is DRAFT_VALID with planningAllowed false; approved success is APPROVED_VALID. Denials are nonzero and identify the failure; hash mismatch reports expected/calculated hashes without repairing files. The finalizer requires matching private review/approval receipts for the exact candidate and atomically writes only the approved manifest. It does not create tasks, initialize a roadmap, commit or publish. See the three [definition workflows](.agents/skills/project-define/SKILL.md) and [task contract](.agents/skills/generate-sprint-tasks/SKILL.md) for exact receipt/request fields.
 
 The published package schema must match `.agents/schemas/doc-manifest.schema.json` structurally; the closed v1 validator rejects weakened schemas, duplicate JSON members, unknown fields, unresolved ownership/dependencies, cycles, invalid status/scope/decision relationships and unsafe paths. Package paths use POSIX `/` separators, must stay below docs, and cannot contain traversal, backslashes, symlink components or case-folded/file-identity collisions. Windows-shaped absolute/drive paths are rejected before native path resolution.
 
@@ -327,3 +327,9 @@ These checks run when invoked. They do not intercept arbitrary terminal/IDE/GitH
 TopHat 1.0 acceptance is tracked against all 30 approved criteria in `.agents/docs/acceptance-criteria.json`. Install the isolated runner fixture with `pnpm --dir .agents/tests/fixtures/runner-neutral install --frozen-lockfile`, install guidance fixtures with `pnpm --dir .agents/tests/fixtures/guidance-runtime install --frozen-lockfile`, then run `pnpm run test:tophat`. The fixture proves actual Node/Vitest TDD and host-owned coverage outcomes; framework guidance fixtures do not certify complete applications or native OS support.
 
 See [.agents/docs/acceptance-evidence.md](.agents/docs/acceptance-evidence.md) for the read-only dossier verifier and [.agents/docs/release-readiness.md](.agents/docs/release-readiness.md) for v0.8.0 migration and separate release approvals. A green suite is not a release decision. Live host project initialization, task/route/QA evidence, phase synchronization and final project-documentation acceptance remain required before TopHat 1.0 release readiness.
+
+### Command catalog and packaging
+
+The [static catalog](.agents/docs/command-catalog.json) defines 30 active commands, one retired redirect and 17 topical guidance skills. Host `.agents/tophat.config.json` routingMatrix owns model recommendations; choose models manually at role transitions. Use the [manual upgrade and compatibility probe](.agents/docs/command-migration.md) for owned-path conversion and recovery. No active legacy workflow files are shipped.
+
+Run `node .agents/scripts/validate-command-catalog.ts --root <pinned-source>` for vault validation; add `--host-root <host>` to inspect a configured installed copy. Shared dependencies, roles and helpers belong to the reviewed installation inventory. Source checks and Linux compiler/browser fixtures do not establish Antigravity activation, argument transport or interception: compatibility is pending live observations. Merge, real host acceptance and release remain separate approvals.

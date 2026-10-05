@@ -43,3 +43,8 @@ test("partial replacements protect removal and preserve ambiguous calls for huma
   ]) assert.equal(evaluateProtectedWrite(payload("ReplacementChunks" in args ? "multi_replace_file_content" : "replace_file_content", { TargetFile: "Context.md", ...args })).decision, "ask");
   assert.equal(evaluateProtectedWrite(payload("replace_file_content", { TargetFile: "Context.md", TargetContent: "notes", ReplacementContent: "new notes" })).decision, "allow");
 });
+
+test("malformed later replacement chunks deny before an earlier ambiguity asks", () => {
+ for (const target of ["Context.md","Strategy.md"])
+  assert.equal(evaluateProtectedWrite(payload("multi_replace_file_content", {TargetFile:target,ReplacementChunks:[{ReplacementContent:"notes"},{TargetContent:5,ReplacementContent:"notes"}]})).status,"HOOK_INPUT_INVALID");
+});

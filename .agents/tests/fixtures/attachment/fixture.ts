@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { fixture as docFixture, approve } from '../documentation/fixture.ts';
 import { digest } from '../../../scripts/validate-doc-package.ts';
-import { discover as inspect, fingerprint, fileState, requiredInfrastructure, type Proposal, type Ownership } from '../../../scripts/inspect-workspace-attachment.ts';
+import { discover as inspect, fingerprint, fileState, installationInfrastructure, type Proposal, type Ownership } from '../../../scripts/inspect-workspace-attachment.ts';
 import { assessAttachment } from '../../../scripts/assess-attachment-baseline.ts';
 import { validateAttachment, verifyAttached, exclusionBlock } from '../../../scripts/validate-workspace-attachment.ts';
 import { hookRequest } from '../git-safety.ts';
@@ -13,7 +13,7 @@ const vault=resolve(dirname(fileURLToPath(import.meta.url)),'../../../..');
 export function command(root:string,args:string[]):string {const r=spawnSync('git',args,{cwd:root,encoding:'utf8'});if(r.error||r.status!==0)throw Error(r.stderr);return r.stdout.trim();}
 export function host(script='node -e "console.log(\'unit passed\')"', mode:'tracked/shared'|'local/private'='tracked/shared') {
   const f=docFixture();approve(f.root);const root=f.root;
-  const candidate=JSON.parse(readFileSync(join(root,'.agents/tophat.config.json'),'utf8'));rmSync(join(root,'.agents/tophat.config.json'));
+  const candidate=JSON.parse(readFileSync(join(root,'.agents/tophat.config.json'),'utf8'));candidate.routingMatrix=JSON.parse(readFileSync(join(vault,'.agents/tophat.config.json'),'utf8')).routingMatrix;rmSync(join(root,'.agents/tophat.config.json'));
   writeFileSync(join(root,'package.json'),JSON.stringify({name:'attachment-fixture',version:'1.0.0',packageManager:'pnpm@11.25.0',devDependencies:{typescript:'5.9.3'},scripts:{'test:unit':script}},null,2)+'\n');
   writeFileSync(join(root,'pnpm-lock.yaml'),'lockfileVersion: 9.0\n');writeFileSync(join(root,'.gitignore'),'coverage/\n');writeFileSync(join(root,'product.ts'),'export const health = () => "ok";\n');
   command(root,['init','--initial-branch=development']);command(root,['config','user.name','Fixture']);command(root,['config','user.email','fixture@example.invalid']);command(root,['add','.']);command(root,['commit','-m','Existing product baseline']);
@@ -24,7 +24,7 @@ export function host(script='node -e "console.log(\'unit passed\')"', mode:'trac
   const content:Record<string,string>={'.agents/tophat.config.json':JSON.stringify(candidate,null,2)+'\n','Context.md':'# Private Context\nApproved scope: core\n','Strategy.md':'# Private Strategy\nApproved health service\n','HUD.md':'# Private HUD\nAttachment awaiting verification\n',
     'Roadmap.md':`# Private Roadmap\n\n### [ACTIVE_SPRINT_CHUNK]\n\n\`\`\`json\n${JSON.stringify({authorityContext:context},null,2)}\n\`\`\`\n\n### [UPCOMING_CHUNKS]\n`,
     '.agents/git-hooks/pre-commit':hook,'.agents/scripts/run-validation.ts':readFileSync(join(vault,'.agents/scripts/run-validation.ts'),'utf8'),'.agents/scripts/load-tophat-config.ts':readFileSync(join(vault,'.agents/scripts/load-tophat-config.ts'),'utf8')};
-  for(const path of requiredInfrastructure)content[path]=readFileSync(join(vault,path),'utf8');
+  for(const path of installationInfrastructure())content[path]=readFileSync(join(vault,path),'utf8');
   const ownership=Object.keys(content).map(path=>({path,classification:'TOPHAT_OWNED_PRIVATE',evidence:'Human-confirmed exact private fixture inventory',tracked:false,initialSha256:null}));
   const writePlan=Object.entries(content).map(([path,content])=>({path,operation:'create',priorSha256:null,content,sha256:digest(content)}));
   const input={proposalId:'fixture-1',sourceCommit:'28d6b2eb039762a772975aaa151f6ded305fda62',candidateConfig:candidate,inputPaths:[],outputPaths:['coverage'],timeoutMs:10000,maxBufferBytes:65536,prerequisites:[],sideEffects:['Coverage output is disposable; scripts are not sandboxed'],

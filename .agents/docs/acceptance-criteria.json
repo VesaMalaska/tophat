@@ -1,0 +1,733 @@
+{
+  "schemaVersion": 1,
+  "authority": "TopHat-1.0-Definition Review 4, Section 8; consumer-independent acceptance clarification",
+  "groups": [
+    {
+      "id": "configuration",
+      "path": ".agents/tests/load-tophat-config.test.ts"
+    },
+    {
+      "id": "capability-isolation",
+      "path": ".agents/tests/framework-isolation.test.ts"
+    },
+    {
+      "id": "validation",
+      "path": ".agents/tests/validation.test.ts"
+    },
+    {
+      "id": "documentation-package",
+      "path": ".agents/tests/doc-package.test.ts"
+    },
+    {
+      "id": "routing",
+      "path": ".agents/tests/routing.test.ts"
+    },
+    {
+      "id": "qa",
+      "path": ".agents/tests/qa-evidence.test.ts"
+    },
+    {
+      "id": "git",
+      "path": ".agents/tests/git-preflight.test.ts"
+    },
+    {
+      "id": "boundary-honesty",
+      "path": ".agents/tests/protected-write.test.ts"
+    },
+    {
+      "id": "project-definition",
+      "path": ".agents/tests/project-definition.test.ts"
+    },
+    {
+      "id": "attachment",
+      "path": ".agents/tests/workspace-attachment.test.ts"
+    },
+    {
+      "id": "documentation-lifecycle",
+      "path": ".agents/tests/derived-docs.test.ts"
+    },
+    {
+      "id": "role-boundaries",
+      "path": ".agents/tests/role-boundaries.test.ts"
+    },
+    {
+      "id": "terminology",
+      "path": ".agents/tests/terminology.test.ts"
+    },
+    {
+      "id": "detachment",
+      "path": ".agents/tests/workspace-detachment.test.ts"
+    }
+  ],
+  "criteria": [
+    {
+      "id": 1,
+      "requirement": "A Svelte or SvelteKit workspace retains the current strict Svelte 5 behavior where it applies.",
+      "tests": [
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "Svelte guard enforces only Svelte profiles and makes non-applicability visible"
+        },
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "registered Svelte hook executes on stdin/stdout with a real host config"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "configuration-fixture",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 2,
+      "requirement": "A React or Next.js workspace can operate without receiving Svelte instructions or Svelte validation failures.",
+      "tests": [
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "Svelte guard enforces only Svelte profiles and makes non-applicability visible"
+        },
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "all eight workspace profiles select matching framework and smoke boundaries"
+        },
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "incompatible task skills, framework instructions, and undeclared optional tools deny"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "configuration-fixture"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 3,
+      "requirement": "Next.js server and client boundaries are represented correctly in generated tasks and reviews.",
+      "tests": [
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "Svelte guard enforces only Svelte profiles and makes non-applicability visible"
+        },
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "Next.js server, client, route, and action task samples carry distinct boundaries"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "configuration-fixture",
+        "semantic-review"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 4,
+      "requirement": "A Node.js backend workspace can operate without browser UI or Playwright assumptions unless the project declares such a need.",
+      "tests": [
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "Svelte guard enforces only Svelte profiles and makes non-applicability visible"
+        },
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "all eight workspace profiles select matching framework and smoke boundaries"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "configuration-fixture"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 5,
+      "requirement": "An Electron workspace retains explicit main, renderer, preload, IPC, and desktop security boundaries.",
+      "tests": [
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "Svelte guard enforces only Svelte profiles and makes non-applicability visible"
+        },
+        {
+          "path": ".agents/tests/framework-isolation.test.ts",
+          "name": "Electron main, preload, renderer, and IPC samples retain process boundaries"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "configuration-fixture",
+        "semantic-review"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 6,
+      "requirement": "Every supported project executes deterministic validation through declared pnpm commands, including applicable unit, integration, type, lint, build, smoke, coverage, and end-to-end validation.",
+      "tests": [
+        {
+          "path": ".agents/tests/validation.test.ts",
+          "name": "gate order, appended categories, precommit SHA, and explicit optional skip"
+        },
+        {
+          "path": ".agents/tests/validation.test.ts",
+          "name": "preflight refuses absent scripts without running earlier categories"
+        },
+        {
+          "path": ".agents/tests/validation.test.ts",
+          "name": "missing pnpm, failed coverage, and tracked mutation deny truthfully"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "command-execution",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 7,
+      "requirement": "A project may use Vitest or an explicitly declared Node-compatible test runner while preserving the required TDD behavior.",
+      "tests": [
+        {
+          "path": ".agents/tests/validation.test.ts",
+          "name": "gate order, appended categories, precommit SHA, and explicit optional skip"
+        },
+        {
+          "path": ".agents/tests/runner-coverage.test.ts",
+          "name": "actual Node coverage enforces host-owned passing and failing thresholds through pnpm"
+        },
+        {
+          "path": ".agents/tests/runner-coverage.test.ts",
+          "name": "both actual runners reproduce red then green without changing the shared executor"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "command-execution"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 8,
+      "requirement": "Standard and critical execution routes remain separate and deterministic.",
+      "tests": [
+        {
+          "path": ".agents/tests/routing.test.ts",
+          "name": "fixed junior/mid/senior routes and mixed highest tier"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 9,
+      "requirement": "Security review is activated by critical classification rather than applied indiscriminately.",
+      "tests": [
+        {
+          "path": ".agents/tests/routing.test.ts",
+          "name": "fixed junior/mid/senior routes and mixed highest tier"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 10,
+      "requirement": "QA is conditionally required through deterministic classification of observable user-facing changes and uses only the validation methods appropriate to the task.",
+      "tests": [
+        {
+          "path": ".agents/tests/routing.test.ts",
+          "name": "fixed junior/mid/senior routes and mixed highest tier"
+        },
+        {
+          "path": ".agents/tests/routing.test.ts",
+          "name": "backend internal work skips UI QA with an explicit reason"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 11,
+      "requirement": "Incompatible framework instructions cannot accidentally govern the same workspace or task.",
+      "tests": [
+        {
+          "path": ".agents/tests/load-tophat-config.test.ts",
+          "name": "missing file and malformed JSON deny structurally"
+        },
+        {
+          "path": ".agents/tests/load-tophat-config.test.ts",
+          "name": "missing, unknown, and incompatible workspace data deny"
+        },
+        {
+          "path": ".agents/tests/load-tophat-config.test.ts",
+          "name": "invalid paths and private targets deny"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "configuration-fixture"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 12,
+      "requirement": "A supported host project can be initialized from its approved contract and receive valid, bounded, traceable implementation tasks.",
+      "tests": [
+        {
+          "path": ".agents/tests/task-authority.test.ts",
+          "name": "task mechanically traces all four source kinds and exact extracts"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 13,
+      "requirement": "TopHat validates the active documentation package before creating its private roadmap or implementation tasks.",
+      "tests": [
+        {
+          "path": ".agents/tests/doc-package.test.ts",
+          "name": "draft success never permits planning; approved package has exact authoritative hashes"
+        },
+        {
+          "path": ".agents/tests/doc-package.test.ts",
+          "name": "changed authority bytes report expected/calculated hashes without any repair"
+        },
+        {
+          "path": ".agents/tests/doc-package.test.ts",
+          "name": "missing/invalid authority hashes and proposed active decisions block approved mode"
+        },
+        {
+          "path": ".agents/tests/doc-package.test.ts",
+          "name": "inactive retained authoritative bytes are also hashed"
+        },
+        {
+          "path": ".agents/tests/doc-package.test.ts",
+          "name": "missing files, directory instead of file, and package outside docs deny"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 14,
+      "requirement": "Generated tasks trace back to authoritative requirements, decisions, contracts, and acceptance criteria.",
+      "tests": [
+        {
+          "path": ".agents/tests/task-authority.test.ts",
+          "name": "task mechanically traces all four source kinds and exact extracts"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 15,
+      "requirement": "Public project documentation remains usable without TopHat while private orchestration state remains separate.",
+      "tests": [
+        {
+          "path": ".agents/tests/documentation-workflows.test.ts",
+          "name": "all scoped planning workflows declare fresh approved package validation before side effects"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "semantic-review",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 16,
+      "requirement": "Implementation and review workflows evaluate understandability, responsibility boundaries, change locality, and behavioral tests without enforcing arbitrary code-size metrics or authorizing unrelated refactoring.",
+      "tests": [
+        {
+          "path": ".agents/tests/workflow-routing-contracts.test.ts",
+          "name": "every task creation/amendment route requires the same classifier"
+        },
+        {
+          "path": ".agents/tests/workflow-routing-contracts.test.ts",
+          "name": "developer and review roles share the semantic clean-code contract"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "semantic-review",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 17,
+      "requirement": "QA approval is bound to the exact tested commit, and subsequent product-code changes invalidate that approval.",
+      "tests": [
+        {
+          "path": ".agents/tests/qa-evidence.test.ts",
+          "name": "complete current web evidence permits publication; helpers do not mutate"
+        },
+        {
+          "path": ".agents/tests/qa-evidence.test.ts",
+          "name": "product and private-state-only commits both invalidate commit A"
+        },
+        {
+          "path": ".agents/tests/qa-evidence.test.ts",
+          "name": "later failed attempt prevents old approval and forged index fallback"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 18,
+      "requirement": "Each QA verdict maps the applicable acceptance criteria to reproducible evidence, including the relevant environment, journeys, states, and results.",
+      "tests": [
+        {
+          "path": ".agents/tests/qa-evidence.test.ts",
+          "name": "complete current web evidence permits publication; helpers do not mutate"
+        },
+        {
+          "path": ".agents/tests/qa-evidence.test.ts",
+          "name": "all three QA verdicts align with evidence and only approval publishes"
+        },
+        {
+          "path": ".agents/tests/qa-evidence.test.ts",
+          "name": "missing, duplicate, foreign and method-unmapped criterion evidence denies"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 19,
+      "requirement": "The QA agent does not implement product-code fixes or approve its own remediation.",
+      "tests": [
+        {
+          "path": ".agents/tests/role-boundaries.test.ts",
+          "name": "PM advisory session accepts existing dirty/failing evidence without mutation"
+        },
+        {
+          "path": ".agents/tests/role-boundaries.test.ts",
+          "name": "bounded QA runner CLI suppresses automatic pnpm setup and rejects unknown flags"
+        },
+        {
+          "path": ".agents/tests/role-boundaries.test.ts",
+          "name": "QA preflight detached HEAD, conflict, unsafe output and unavailable Git deny"
+        },
+        {
+          "path": ".agents/tests/role-boundaries.test.ts",
+          "name": "new attempt cannot approve unchanged code after failed QA; refreshed candidate can"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 20,
+      "requirement": "Every TopHat boundary is identified honestly as either deterministic enforcement or instructed agent behavior. Configured deterministic gates fail closed on malformed input or execution failure, while inapplicable optional gates skip explicitly and visibly.",
+      "tests": [
+        {
+          "path": ".agents/tests/protected-write.test.ts",
+          "name": "protected writes fail closed on malformed payloads"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "semantic-review"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 21,
+      "requirement": "Git-mutating workflows verify the expected branch and clean working-tree state before mutation, halt visibly on detached HEAD, unexpected conflicts, or command failure, and do not perform destructive recovery without explicit human authorization.",
+      "tests": [
+        {
+          "path": ".agents/tests/git-preflight.test.ts",
+          "name": "clean branch creation and explicit resume verify resulting branch identity"
+        },
+        {
+          "path": ".agents/tests/git-preflight.test.ts",
+          "name": "staged-only change with reverted worktree remains dirty"
+        },
+        {
+          "path": ".agents/tests/git-preflight.test.ts",
+          "name": "detached and unborn HEAD deny visibly"
+        },
+        {
+          "path": ".agents/tests/git-preflight.test.ts",
+          "name": "submodule drift is denied even with ignore=all"
+        },
+        {
+          "path": ".agents/tests/git-preflight.test.ts",
+          "name": "ordinary profile denies merge conflict; nominated exception binds all index entries"
+        },
+        {
+          "path": ".agents/tests/git-preflight.test.ts",
+          "name": "authorized conflict edits preserve incoming staged files and commit both parents"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "command-execution",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 22,
+      "requirement": "Roadmaps, workflows, templates, and state consistently use Development Phase for major roadmap segments and Workflow Stage for operational state; the term Epic is removed from the TopHat work hierarchy.",
+      "tests": [
+        {
+          "path": ".agents/tests/terminology.test.ts",
+          "name": "active templates and instructions have no Epic tier or numbered operational Phase"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 23,
+      "requirement": "A project with incomplete input may use the optional Project Definition Stage to produce a reviewed draft package, but workspace initialization accepts it only after explicit human approval and deterministic package validation.",
+      "tests": [
+        {
+          "path": ".agents/tests/project-definition.test.ts",
+          "name": "incomplete input remains blocked until review questions resolve and matching human evidence follows"
+        },
+        {
+          "path": ".agents/tests/project-definition.test.ts",
+          "name": "missing approval and out-of-package evidence deny; retained prior version can be reapproved only with a new version"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 24,
+      "requirement": "TopHat can attach to an existing supported project through read-only discovery, workspace and documentation validation, baseline validation assessment, and explicit human approval before private orchestration state is generated.",
+      "tests": [
+        {
+          "path": ".agents/tests/workspace-attachment.test.ts",
+          "name": "read-only discovery resolves a candidate config without installing it and real CLI denies no proposal"
+        },
+        {
+          "path": ".agents/tests/workspace-attachment.test.ts",
+          "name": "readiness refuses missing approval, stale source/script body, spoofed state and mixed hook"
+        },
+        {
+          "path": ".agents/tests/workspace-attachment.test.ts",
+          "name": "workflow instructions keep discovery, command permission, final approval and manual removal separate"
+        },
+        {
+          "path": ".agents/tests/workspace-attachment.test.ts",
+          "name": "real assessment/readiness CLIs accept stdin records and write nothing before approval application"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 25,
+      "requirement": "A failing existing-project validation baseline halts attachment with a visible report and does not trigger silent gate weakening, broad remediation, or invented scoped-validation behavior.",
+      "tests": [
+        {
+          "path": ".agents/tests/attachment-baseline.test.ts",
+          "name": "authorization denial and absent script cannot run baseline commands"
+        },
+        {
+          "path": ".agents/tests/attachment-baseline.test.ts",
+          "name": "pre-existing failing validation halts; records stderr and no automated policy weakening"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "command-execution"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 26,
+      "requirement": "TopHat documents tracked/shared and local/private installation considerations and provides a safe manual detachment procedure without requiring the TopHat CLI or changing host-product history.",
+      "tests": [
+        {
+          "path": ".agents/tests/workspace-detachment.test.ts",
+          "name": "exact manual removal retains product, approved docs, package scripts, history and host exclusions"
+        },
+        {
+          "path": ".agents/tests/workspace-detachment.test.ts",
+          "name": "mixed ownership, product paths and stale current hashes cannot become removal permission"
+        },
+        {
+          "path": ".agents/tests/workspace-detachment.test.ts",
+          "name": "drifted hook and redirected hook config are preserved and denied"
+        },
+        {
+          "path": ".agents/tests/workspace-detachment.test.ts",
+          "name": "partial manual application invalidates instead of claiming atomic multi-file publication"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "semantic-review"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 27,
+      "requirement": "Derived host-project documentation is evaluated at the end of every Development Phase and verified again at project completion; the workflow may explicitly record that no change is required.",
+      "tests": [
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "phase documentation changes and no-change both require reviewed exact acceptance"
+        },
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "immediate task sync cannot accept a Development Phase"
+        },
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "immediate metadata is closed, justified and fingerprinted"
+        },
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "final verification requires accepted phase history and complete handoff coverage"
+        },
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "immediate receipts cannot substitute for phase acceptance"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "semantic-review",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 28,
+      "requirement": "The technical-writing responsibility can modify only declared derived-documentation targets, cannot silently change authoritative requirements or product behavior, and halts on conflicts between authority and realized implementation.",
+      "tests": [
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "phase documentation changes and no-change both require reviewed exact acceptance"
+        },
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "protected targets and broad parents cannot grant authority/product/private writes"
+        },
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "writer product/private/untracked/index/Git mutation is rejected after failure"
+        },
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "fresh compatible document claim QA binds exact candidate, methods and writer independence"
+        },
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "static SVG and binary document assets retain exact bytes and mandatory active-content review"
+        },
+        {
+          "path": ".agents/tests/derived-docs.test.ts",
+          "name": "workflow contracts enforce phase boundary, no autonomous README, no writer commands or merge"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "semantic-review",
+        "live-integration"
+      ],
+      "hostIntegrationRequired": true
+    },
+    {
+      "id": 29,
+      "requirement": "The Project Manager and Sprint Briefing workflow remain advisory and read-only, with deterministic mutation blocking only when the host supplies a verified workflow identity and honest instructed-boundary classification otherwise.",
+      "tests": [
+        {
+          "path": ".agents/tests/role-boundaries.test.ts",
+          "name": "PM advisory session accepts existing dirty/failing evidence without mutation"
+        },
+        {
+          "path": ".agents/tests/role-boundaries.test.ts",
+          "name": "bounded QA runner CLI suppresses automatic pnpm setup and rejects unknown flags"
+        },
+        {
+          "path": ".agents/tests/role-boundaries.test.ts",
+          "name": "PM private/product/index writes and unknown operation categories deny"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "semantic-review"
+      ],
+      "hostIntegrationRequired": false
+    },
+    {
+      "id": 30,
+      "requirement": "Projects may declare a runner-neutral coverage validation category and their own thresholds without TopHat imposing a universal percentage, requiring Vitest, or creating a duplicate coverage-specific interception system.",
+      "tests": [
+        {
+          "path": ".agents/tests/validation.test.ts",
+          "name": "gate order, appended categories, precommit SHA, and explicit optional skip"
+        },
+        {
+          "path": ".agents/tests/runner-coverage.test.ts",
+          "name": "actual Node coverage enforces host-owned passing and failing thresholds through pnpm"
+        },
+        {
+          "path": ".agents/tests/runner-coverage.test.ts",
+          "name": "actual Vitest V8 coverage enforces different host policies through the same pnpm runner"
+        },
+        {
+          "path": ".agents/tests/validation.test.ts",
+          "name": "missing pnpm, failed coverage, and tracked mutation deny truthfully"
+        },
+        {
+          "path": ".agents/tests/validation.test.ts",
+          "name": "different host-owned coverage thresholds drive only the declared pnpm script result"
+        }
+      ],
+      "requiredKinds": [
+        "mechanism",
+        "command-execution"
+      ],
+      "hostIntegrationRequired": false
+    }
+  ]
+}

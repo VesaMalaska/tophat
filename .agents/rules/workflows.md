@@ -76,3 +76,7 @@ Use `.agents/docs/task-routing-and-qa.md` and `classify-task.ts`: junior → sta
 Ordinary chunks do not trigger sync. Writer and reviewer execute no commands or Git/Linear/private-state writes. Separate orchestrator owns checks/custody/publication; acceptance and merge require explicit human approval. Documentation-only PRs use their explicit readiness gate; combined task PRs keep fresh Slice 6 exact-HEAD evidence.
 
 All Git mutation paths use the closed git-preflight.ts contract in `.agents/docs/git-safety.md`. Publication retains current task/document gates; merge needs separate explicit human approval.
+
+## Consumer-project independence
+
+TopHat code, schemas, CLI flags, fixtures, rules and public documentation use generic host-project contracts. Do not introduce consumer-product names, repository identities, client document packages or live client logs into this vault. Keep selection and evidence from actual acceptance projects in external custody. Host public product documentation must stand on its own without explaining private framework orchestration. Framework implementation review/merge and subsequent live host acceptance are separate activities; release validation requires the latter.

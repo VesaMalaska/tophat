@@ -31,3 +31,9 @@ This registry distinguishes current mechanisms from instructions and planned wor
 | Workflow postcondition checks | Detection where actually performed | A diff or state audit can reject a result after a mutation; it does not prevent that mutation. Later slices must record both separately. |
 
 The work hierarchy is **Development Phase → Sprint Chunk → Task**. A **Workflow Stage** identifies operational progress, such as session start, implementation, review, or QA. The Architect's Proposal Stage and Issue Creation Stage are operational stages, not roadmap segments.
+
+## Slice 9 acceptance evidence
+
+The invoked read-only acceptance verifier checks a closed criterion index, candidate identities, supplied artifact hashes/classifications, latest supplied attempt, and existing host project lifecycle evidence. `EVIDENCE_COMPLETE` means supplied records are consistent; it is not release authorization, cryptographic human identity, proof of actual execution, or proof of complete history. Recorded provenance cannot authenticate itself. Fixture/config tests do not certify real applications, browser journeys or native operating systems. A synthetic positive dossier in tests is parser/mechanism evidence only.
+
+Artifact custody, secret redaction, honest observed execution, independent semantic review and explicit scope/release decisions are orchestrator/human obligations. Streaming size checks and path validation bound invoked inspection; they do not create an OS sandbox, universal interception, transaction lock or race immunity. No host project live acceptance or release is claimed while required host inputs/completion remain pending.

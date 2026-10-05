@@ -89,6 +89,14 @@ export function runValidation(request: ValidationRequest, root: string, pnpm = "
         !("scripts" in pkg) || !pkg.scripts || typeof pkg.scripts !== "object" || Array.isArray(pkg.scripts))
       return fail("PACKAGE_INVALID", "Host package.json must declare scripts");
     const scripts = pkg.scripts as Record<string, unknown>;
+    // A host script is an independent process, not a worker of the caller's
+    // node:test session. Inheriting this internal marker can suppress tests.
+    const environment = { ...process.env };
+    delete environment.NODE_TEST_CONTEXT;
+    if (options.candidateConfig || options.disableAutomaticSetup) {
+      environment.pnpm_config_verify_deps_before_run = "false";
+      environment.pnpm_config_manage_package_manager_versions = "false";
+    }
     for (const category of selected) {
       const name = config.validation.scripts[category];
       if (!name || typeof scripts[name] !== "string" || !scripts[name])
@@ -104,7 +112,7 @@ export function runValidation(request: ValidationRequest, root: string, pnpm = "
 
     for (const category of selected) {
       const script = config.validation.scripts[category]!;
-      const result = spawnSync(pnpm, ["run", script], { cwd: root, encoding: "utf8", maxBuffer: options.maxBufferBytes ?? 16 * 1024 * 1024, timeout: options.timeoutMs, killSignal: "SIGKILL", ...(options.candidateConfig || options.disableAutomaticSetup ? { env: { ...process.env, pnpm_config_verify_deps_before_run: "false", pnpm_config_manage_package_manager_versions: "false" } } : {}) });
+      const result = spawnSync(pnpm, ["run", script], { cwd: root, encoding: "utf8", maxBuffer: options.maxBufferBytes ?? 16 * 1024 * 1024, timeout: options.timeoutMs, killSignal: "SIGKILL", env: environment });
       const passed = !result.error && result.status === 0;
       report.results.push({ category, script, status: passed ? "PASSED" : "FAILED", exitStatus: result.status, ...(options.timeoutMs === undefined ? {} : { stdout: (result.stdout ?? "").slice(0, 4000), stderr: (result.stderr ?? "").slice(0, 4000), signal: result.signal }) });
       if (!passed) return fail(result.error ? (result.error.code === "ETIMEDOUT" ? "SCRIPT_TIMEOUT" : result.error.code === "ENOBUFS" ? "SCRIPT_OUTPUT_LIMIT" : "SCRIPT_SPAWN_FAILED") : "SCRIPT_FAILED",

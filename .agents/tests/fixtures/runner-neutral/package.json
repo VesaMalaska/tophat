@@ -6,9 +6,14 @@
   },
   "scripts": {
     "unit:vitest": "vitest run vitest.test.js",
-    "unit:node": "node --test node.test.js"
+    "unit:node": "node --test node.test.js",
+    "coverage:node:pass": "node --test --experimental-test-coverage --test-coverage-include=coverage-subject.js --test-coverage-branches=40 coverage.node.test.js",
+    "coverage:node:fail": "node --test --experimental-test-coverage --test-coverage-include=coverage-subject.js --test-coverage-branches=100 coverage.node.test.js",
+    "coverage:vitest:pass": "vitest run coverage.vitest.test.js --coverage --coverage.provider=v8 --coverage.include=coverage-subject.js --coverage.reportsDirectory=coverage/vitest-pass --coverage.thresholds.branches=40",
+    "coverage:vitest:fail": "vitest run coverage.vitest.test.js --coverage --coverage.provider=v8 --coverage.include=coverage-subject.js --coverage.reportsDirectory=coverage/vitest-fail --coverage.thresholds.branches=100"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "5.0.3",
     "vitest": "5.0.3"
   }
 }

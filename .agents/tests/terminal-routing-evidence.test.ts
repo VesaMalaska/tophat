@@ -42,3 +42,20 @@ test('terminal identity, dimensions and closed conditional objects reject malfor
  for(const kind of ['web','backend','desktop'])for(const value of [original.terminal,null])assert.throws(()=>checkedTerminalEnvironment({workspaceKind:kind,terminal:value}));
  const f=host();try {assert.throws(()=>verifyTerminalEnvironment(original,loadTophatConfig(f.root),['e2e-terminal']));const e=evidence(f);e.report.environment.terminal=original.terminal;assert.throws(()=>checkedReport(e.report));}finally{f.close();}
 });
+
+test('TUI presentation evidence requires observed cells, TTY and artifacts without inventing a flow',()=>{
+ const f=host('terminal','none');try {
+  f.task.workKinds=['static-ui'];f.task.userEffects=['visual'];f.task.guidance={requestedSkills:['terminal-qa-flows'],taskTopics:['terminal-presentation'],frameworkInstructions:[]};
+  const r=classifyTask(f.root,f.task);assert.deepEqual(r.qaMethods,['visual','responsive']);assert.equal(r.devTier,'junior');
+  const e=evidence(f);assert.equal(validateQAEvidence(f.root,e.request).approvalAllowed,true);
+  const original=structuredClone(e.report);
+  for(const mutate of [(v:any)=>{v.environment.terminal.sizes=[];v.environment.terminal.sizeReason='Not observed';},(v:any)=>v.environment.terminal.ttyMode='non-tty',(v:any)=>v.methodResults[0].artifactIds=[]]){Object.assign(e.report,structuredClone(original));mutate(e.report);refreshIndex(e);assert.equal(validateQAEvidence(f.root,e.request).status,'DENIED');}
+ }finally{f.close();}
+});
+test('terminal internal work keeps explicit QA non-applicability and privileged mixed work stays senior',()=>{
+ const f=host('terminal','none',undefined,'cli');try{
+  f.task.workKinds=['internal'];f.task.userEffects=['no-user-facing-change'];f.task.noUserFacingReason='Internal helper with no observable interface change';f.task.guidance.taskTopics=[];f.task.acceptanceChecks[0].qaApplicable=false;f.task.acceptanceChecks[0].applicabilityReason='Declared unit validation';
+  const r=classifyTask(f.root,f.task);assert.equal(r.devTier,'senior');assert.equal(r.securityRequired,true);assert.equal(r.qaRequired,false);assert.deepEqual(r.qaMethods,[]);
+ }finally{f.close();}
+ const t=host('terminal','none');try{for(const work of ['filesystem','auth','cross-layer','process']){t.task.workKinds=['terminal-logic',work] as any;assert.equal(classifyTask(t.root,t.task).devTier,'senior');}}finally{t.close();}
+});

@@ -23,7 +23,7 @@ Before proposing, creating or amending a task, run `node .agents/scripts/validat
 
 1.  **Initialize State:** Invoke `@agent-architect`.
 2.  **Context Ingestion:** Load the validated workspace declaration and read the project's approved execution-stack documentation. Do not infer a browser from the presence of Node.js.
-3.  **Systemic Smoke Test Selection:** Select from the derived workspace profile: web requires a suitable browser-facing boot/route check; `backend + none` requires a service boot, health, or API check without Playwright; Electron requires a desktop boot and relevant IPC check while retaining main/preload/renderer boundaries. Choose a path and tool supported by the host project rather than a fixed test filename. Use `select-task-guidance.ts` to validate all proposed skills and framework instructions before handoff.
+3.  **Systemic Smoke Test Selection:** Select from the derived workspace profile: web requires a suitable browser-facing boot/route check; `backend + none` requires a service boot, health, or API check without Playwright; Electron requires a desktop boot and relevant IPC check while retaining main/preload/renderer boundaries. Terminal CLI requires approved invocation/input/output/exit checks without a server; terminal TUI requires declared launch/input/resize/cleanup checks in a native terminal or PTY. Choose a path and tool supported by the host project rather than a fixed test filename. Use `select-task-guidance.ts` to validate all proposed skills and framework instructions before handoff.
 4.  **Execution (Linear MCP):** Create a high-priority task for the selected smoke specification only after proposing a fully traced task block and receiving explicit human APPROVED for issue creation. Assign Dev Tier: `senior`; use the derived critical review and security route. Verify it lands in the 'Todo' column. Host validation uses the existing shared runner; QA methods come from the same classifier; no browser method is inferred for a backend. No approved runtime/operations source for the smoke requirement means halt instead of inventing a ticket.
 5.  **Completion:** Output a confirmation summary of the ticket creation.
 
@@ -40,3 +40,7 @@ Before every separately authorized Git action, the execution orchestrator invoke
 ## Completion, stop and recovery
 
 Return command/task scope, current authority/candidate where applicable, checks actually performed, verdict/blockers, evidence location, permitted next command and its host-configured model. Unknown checks remain UNVERIFIED. Preserve failed/aborted attempts and actual state; no automatic retry, rollback or Git recovery. Developer defects use assigned-tier `/remediate-task` followed by fresh derived review/security/QA; missing existing authority uses `/remediate-blocker`, while new scope requires human documentation reconciliation. Do not invoke the next command automatically.
+
+## Terminal applicability
+
+For a validated terminal host, read `.agents/docs/terminal-host-support.md`. Preserve the declared cli/tui mode, closed capability/trait/method mapping and host-approved launch/renderer policy. Do not infer a web server, browser, Electron or styling stack from Node.js. Follow existing actor, authority and exact-candidate boundaries.

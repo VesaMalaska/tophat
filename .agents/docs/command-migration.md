@@ -1,6 +1,6 @@
 # Command packaging, manual upgrade and compatibility
 
-The catalog `.agents/docs/command-catalog.json` owns 30 active command identities and one retired identity. The 17 topical guidance skills remain distinct. Host `routingMatrix` owns actual model advice; missing active mappings block command use. Custom host routing keys/overrides are preserved. `/generate-readme` has no discoverable entry: explicitly select `/project-define`, `/sync-derived-docs` or `/verify-project-docs` at the appropriate documentation boundary.
+The catalog `.agents/docs/command-catalog.json` owns 30 active command identities and one retired identity. The 18 topical guidance skills remain distinct. Host `routingMatrix` owns actual model advice; missing active mappings block command use. Custom host routing keys/overrides are preserved. `/generate-readme` has no discoverable entry: explicitly select `/project-define`, `/sync-derived-docs` or `/verify-project-docs` at the appropriate documentation boundary.
 
 ## Read-only checks
 
@@ -32,7 +32,7 @@ Use a disposable local repository and generic fake `PROBE-123`, with no real Lin
 
 | Probe | Interaction | Required trace |
 | --- | --- | --- |
-| Discovery | Refresh the disposable project | All 30 command and 17 guidance entries register; retired entry absent; observe any name/collision behavior |
+| Discovery | Refresh the disposable project | All 30 command and 18 guidance entries register; retired entry absent; observe any name/collision behavior |
 | Exact arguments | Invoke `/implement-mid PROBE-123`, then missing ID and two IDs | Exact payload equals PROBE-123, without truncation/escaping/literal template; negative cases stop before task actions |
 | Reads | Remove one mandatory resource in a disposable copy | Catalog/config/entry/applicable role and contracts read before dependent checks/actions; missing resource stops |
 | Advisory | Request strategy proposal and refactor findings with fake state | No role shell/write/HUD/Git/Linear mutation; external capture/inspection remains separate |
@@ -67,3 +67,7 @@ Human-supplied traces from the disposable `tophat-skills-probe` checkout at revi
 | PM and approval | Unconfigured planning state blocked; subsequent APPROVED did not establish authority or apply state. Successful proposal handoff remains untested. |
 
 Execution probes ran only in Antigravity, not Antigravity IDE. Tool traces support observed reads and reported halts; absent events are not an invisible-operation audit. Some responses claimed shared-rule verification without shown reads; partial resource reads do not establish full validation. No native hook or IDE interception, independent complete review, exact-candidate approval tampering, successful state application, real task lifecycle or real host acceptance was demonstrated. Overall compatibility/acceptance remains pending those applicable observations. Run a failing/passing native commit-gate check in a configured disposable host before relying on it, then use one bounded real task as the controlled pilot. Separate release approval remains required.
+
+## Additive terminal support
+
+Terminal support adds one topical guidance skill (18 total) without changing the 30 public command identities. Earlier observations of 17 guidance entries describe the pre-extension candidate; they do not establish discovery or transport for the new entry. Use the approved terminal host contract, pinned full closure and fresh host validation; do not reinterpret or upgrade historical evidence automatically.

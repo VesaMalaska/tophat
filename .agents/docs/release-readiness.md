@@ -2,7 +2,7 @@
 
 The private `tophat-vault-tests` package is a test harness. The reusable vault is unconfigured and is not an npm application or CLI release.
 
-1. Run all 14 fixture groups and map all 30 approved criteria to evidence.
+1. Run all 18 fixture groups and map all 30 approved criteria to evidence.
 2. Complete the authorized host project integration: approved package before planning; traceable bounded tasks; derived guidance/route; applicable pnpm validation, independent security/QA; Development Phase synchronization; final project-doc verification and public/private review.
 3. Generate the immutable external dossier at the exact resulting TopHat and host candidates. Resolve failed tests, stale evidence and independent review findings. Fixture counts alone do not establish acceptance.
 4. Present concrete release metadata/artifacts and limitations to Vesku for separate release-preparation approval. Agree the vault version/tag and metadata location; do not automatically version the private harness.

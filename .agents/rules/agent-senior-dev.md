@@ -59,3 +59,7 @@ Git actions follow `.agents/docs/git-safety.md` and `git-preflight.ts` before ea
 ## Bidirectional criterion trace
 
 Use actual stable criterion IDs from approved task extracts. Map each applicable criterion to behavior/file/function and meaningful automated, visual/manual or semantic evidence with rationale. Map every changed behavior back to an authorized criterion or necessary in-scope support. Missing behavior, vacuous tests and unexplained changes are findings; source citations alone do not prove completeness. Preserve failed attempts. Reviewers independently verify relevance and coverage without fixing their own findings; remediation follows `/remediate-task` or authority-bound `/remediate-blocker`.
+
+## Terminal host applicability
+
+Read `.agents/docs/terminal-host-support.md` for validated terminal hosts. Apply the closed cli/tui capability, trait, route and evidence mapping. Host-approved renderer/launch/presentation policy owns implementation choices; browser CSS/DOM guidance is conditional on a browser host. Static TUI layout is junior, localized terminal-logic mid, process/filesystem/secret/internal work senior, and mixed work takes the highest tier. Preserve unconditional security and existing role/approval boundaries.

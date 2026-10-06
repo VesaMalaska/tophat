@@ -4,7 +4,7 @@ import { loadTophatConfig, type Capability, type TophatConfig, TophatConfigError
 
 export type TaskTopic = "backend" | "browser-flow" | "desktop-flow" | "electron-ipc" | "security" |
   "sqlite" | "supabase" | "tailwind" | "vitest" | "server-component" | "client-component" |
-  "route-handler" | "server-action" | "desktop-main" | "desktop-preload" | "desktop-renderer";
+  "route-handler" | "server-action" | "desktop-main" | "desktop-preload" | "desktop-renderer" | "terminal-flow" | "terminal-presentation";
 export type FrameworkInstruction = "svelte" | "sveltekit" | "react" | "nextjs";
 export interface TaskGuidanceRequest {
   requestedSkills: readonly string[];
@@ -15,7 +15,8 @@ export interface TaskGuidanceSelection {
   readonly status: "SELECTED";
   readonly skills: readonly string[];
   readonly capabilities: readonly Capability[];
-  readonly smokeProfile: "web" | "backend" | "desktop";
+  readonly smokeProfile: "web" | "backend" | "desktop" | "terminal";
+  readonly terminalMode?: "cli" | "tui";
   readonly renderer: "svelte" | "react" | "none" | null;
   readonly boundaries: readonly string[];
 }
@@ -42,8 +43,9 @@ const requirements: Readonly<Record<string, { capabilities?: readonly Capability
   "vitest-tdd": { topics: ["vitest"] },
   "tdd-workflow": {},
   "git-linear-workflow": {},
+  "terminal-qa-flows": { capabilities: ["terminal-qa"] },
 };
-const topics = new Set<TaskTopic>(["backend", "browser-flow", "desktop-flow", "electron-ipc", "security", "sqlite", "supabase", "tailwind", "vitest", "server-component", "client-component", "route-handler", "server-action", "desktop-main", "desktop-preload", "desktop-renderer"]);
+const topics = new Set<TaskTopic>(["backend", "browser-flow", "desktop-flow", "electron-ipc", "security", "sqlite", "supabase", "tailwind", "vitest", "server-component", "client-component", "route-handler", "server-action", "desktop-main", "desktop-preload", "desktop-renderer", "terminal-flow", "terminal-presentation"]);
 const instructions = new Set<FrameworkInstruction>(["svelte", "sveltekit", "react", "nextjs"]);
 const boundaryNotes: Readonly<Partial<Record<TaskTopic, string>>> = {
   "server-component": "Next.js Server Component: server-only data and secrets; explicit rendering and cache policy; serializable client props.",
@@ -64,6 +66,9 @@ export function selectTaskGuidance(config: TophatConfig, request: TaskGuidanceRe
   if (request.frameworkInstructions.some((name) => !instructions.has(name))) throw new TaskGuidanceError("Unknown framework instruction");
   const caps = config.capabilities;
   for (const topic of request.taskTopics) {
+    if (config.workspace.kind === "terminal" && ["backend", "browser-flow", "desktop-flow"].includes(topic)) throw new TaskGuidanceError("Terminal host cannot select server/browser/Electron topics");
+    if (topic === "terminal-flow" && !caps.includes("terminal-qa")) throw new TaskGuidanceError("Terminal flow requires terminal-qa capability");
+    if (topic === "terminal-presentation" && !caps.includes("terminal-ui")) throw new TaskGuidanceError("Terminal presentation requires terminal-ui capability");
     if (["server-component", "client-component", "route-handler", "server-action"].includes(topic) &&
         (!caps.includes("nextjs") || !request.requestedSkills.includes("nextjs-architecture")))
       throw new TaskGuidanceError(`Task topic ${topic} requires nextjs capability and nextjs-architecture skill`);
@@ -80,6 +85,8 @@ export function selectTaskGuidance(config: TophatConfig, request: TaskGuidanceRe
   for (const name of request.requestedSkills) {
     const rule = Object.hasOwn(requirements, name) ? requirements[name] : undefined;
     if (!rule) throw new TaskGuidanceError(`Unknown skill ${String(name)}`);
+    if (name === "terminal-qa-flows" && !request.taskTopics.some(t => ["terminal-flow", "terminal-presentation"].includes(t)))
+      throw new TaskGuidanceError("Terminal QA guidance requires flow or presentation topic");
     for (const capability of rule.capabilities ?? []) {
       if (!caps.includes(capability)) throw new TaskGuidanceError(`Skill ${name} requires absent capability ${capability}`);
     }
@@ -93,7 +100,7 @@ export function selectTaskGuidance(config: TophatConfig, request: TaskGuidanceRe
   const renderer = smokeProfile === "desktop" ? config.workspace.framework as "svelte" | "react" | "none" : null;
   const boundaries = request.taskTopics.flatMap((topic) => { const note = boundaryNotes[topic]; return note ? [note] : []; });
   return Object.freeze({ status: "SELECTED", skills: Object.freeze([...request.requestedSkills]),
-    capabilities: caps, smokeProfile, renderer, boundaries: Object.freeze(boundaries) });
+    capabilities: caps, smokeProfile, ...(smokeProfile === "terminal" ? { terminalMode: config.workspace.mode } : {}), renderer, boundaries: Object.freeze(boundaries) });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

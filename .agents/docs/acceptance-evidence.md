@@ -17,7 +17,7 @@ The runner clears the internal `NODE_TEST_CONTEXT` marker before launching an in
 
 ## Static criterion index
 
-`.agents/docs/acceptance-criteria.json` contains exactly IDs 1–30, the approved requirement text, exact file/test names, required evidence kinds, and live host project obligations. Its 14 groups match the approved design. No runtime verdict is stored in the index. The checker rejects unknown/duplicate JSON keys, unresolved tests and weakened evidence-kind obligations. Test-name resolution is a static instruction check, not proof of execution.
+`.agents/docs/acceptance-criteria.json` contains exactly IDs 1–30, the approved requirement text, exact file/test names, required evidence kinds, and live host project obligations. Its 18 groups include the approved additive terminal amendment; existing IDs and live obligations remain unchanged. No runtime verdict is stored in the index. The checker rejects unknown/duplicate JSON keys, unresolved tests and weakened evidence-kind obligations. Test-name resolution is a static instruction check, not proof of execution.
 
 The five evidence kinds are `mechanism`, `configuration-fixture`, `command-execution`, `semantic-review`, and `live-integration`. Artifact provenance is `observed`, `synthetic`, or `configuration`. Command, semantic and live artifacts require the recorded provenance `observed`. That declaration is not authenticated: the positive unit-test dossier explicitly simulates it and never establishes real people or live host project acceptance.
 

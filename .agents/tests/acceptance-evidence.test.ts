@@ -8,7 +8,7 @@ import { acceptanceFixture } from './fixtures/acceptance.ts';
 const check = (f: ReturnType<typeof acceptanceFixture>) => { f.save(); return validateAcceptance(f.options); };
 const code = (f: ReturnType<typeof acceptanceFixture>) => check(f).errors.at(-1)?.code;
 function run(fn: (f: ReturnType<typeof acceptanceFixture>) => void, full = false) { const f = acceptanceFixture(full); try { fn(f); } finally { f.close(); } }
-test('criterion index resolves exactly 30 approved IDs and all 14 test groups', () => {
+test('criterion index resolves exactly 30 approved IDs and all 18 test groups', () => {
   const root = resolve('.'); const index = JSON.parse(readFileSync(join(root, '.agents/docs/acceptance-criteria.json'), 'utf8'));
   assert.equal(checkedIndex(index, p => readFileSync(join(root, p), 'utf8')).criteria.length, 30);
   for (const mutate of [(v: any) => v.criteria.pop(), (v: any) => v.criteria[1].id = 1, (v: any) => v.criteria[0].tests[0].name = 'nonexistent test', (v: any) => v.groups.pop(), (v: any) => v.criteria[11].hostIntegrationRequired = false, (v: any) => v.extra = true]) { const v = structuredClone(index); mutate(v); assert.throws(() => checkedIndex(v, p => readFileSync(join(root, p), 'utf8'))); }

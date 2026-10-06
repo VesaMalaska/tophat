@@ -1,3 +1,4 @@
+import { checkedTerminalEnvironment, verifyTerminalEnvironment, type TerminalEnvironment } from "./validate-terminal-environment.ts";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { loadTophatConfig } from "./load-tophat-config.ts";
@@ -17,7 +18,7 @@ export interface QAReport {
   identity: { taskId: string; attemptId: string; sequence: number; taskFingerprint: string; expectedBranch: string; testedCommit: string };
   environment: { workspaceKind: string; framework: string; nodeVersion: string; pnpmVersion: string; os: string; applicationVersion: string;
     buildCommit: string; buildEvidence: string; target: string; configuration: string; roles: string[]; controlledData: string; resetProcedure: string;
-    externalDependencies: string; states: string[]; statesReason: string | null; viewports: string[]; viewportsReason: string | null; available: boolean };
+    externalDependencies: string; states: string[]; statesReason: string | null; viewports: string[]; viewportsReason: string | null; available: boolean; terminal?: TerminalEnvironment };
   methodResults: { method: string; result: "PASSED" | "FAILED" | "BLOCKED"; procedure: string; artifactIds: string[]; humanAcceptance: null | { signal: "APPROVED"; taskFingerprint: string; testedCommit: string; human: string; evidenceLocator: string } }[];
   criteria: CriterionEvidence[];
   commands: { id: string; category: string; script: string; artifactId: string; result: "PASSED" | "FAILED" | "NOT_RUN"; validation: unknown }[];
@@ -43,7 +44,8 @@ export function checkedReport(value: unknown): QAReport {
   if (v.schemaVersion !== 1 || !["APPROVED", "CHANGES_REQUIRED", "BLOCKED"].includes(v.verdict as string)) fail("QA_EVIDENCE_INVALID", "Unsupported QA report");
   const id = record(v.identity, "identity"); fields(id, ["taskId", "attemptId", "sequence", "taskFingerprint", "expectedBranch", "testedCommit"]);
   text(id.taskId); text(id.attemptId); positive(id.sequence); hash(id.taskFingerprint); text(id.expectedBranch); commitSha(id.testedCommit);
-  const env = record(v.environment, "environment"); fields(env, ["workspaceKind", "framework", "nodeVersion", "pnpmVersion", "os", "applicationVersion", "buildCommit", "buildEvidence", "target", "configuration", "roles", "controlledData", "resetProcedure", "externalDependencies", "states", "statesReason", "viewports", "viewportsReason", "available"]);
+  const env = record(v.environment, "environment"); fields(env, ["workspaceKind", "framework", "nodeVersion", "pnpmVersion", "os", "applicationVersion", "buildCommit", "buildEvidence", "target", "configuration", "roles", "controlledData", "resetProcedure", "externalDependencies", "states", "statesReason", "viewports", "viewportsReason", "available"], ["terminal"]);
+  checkedTerminalEnvironment(env);
   for (const key of ["workspaceKind", "framework", "nodeVersion", "pnpmVersion", "os", "applicationVersion", "buildEvidence", "target", "configuration", "controlledData", "resetProcedure", "externalDependencies"]) text(env[key]);
   commitSha(env.buildCommit); strings(env.roles, undefined, true);
   for (const [a, reason] of [["states", "statesReason"], ["viewports", "viewportsReason"]]) {
@@ -159,6 +161,8 @@ export function validateQAEvidence(root: string, input: unknown, historicalCommi
     const config = loadTophatConfig(root);
     if (r.environment.workspaceKind !== config.workspace.kind || r.environment.framework !== config.workspace.framework || !/^\d+\.\d+\.\d+$/.test(r.environment.nodeVersion) || Number(r.environment.nodeVersion.split(".")[0]) < 24 || r.environment.buildCommit !== r.identity.testedCommit)
       fail("QA_EVIDENCE_INVALID", "Environment/build is not the tested candidate");
+    verifyTerminalEnvironment(r.environment as unknown as Record<string,unknown>, config, route.qaMethods);
+    if (config.workspace.kind === "terminal" && r.methodResults.some(m => m.result === "PASSED" && !m.artifactIds.length)) fail("QA_ARTIFACT_INVALID", "Terminal methods require captured environment/behavior observations");
     exactIds(r.methodResults.map(x => x.method), route.qaMethods);
     const checkIds = [...route.task.authority.references.acceptanceCriteria, ...route.task.acceptanceChecks.map(c => c.id)];
     exactIds(r.criteria.map(x => x.id), checkIds);

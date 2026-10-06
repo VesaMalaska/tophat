@@ -8,8 +8,8 @@ import { loadCommandCatalog, catalogResources, validateCommandCatalog } from '..
 const source=process.cwd(),script=resolve('.agents/scripts/validate-command-catalog.ts');
 const fixture=()=>{const root=mkdtempSync(join(tmpdir(),'tophat-catalog-'));cpSync(join(source,'.agents'),join(root,'.agents'),{recursive:true,filter:p=>!p.split('/').some(x=>['node_modules','tests'].includes(x))});return{root,close:()=>rmSync(root,{recursive:true,force:true})};};
 function rewrite(root:string,mutate:(c:any)=>void){const path=join(root,'.agents/docs/command-catalog.json'),c=JSON.parse(readFileSync(path,'utf8'));mutate(c);writeFileSync(path,JSON.stringify(c));}
-test('closed command catalog inventories 30 active, one retired and 17 guidance skills',()=>{
- const c=loadCommandCatalog(source);assert.equal(c.commands.filter(x=>x.state==='active').length,30);assert.equal(c.guidanceSkills.length,17);assert.equal(c.commands.find(x=>x.state==='retired')!.name,'generate-readme');
+test('closed command catalog inventories 30 active, one retired and 18 guidance skills',()=>{
+ const c=loadCommandCatalog(source);assert.equal(c.commands.filter(x=>x.state==='active').length,30);assert.equal(c.guidanceSkills.length,18);assert.equal(c.commands.find(x=>x.state==='retired')!.name,'generate-readme');
  const before=spawnSync('git',['status','--porcelain'],{encoding:'utf8'}).stdout;
  assert.equal(validateCommandCatalog(source).status,'CATALOG_VALID');assert.ok(catalogResources(source).includes('.agents/scripts/classify-task.ts'));
  assert.equal(spawnSync('git',['status','--porcelain'],{encoding:'utf8'}).stdout,before);

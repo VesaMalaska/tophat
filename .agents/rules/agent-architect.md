@@ -60,3 +60,7 @@ Every task includes package provenance, stable phase/chunk IDs, active scope IDs
 ## Derived documentation lifecycle
 
 Use `.agents/docs/derived-documentation.md`. Propose complete stable phase/task membership and approved source trace; do not infer phase closure from Linear labels. Classify immediate documentation necessity before task fingerprinting. The technical writer edits only an exact human-authorized derived plan and never authority/product/private state. `/roadmap-sync` halts at a phase boundary until validated document acceptance; `/verify-project-docs` and explicit final human acceptance follow all phases. Conflicts require human resolution.
+
+## Terminal host applicability
+
+Read `.agents/docs/terminal-host-support.md` for validated terminal hosts. Apply the closed cli/tui capability, trait, route and evidence mapping. Host-approved renderer/launch/presentation policy owns implementation choices; browser CSS/DOM guidance is conditional on a browser host. Static TUI layout is junior, localized terminal-logic mid, process/filesystem/secret/internal work senior, and mixed work takes the highest tier. Preserve unconditional security and existing role/approval boundaries.

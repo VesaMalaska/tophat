@@ -264,7 +264,8 @@
               "tailwind-desktop-ui",
               "tailwind-semantic-ui",
               "tdd-workflow",
-              "vitest-tdd"
+              "vitest-tdd",
+              "terminal-qa-flows"
             ]
           },
           "entryPath": {
@@ -274,8 +275,8 @@
           }
         }
       },
-      "minItems": 17,
-      "maxItems": 17,
+      "minItems": 18,
+      "maxItems": 18,
       "uniqueItems": true
     }
   }

@@ -1,6 +1,6 @@
 # Existing-project attachment
 
-TopHat 1.0 supports Node >=24, TypeScript and pnpm with the declared web/backend/Electron combinations. Existing code and legacy documentation are evidence; an approved Slice 4 package governs product scope. One repository-root contract/root package scripts is the monorepo boundary; mixed profiles require a future design.
+TopHat 1.0 supports Node >=24, TypeScript and pnpm with the declared web/backend/Electron combinations and explicit terminal:none:cli or terminal:none:tui profiles. Existing code and legacy documentation are evidence; an approved Slice 4 package governs product scope. One repository-root contract/root package scripts is the monorepo boundary; mixed profiles require a future design.
 
 Use `/workspace-attach` → `/workspace-attach-assess` → `/workspace-attach-finalize`. Keep the pinned TopHat checkout and all preapproval reports outside the host. Discovery runs fixed version/Git queries and reads bounded files, never imports host configuration or invokes scripts. Proposal and command authorization are separate; passing assessment and exact attachment approval are separate again.
 
@@ -31,3 +31,5 @@ Only approved attachment finalization writes the 1.0 host config and exact propo
 ## Command packaging integration
 
 Consult [command migration](command-migration.md) and the pinned command catalog. Fresh installation requires the full catalog resource closure; upgrade/detachment uses exact confirmed ownership/digests, preserves host routing overrides/custom skills and historical receipts, and stops visibly on partial application. No broad directory removal or automatic rollback. Handoff writes precede final candidate sealing. Map actual applicable criterion IDs to behavior and meaningful evidence, and map every changed behavior back to approved scope; independent review judges relevance.
+
+Terminal attachment requires the explicit cli/tui mode and full catalog closure including `terminal-qa-flows`, `.agents/docs/terminal-host-support.md` and `.agents/scripts/validate-terminal-environment.ts`. Renderer/native dependencies come from approved host authority, not automatic discovery. Preserve custom skills, routing overrides and product files under the existing exact ownership/removal plan.

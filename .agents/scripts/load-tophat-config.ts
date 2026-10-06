@@ -5,15 +5,17 @@ export const validationCategories = [
   "typecheck", "lint", "unit", "coverage", "integration", "build", "smoke", "e2e", "documentation",
 ] as const;
 export type ValidationCategory = (typeof validationCategories)[number];
-export type WorkspaceKind = "web" | "backend" | "desktop";
+export type WorkspaceKind = "web" | "backend" | "desktop" | "terminal";
+export type TerminalMode = "cli" | "tui";
 export type Framework = "svelte" | "sveltekit" | "react" | "nextjs" | "none";
 export type Capability =
   | "web-ui" | "svelte" | "sveltekit" | "react" | "nextjs" | "node-server" | "web-qa"
-  | "electron" | "node-main" | "renderer-ui" | "desktop-qa";
+  | "electron" | "node-main" | "renderer-ui" | "desktop-qa"
+  | "node-process" | "terminal-io" | "terminal-ui" | "terminal-qa";
 
 export interface TophatConfig {
   readonly schemaVersion: 1;
-  readonly workspace: Readonly<{ kind: WorkspaceKind; framework: Framework }>;
+  readonly workspace: Readonly<{ kind: WorkspaceKind; framework: Framework; mode?: TerminalMode }>;
   readonly documentation: Readonly<{
     package: string;
     manifest: string;
@@ -45,6 +47,8 @@ const capabilityTable: Readonly<Record<string, readonly Capability[]>> = Object.
   "web:react": ["web-ui", "react", "web-qa"],
   "web:nextjs": ["web-ui", "react", "nextjs", "node-server", "web-qa"],
   "backend:none": ["node-server"],
+  "terminal:none:cli": ["node-process", "terminal-io", "terminal-qa"],
+  "terminal:none:tui": ["node-process", "terminal-io", "terminal-ui", "terminal-qa"],
   "desktop:svelte": ["electron", "node-main", "renderer-ui", "svelte", "desktop-qa"],
   "desktop:react": ["electron", "node-main", "renderer-ui", "react", "desktop-qa"],
   "desktop:none": ["electron", "node-main", "desktop-qa"],
@@ -114,10 +118,11 @@ export function parseTophatConfig(source: string): TophatConfig {
   if (root.schemaVersion !== 1) issues.push("schemaVersion must be 1");
 
   const workspace = objectAt(root.workspace, "workspace", issues);
-  onlyKeys(workspace, ["kind", "framework"], "workspace", issues);
+  onlyKeys(workspace, workspace.kind === "terminal" ? ["kind", "framework", "mode"] : ["kind", "framework"], "workspace", issues);
   const kind = requiredString(workspace.kind, "workspace.kind", issues);
   const framework = requiredString(workspace.framework, "workspace.framework", issues);
-  const capabilities = capabilityTable[`${kind}:${framework}`];
+  const mode = kind === "terminal" ? requiredString(workspace.mode, "workspace.mode", issues) : undefined;
+  const capabilities = capabilityTable[`${kind}:${framework}${kind === "terminal" ? `:${mode}` : ""}`];
   if (kind && framework && !capabilities) issues.push(`unsupported workspace combination: ${kind}+${framework}`);
 
   const documentation = objectAt(root.documentation, "documentation", issues);
@@ -158,7 +163,7 @@ export function parseTophatConfig(source: string): TophatConfig {
 
   return Object.freeze({
     schemaVersion: 1,
-    workspace: Object.freeze({ kind: kind as WorkspaceKind, framework: framework as Framework }),
+    workspace: Object.freeze({ kind: kind as WorkspaceKind, framework: framework as Framework, ...(kind === "terminal" ? { mode: mode as TerminalMode } : {}) }),
     documentation: Object.freeze({ package: packagePath, manifest, derivedTargets: Object.freeze(targets) }),
     validation: Object.freeze({
       scripts: Object.freeze({ ...scripts }) as Readonly<Partial<Record<ValidationCategory, string>>>,

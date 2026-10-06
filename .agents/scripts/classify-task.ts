@@ -51,9 +51,9 @@ export function issue(error: unknown): { code: string; message: string } {
   const e = error as { code?: string; message?: string };
   return { code: e?.code ?? "WORKFLOW_INTERNAL_ERROR", message: e?.message ?? "Cannot establish workflow evidence" };
 }
-export const workKinds = ["static-ui", "client-logic", "server-logic", "api", "database", "auth", "payments", "permissions", "filesystem", "electron-main", "electron-preload", "electron-ipc", "cross-layer", "internal"] as const;
-export const userEffects = ["web-flow", "desktop-flow", "visual", "responsive", "accessibility", "human-design", "no-user-facing-change"] as const;
-export const qaMethods = ["e2e-web", "e2e-desktop", "exploratory", "visual", "responsive", "accessibility", "human-design"] as const;
+export const workKinds = ["static-ui", "client-logic", "terminal-logic", "process", "server-logic", "api", "database", "auth", "payments", "permissions", "filesystem", "electron-main", "electron-preload", "electron-ipc", "cross-layer", "internal"] as const;
+export const userEffects = ["web-flow", "desktop-flow", "terminal-flow", "visual", "responsive", "accessibility", "human-design", "no-user-facing-change"] as const;
+export const qaMethods = ["e2e-web", "e2e-desktop", "e2e-terminal", "exploratory", "visual", "responsive", "accessibility", "human-design"] as const;
 export type Verdict = "APPROVED" | "CHANGES_REQUIRED" | "BLOCKED";
 export type Stage = "implementation" | "review-standard" | "review-critical" | "security" | "qa";
 export interface AcceptanceCheck { id: string; sourceCriterion: string; text: string; qaApplicable: boolean; applicabilityReason?: string }
@@ -102,6 +102,12 @@ export function classifyTask(root: string, input: unknown, historicalCommit?: st
     if (topics.includes(topic) && !kinds.includes(kind)) fail("ROUTING_METADATA_CONFLICT", `${topic} requires ${kind}`);
   if (kinds.some(k => k.startsWith("electron-")) && !config.capabilities.includes("electron")) fail("ROUTING_METADATA_CONFLICT", "Electron work requires Electron workspace");
   if (kinds.includes("client-logic") && !config.capabilities.some(c => ["web-ui", "renderer-ui"].includes(c))) fail("ROUTING_METADATA_CONFLICT", "Client work requires UI capability");
+  if (kinds.includes("terminal-logic") && !config.capabilities.includes("terminal-ui")) fail("ROUTING_METADATA_CONFLICT", "Terminal interaction requires terminal-ui capability");
+  if (kinds.includes("process") && !config.capabilities.some(c => ["node-process", "node-server", "node-main"].includes(c))) fail("ROUTING_METADATA_CONFLICT", "Process work requires Node execution capability");
+  const presentation = kinds.includes("static-ui") || effects.some(e => ["visual", "responsive", "accessibility", "human-design"].includes(e));
+  if (config.workspace.kind === "terminal" && topics.includes("terminal-presentation") !== presentation) fail("ROUTING_METADATA_CONFLICT", "Terminal presentation topic and effects differ");
+  if (effects.includes("terminal-flow") && !config.capabilities.includes("terminal-qa")) fail("QA_METHOD_INCOMPATIBLE", "Terminal flow requires terminal host");
+  if (kinds.includes("terminal-logic") && noUI) fail("ROUTING_METADATA_CONFLICT", "Terminal interaction cannot skip user-facing QA");
   const categories = strings(v.validationCategories, validationCategories) as ValidationCategory[];
   const pkg = record(inputJson(historicalCommit ? git(root, ["show", `${historicalCommit}:package.json`]) : readFileSync(safePath(root, "package.json"), "utf8")), "package.json");
   const scripts = record(pkg.scripts, "scripts");
@@ -120,17 +126,19 @@ export function classifyTask(root: string, input: unknown, historicalCommit?: st
     if (c.qaApplicable) { if (c.applicabilityReason !== undefined || noUI) fail("TASK_CLASSIFICATION_INVALID", "QA applicability contradiction"); }
     else text(c.applicabilityReason);
   }
-  const senior = kinds.some(k => !["static-ui", "client-logic"].includes(k));
-  const devTier = senior ? "senior" : kinds.includes("client-logic") ? "mid" : "junior";
+  const senior = kinds.some(k => !["static-ui", "client-logic", "terminal-logic"].includes(k));
+  const devTier = senior ? "senior" : kinds.some(k => ["client-logic", "terminal-logic"].includes(k)) ? "mid" : "junior";
   const selected = new Set<string>();
   if (effects.includes("web-flow")) { selected.add("e2e-web"); selected.add("exploratory"); }
   if (effects.includes("desktop-flow")) { selected.add("e2e-desktop"); selected.add("exploratory"); }
+  if (effects.includes("terminal-flow")) { selected.add("e2e-terminal"); selected.add("exploratory"); }
   if (kinds.includes("static-ui") || effects.some(e => ["visual", "responsive"].includes(e))) { selected.add("visual"); selected.add("responsive"); }
   for (const m of ["accessibility", "human-design"]) if (effects.includes(m)) selected.add(m);
   if ((selected.has("e2e-web") && !config.capabilities.includes("web-qa")) || (selected.has("e2e-desktop") && !config.capabilities.includes("desktop-qa")) ||
-      (["visual", "responsive", "accessibility", "human-design"].some(m => selected.has(m)) && !config.capabilities.some(c => ["web-ui", "renderer-ui"].includes(c))))
+      (selected.has("e2e-terminal") && !config.capabilities.includes("terminal-qa")) ||
+      (["visual", "responsive", "accessibility", "human-design"].some(m => selected.has(m)) && !config.capabilities.some(c => ["web-ui", "renderer-ui", "terminal-ui"].includes(c))))
     fail("QA_METHOD_INCOMPATIBLE", "QA methods require unavailable workspace capabilities");
-  if (topics.includes("browser-flow") !== effects.includes("web-flow") || topics.includes("desktop-flow") !== effects.includes("desktop-flow"))
+  if (topics.includes("browser-flow") !== effects.includes("web-flow") || topics.includes("desktop-flow") !== effects.includes("desktop-flow") || topics.includes("terminal-flow") !== effects.includes("terminal-flow"))
     fail("ROUTING_METADATA_CONFLICT", "Flow guidance and effects differ");
   const methods = qaMethods.filter(m => selected.has(m));
   const route: Routing = { devTier, reviewTier: devTier === "junior" ? "standard" : "critical", securityRequired: devTier !== "junior",

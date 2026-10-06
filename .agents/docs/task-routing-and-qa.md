@@ -13,8 +13,8 @@ Acceptance checks contain id, sourceCriterion, text and qaApplicable, plus appli
 | Work | Route |
 |---|---|
 | Static markup/styling only | junior → standard |
-| Client logic | mid → critical → security |
-| Server/API/database/auth/payment/permission/filesystem/Electron privileged/IPC/cross-layer/internal work | senior → critical → security |
+| Client logic / localized terminal-logic (TUI only) | mid → critical → security |
+| Server/API/database/auth/payment/permission/filesystem/process/Electron privileged/IPC/cross-layer/internal work | senior → critical → security |
 
 Mixed work takes the highest tier. Review topology does not override the mapping; a legacy Standard Review Only policy halts pending human amendment. Traits must be complete and semantically correct: the checker proves consistency, not an LLM's interpretation of prose.
 
@@ -22,6 +22,7 @@ Mixed work takes the highest tier. Review topology does not override the mapping
 |---|---|
 | web-flow | e2e-web, exploratory |
 | desktop-flow | e2e-desktop, exploratory |
+| terminal-flow | e2e-terminal, exploratory |
 | visual/responsive or static UI | visual, responsive |
 | accessibility | accessibility |
 | human-design | human-design |
@@ -89,8 +90,12 @@ Use 1 MiB JSON records, 256 history entries, inherited 16,384 tracked-file / 128
 
 Clean-code review evaluates meaningful names, responsibility/contract boundaries, limited unnecessary coupling/duplication, behavioral tests, smallest coherent change and change locality. A local refactor needs a concrete task/correctness/maintainability reason; no unrelated cleanup/speculative abstraction or universal line/file/function/complexity metric is imposed.
 
-Fixtures test deterministic behavior and reviewed instruction examples. Synthetic reports do not claim actual web/Electron QA. Native fixtures run on Linux/Node 24; Windows-shaped paths do not prove Windows execution. Actual UI acceptance belongs to the later integrated acceptance slice.
+Fixtures test deterministic behavior and reviewed instruction examples. Synthetic reports do not claim actual web/Electron/terminal QA. Native fixtures run on Linux/Node 24; Windows-shaped paths do not prove Windows execution. Actual UI acceptance belongs to the later integrated acceptance slice.
 
 ## Command packaging integration
 
 Consult [command migration](command-migration.md) and the pinned command catalog. Fresh installation requires the full catalog resource closure; upgrade/detachment uses exact confirmed ownership/digests, preserves host routing overrides/custom skills and historical receipts, and stops visibly on partial application. No broad directory removal or automatic rollback. Handoff writes precede final candidate sealing. Map actual applicable criterion IDs to behavior and meaningful evidence, and map every changed behavior back to approved scope; independent review judges relevance.
+
+## Terminal profile amendment
+
+Read `.agents/docs/terminal-host-support.md` for the explicit cli/tui profile, process work kind, terminal-flow and terminal-presentation topic/effect consistency, presentation semantics and native evidence bounds. QAReport environment has the additional closed `terminal` object required only for terminal hosts and rejected even as null otherwise. Dimensions are recorded exclusively in terminal.sizes; viewports stays empty with the canonical reason. Actual validated configuration owns report mode and applicability, including material documentation claims. Existing independent role, attempt custody, exact-HEAD and publication invariants apply unchanged.

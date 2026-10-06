@@ -12,7 +12,7 @@ import { validateDerivedDocs } from './validate-derived-docs.ts';
 
 export const limits = { json: 4 * 1024 * 1024, artifacts: 512, file: 32 * 1024 * 1024, aggregate: 128 * 1024 * 1024 };
 export const evidenceKinds = ['mechanism', 'configuration-fixture', 'command-execution', 'semantic-review', 'live-integration'] as const;
-const groups = ['configuration', 'capability-isolation', 'validation', 'documentation-package', 'routing', 'qa', 'git', 'boundary-honesty', 'project-definition', 'attachment', 'documentation-lifecycle', 'role-boundaries', 'terminology', 'detachment'];
+const groups = ['configuration', 'capability-isolation', 'validation', 'documentation-package', 'routing', 'qa', 'git', 'boundary-honesty', 'project-definition', 'attachment', 'documentation-lifecycle', 'role-boundaries', 'terminology', 'detachment', 'terminal-profile', 'terminal-routing-evidence', 'terminal-native-runtime', 'terminal-installation'];
 const liveIds = [1, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 27, 28];
 type Kind = typeof evidenceKinds[number];
 export interface Criterion { id: number; requirement: string; tests: { path: string; name: string }[]; requiredKinds: Kind[]; hostIntegrationRequired: boolean }
@@ -96,7 +96,7 @@ function git(root: string, args: string[]): string { return readGit(root, args)!
 function blob(root: string, commit: string, p: string): string { path(p); return readGit(root, ['show', `${oid(commit)}:${p}`])!.toString('utf8'); }
 export function checkedIndex(input: unknown, source: (path: string) => string): AcceptanceIndex {
   const v = object(input, ['schemaVersion', 'authority', 'groups', 'criteria']); if (v.schemaVersion !== 1) invalid('Unsupported index version'); text(v.authority);
-  const gs = array(v.groups, 14); equal(gs.map(g => object(g, ['id', 'path']).id).sort(), [...groups].sort());
+  const gs = array(v.groups, groups.length); equal(gs.map(g => object(g, ['id', 'path']).id).sort(), [...groups].sort());
   for (const g of gs) { path(g.path); if (!g.path.startsWith('.agents/tests/') || !g.path.endsWith('.test.ts') || !source(g.path).includes('test(')) invalid('Unresolved test group'); }
   const criteria = array(v.criteria, 30); if (criteria.length !== 30) fail('ACCEPTANCE_CRITERION_MISSING', 'Exactly 30 criteria required');
   criteria.forEach((raw, n) => {

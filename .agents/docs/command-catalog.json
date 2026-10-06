@@ -122,7 +122,8 @@
         ".agents/scripts/select-task-guidance.ts",
         ".agents/scripts/validate-command-catalog.ts",
         ".agents/scripts/validate-doc-package.ts",
-        ".agents/scripts/validate-task-authority.ts"
+        ".agents/scripts/validate-task-authority.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -161,7 +162,8 @@
         ".agents/scripts/select-task-guidance.ts",
         ".agents/scripts/validate-command-catalog.ts",
         ".agents/scripts/validate-doc-package.ts",
-        ".agents/scripts/validate-task-authority.ts"
+        ".agents/scripts/validate-task-authority.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -197,7 +199,8 @@
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/classify-task.ts",
         ".agents/scripts/git-preflight.ts",
-        ".agents/scripts/validate-command-catalog.ts"
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -233,7 +236,8 @@
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/classify-task.ts",
         ".agents/scripts/git-preflight.ts",
-        ".agents/scripts/validate-command-catalog.ts"
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -269,7 +273,8 @@
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/classify-task.ts",
         ".agents/scripts/git-preflight.ts",
-        ".agents/scripts/validate-command-catalog.ts"
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -452,7 +457,8 @@
         ".agents/scripts/inspect-role-session.ts",
         ".agents/scripts/run-validation.ts",
         ".agents/scripts/validate-command-catalog.ts",
-        ".agents/scripts/validate-qa-evidence.ts"
+        ".agents/scripts/validate-qa-evidence.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -525,7 +531,8 @@
         ".agents/scripts/update-hud.ts",
         ".agents/scripts/validate-command-catalog.ts",
         ".agents/scripts/validate-doc-package.ts",
-        ".agents/scripts/validate-task-authority.ts"
+        ".agents/scripts/validate-task-authority.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -563,7 +570,8 @@
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/classify-task.ts",
         ".agents/scripts/git-preflight.ts",
-        ".agents/scripts/validate-command-catalog.ts"
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -634,7 +642,8 @@
         ".agents/docs/task-routing-and-qa.md",
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/classify-task.ts",
-        ".agents/scripts/validate-command-catalog.ts"
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -666,7 +675,8 @@
         ".agents/docs/command-migration.md",
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/validate-command-catalog.ts",
-        ".agents/scripts/validate-derived-docs.ts"
+        ".agents/scripts/validate-derived-docs.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -700,7 +710,8 @@
         ".agents/docs/task-routing-and-qa.md",
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/classify-task.ts",
-        ".agents/scripts/validate-command-catalog.ts"
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -769,7 +780,8 @@
         ".agents/docs/task-routing-and-qa.md",
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/classify-task.ts",
-        ".agents/scripts/validate-command-catalog.ts"
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -875,7 +887,8 @@
         ".agents/scripts/git-preflight.ts",
         ".agents/scripts/inspect-derived-doc-session.ts",
         ".agents/scripts/validate-command-catalog.ts",
-        ".agents/scripts/validate-derived-docs.ts"
+        ".agents/scripts/validate-derived-docs.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -913,7 +926,8 @@
         ".agents/scripts/git-preflight.ts",
         ".agents/scripts/validate-command-catalog.ts",
         ".agents/scripts/validate-doc-package.ts",
-        ".agents/scripts/validate-task-authority.ts"
+        ".agents/scripts/validate-task-authority.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -947,7 +961,8 @@
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/git-preflight.ts",
         ".agents/scripts/validate-command-catalog.ts",
-        ".agents/scripts/validate-derived-docs.ts"
+        ".agents/scripts/validate-derived-docs.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -980,7 +995,8 @@
         ".agents/docs/workspace-attachment.md",
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/assess-attachment-baseline.ts",
-        ".agents/scripts/validate-command-catalog.ts"
+        ".agents/scripts/validate-command-catalog.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -1015,7 +1031,8 @@
         ".agents/schemas/command-catalog.schema.json",
         ".agents/scripts/git-preflight.ts",
         ".agents/scripts/validate-command-catalog.ts",
-        ".agents/scripts/validate-workspace-attachment.ts"
+        ".agents/scripts/validate-workspace-attachment.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -1051,7 +1068,8 @@
         ".agents/scripts/validate-command-catalog.ts",
         ".agents/templates/workspace-attachment/README.md",
         ".agents/templates/workspace-attachment/approval.example.json",
-        ".agents/templates/workspace-attachment/authorization.example.json"
+        ".agents/templates/workspace-attachment/authorization.example.json",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -1087,7 +1105,8 @@
         ".agents/scripts/git-preflight.ts",
         ".agents/scripts/install-git-hook.ts",
         ".agents/scripts/validate-command-catalog.ts",
-        ".agents/scripts/validate-doc-package.ts"
+        ".agents/scripts/validate-doc-package.ts",
+        ".agents/docs/terminal-host-support.md"
       ],
       "actors": {
         "proposal": "loaded role in its declared scope",
@@ -1168,6 +1187,10 @@
     {
       "name": "vitest-tdd",
       "entryPath": ".agents/skills/vitest-tdd/SKILL.md"
+    },
+    {
+      "name": "terminal-qa-flows",
+      "entryPath": ".agents/skills/terminal-qa-flows/SKILL.md"
     }
   ]
 }

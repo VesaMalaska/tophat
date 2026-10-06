@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "authority": "TopHat-1.0-Definition Review 4, Section 8; consumer-independent acceptance clarification",
+  "authority": "TopHat-1.0-Definition Review 4, Section 8; consumer-independent acceptance clarification; human-approved Terminal Support Implementation Brief revision 2 (2026-10-06), additive mapping",
   "groups": [
     {
       "id": "configuration",
@@ -57,6 +57,22 @@
     {
       "id": "detachment",
       "path": ".agents/tests/workspace-detachment.test.ts"
+    },
+    {
+      "id": "terminal-profile",
+      "path": ".agents/tests/terminal-host.test.ts"
+    },
+    {
+      "id": "terminal-routing-evidence",
+      "path": ".agents/tests/terminal-routing-evidence.test.ts"
+    },
+    {
+      "id": "terminal-native-runtime",
+      "path": ".agents/tests/terminal-runtime.test.ts"
+    },
+    {
+      "id": "terminal-installation",
+      "path": ".agents/tests/terminal-installation.test.ts"
     }
   ],
   "criteria": [
@@ -134,6 +150,10 @@
         {
           "path": ".agents/tests/framework-isolation.test.ts",
           "name": "all eight workspace profiles select matching framework and smoke boundaries"
+        },
+        {
+          "path": ".agents/tests/terminal-host.test.ts",
+          "name": "terminal guidance rejects server/browser/Electron/style assumptions and CLI presentation"
         }
       ],
       "requiredKinds": [
@@ -177,6 +197,10 @@
         {
           "path": ".agents/tests/validation.test.ts",
           "name": "missing pnpm, failed coverage, and tracked mutation deny truthfully"
+        },
+        {
+          "path": ".agents/tests/terminal-runtime.test.ts",
+          "name": "CLI invocation preserves Unicode/output, exits and non-TTY failure without a server"
         }
       ],
       "requiredKinds": [
@@ -216,6 +240,10 @@
         {
           "path": ".agents/tests/routing.test.ts",
           "name": "fixed junior/mid/senior routes and mixed highest tier"
+        },
+        {
+          "path": ".agents/tests/terminal-routing-evidence.test.ts",
+          "name": "TUI layout, interaction and privileged process work follow highest applicable tier"
         }
       ],
       "requiredKinds": [
@@ -231,6 +259,10 @@
         {
           "path": ".agents/tests/routing.test.ts",
           "name": "fixed junior/mid/senior routes and mixed highest tier"
+        },
+        {
+          "path": ".agents/tests/terminal-routing-evidence.test.ts",
+          "name": "TUI layout, interaction and privileged process work follow highest applicable tier"
         }
       ],
       "requiredKinds": [
@@ -250,6 +282,14 @@
         {
           "path": ".agents/tests/routing.test.ts",
           "name": "backend internal work skips UI QA with an explicit reason"
+        },
+        {
+          "path": ".agents/tests/terminal-routing-evidence.test.ts",
+          "name": "TUI layout, interaction and privileged process work follow highest applicable tier"
+        },
+        {
+          "path": ".agents/tests/terminal-routing-evidence.test.ts",
+          "name": "CLI keeps noninteractive flow; rejects interactive logic and presentation classification"
         }
       ],
       "requiredKinds": [
@@ -273,6 +313,14 @@
         {
           "path": ".agents/tests/load-tophat-config.test.ts",
           "name": "invalid paths and private targets deny"
+        },
+        {
+          "path": ".agents/tests/terminal-host.test.ts",
+          "name": "terminal invalid mode/framework and mode on older hosts deny; old workspace shape unchanged"
+        },
+        {
+          "path": ".agents/tests/terminal-host.test.ts",
+          "name": "terminal guidance rejects server/browser/Electron/style assumptions and CLI presentation"
         }
       ],
       "requiredKinds": [
@@ -288,6 +336,10 @@
         {
           "path": ".agents/tests/task-authority.test.ts",
           "name": "task mechanically traces all four source kinds and exact extracts"
+        },
+        {
+          "path": ".agents/tests/terminal-installation.test.ts",
+          "name": "terminal CLI and TUI attachment preserves custom routing and exact detachment preserves product history"
         }
       ],
       "requiredKinds": [
@@ -393,6 +445,10 @@
         {
           "path": ".agents/tests/qa-evidence.test.ts",
           "name": "later failed attempt prevents old approval and forged index fallback"
+        },
+        {
+          "path": ".agents/tests/terminal-routing-evidence.test.ts",
+          "name": "terminal identity, dimensions and closed conditional objects reject malformed and cross-host data"
         }
       ],
       "requiredKinds": [
@@ -416,6 +472,10 @@
         {
           "path": ".agents/tests/qa-evidence.test.ts",
           "name": "missing, duplicate, foreign and method-unmapped criterion evidence denies"
+        },
+        {
+          "path": ".agents/tests/terminal-routing-evidence.test.ts",
+          "name": "terminal identity, dimensions and closed conditional objects reject malformed and cross-host data"
         }
       ],
       "requiredKinds": [
@@ -458,6 +518,18 @@
         {
           "path": ".agents/tests/protected-write.test.ts",
           "name": "protected writes fail closed on malformed payloads"
+        },
+        {
+          "path": ".agents/tests/terminal-host.test.ts",
+          "name": "terminal invalid mode/framework and mode on older hosts deny; old workspace shape unchanged"
+        },
+        {
+          "path": ".agents/tests/terminal-routing-evidence.test.ts",
+          "name": "terminal identity, dimensions and closed conditional objects reject malformed and cross-host data"
+        },
+        {
+          "path": ".agents/tests/terminal-runtime.test.ts",
+          "name": "CLI invocation preserves Unicode/output, exits and non-TTY failure without a server"
         }
       ],
       "requiredKinds": [
@@ -572,6 +644,10 @@
         {
           "path": ".agents/tests/attachment-baseline.test.ts",
           "name": "pre-existing failing validation halts; records stderr and no automated policy weakening"
+        },
+        {
+          "path": ".agents/tests/terminal-installation.test.ts",
+          "name": "terminal CLI and TUI attachment preserves custom routing and exact detachment preserves product history"
         }
       ],
       "requiredKinds": [
@@ -721,6 +797,10 @@
         {
           "path": ".agents/tests/validation.test.ts",
           "name": "different host-owned coverage thresholds drive only the declared pnpm script result"
+        },
+        {
+          "path": ".agents/tests/terminal-installation.test.ts",
+          "name": "terminal CLI and TUI attachment preserves custom routing and exact detachment preserves product history"
         }
       ],
       "requiredKinds": [

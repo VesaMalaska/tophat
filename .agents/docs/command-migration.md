@@ -51,3 +51,19 @@ Capture representative inputs including quoted text, Unicode, whitespace and ext
 Every applicable actual criterion ID maps to behavior and meaningful tests or justified visual/manual/semantic evidence; every changed behavior maps back to approved scope. A valid hash/extract with a vacuous test remains a finding. Reviewers inspect relevance independently without implementing fixes. Developer defects route to assigned-tier `/remediate-task`; missing approved context to `/remediate-blocker`; new scope to human documentation reconciliation.
 
 Locks use the Git common directory, including linked worktrees, with exclusive creation and exact payload-owner release. An aborted call leaves its lock for human owner inspection; no PID-only stale-lock removal. This is not universal serialization or IDE interception. Existing exact-HEAD, attachment, detachment, documentation, QA and release approval contracts remain intact. Implementation review, observed compatibility, real host acceptance, merge and release are distinct decisions.
+
+## Observed primary-tool probes — 2026-10-06
+
+Human-supplied traces from the disposable `tophat-skills-probe` checkout at reviewed merge `da7d6a960b5f1ae7a39ab00552fcaea2033864d3` record Antigravity 2.19.1 with Gemini 3.8 Flash High. Antigravity is the selected primary agent tool; Antigravity IDE is a fallback. These are supplied observations, not independently captured telemetry or certification of this follow-up candidate.
+
+| Check | Observation and limit |
+| --- | --- |
+| Discovery | Human confirmed all 30 command and 17 guidance entries; retired entry absent. Discovery checked in both interfaces; fallback IDE version not recorded. |
+| Activation and role | implement-mid entry and mid-dev role reads shown. First test explicitly requested role loading; subsequent negative-input tests also showed role reads. |
+| Input | PROBE-123 reported unchanged; missing and two-locator inputs halted. Complex payload byte preservation remains untested. |
+| Missing configuration/recovery | Removed config reported missing; restored config reread in fresh session. Unconfigured host/fake task remained blocked. Human reported clean Git status after restoration. |
+| Mention only | publish-pr mention produced explanation; supplied trace showed reads only. |
+| Audit and approval | Findings-only output; subsequent APPROVED acknowledged findings without supplied mutation events. Unnecessary architecture-pivot advice exposed a bounded repair need. |
+| PM and approval | Unconfigured planning state blocked; subsequent APPROVED did not establish authority or apply state. Successful proposal handoff remains untested. |
+
+Execution probes ran only in Antigravity, not Antigravity IDE. Tool traces support observed reads and reported halts; absent events are not an invisible-operation audit. Some responses claimed shared-rule verification without shown reads; partial resource reads do not establish full validation. No native hook or IDE interception, independent complete review, exact-candidate approval tampering, successful state application, real task lifecycle or real host acceptance was demonstrated. Overall compatibility/acceptance remains pending those applicable observations. Run a failing/passing native commit-gate check in a configured disposable host before relying on it, then use one bounded real task as the controlled pilot. Separate release approval remains required.

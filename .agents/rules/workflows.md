@@ -9,41 +9,57 @@ trigger: always_on
 Whenever you suggest a subsequent slash command or assign a downstream task to another agent, you MUST explicitly state the Recommended LLM Model required to execute that command, reading the selected active command's model key from host `.agents/tophat.config.json` routingMatrix. Missing mapping blocks advice/execution; never guess a fallback. Model values do not grant role permissions.
 _Format Output:_ `[Next Action: /command-name]`
 
-## TopHat Workflow Commands for Orchestrating the Engine Flow
+## Active command overview
 
-### Foundational Workflow Stage Commands
+The static command catalog owns identity and contracts; this overview introduces all 30 active commands. Host `routingMatrix` owns model advice. Select models manually; invoking a command does not bypass its prerequisites or later human approvals.
 
-- `/project-define`: Optional bounded draft preparation from incomplete input.
-- `/project-definition-review`: Separate read-only review; no automatic approval.
-- `/project-definition-finalize`: Exact-candidate human approval and manifest-only finalization.
+### Project definition
 
-- `/workspace-init`: Bootstraps environment, verifies Tech Stack constraints, generates initial `Roadmap.md`.
-- `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
-- `/generate-readme`: Retired autonomous rewrite; redirect requires an explicit derived-document boundary.
+- `/project-define`: Prepare a bounded draft product documentation package from incomplete human input.
+- `/project-definition-review`: Independent read-only semantic review of the exact draft documentation candidate.
+- `/project-definition-finalize`: Finalize only a reviewed documentation candidate explicitly approved by the human.
 
-### Standard Automation Workflows
+### Workspace setup
 
-- `/sprint-briefing`: Invokes `@agent-pm` to output the sprint briefing.
-- `/generate-sprint-tasks`: Invokes `@agent-architect` to JIT-compile the active sprint chunk.
-- `/roadmap-sync`: Synchronizes master timeline based on completed chunks.
-- `/context-sync` & `/strategy-sync`: Summarizes decisions and compresses state memory.
+- `/workspace-init`: Validate an existing supported host and approved package before proposing private roadmap and task state.
+- `/workspace-attach`: Read-only discovery and explicit proposed contract for an existing supported host.
+- `/workspace-attach-assess`: Run only the explicitly authorized proposed host baseline and preserve failures honestly.
+- `/workspace-attach-finalize`: Explicit human approval and exact orchestrator application of an assessed attachment plan.
 
-### Implementation & Remediation Commands
+### Planning and state
 
-- `/implement-senior [ID]`: Invokes `@agent-senior-dev` to execute backend, database, or security tasks.
-- `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute compatible frontend logic and client state transformations.
-- `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute static layouts and project-declared styling passes.
-- `/remediate-blocker [ID]`: Architect proposes authority-bound extraction of missing schema context for a blocked task.
-- `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
-- `/triage-bug [Error Description / Log]`: Invokes `@agent-architect` for a multi-turn analytical diagnostic interview to isolate root causes before generating a Linear bug ticket.
+- `/sprint-briefing`: Advisory read-only sprint briefing; no PM execution or state mutation.
+- `/generate-sprint-tasks`: Lead Architect task compilation targeting the Active Sprint Chunk, with strict context isolation and Just-In-Time (JIT) schema injection.
+- `/generate-smoke-test`: Generates the environment-specific CI/CD smoke test ticket in Linear.
+- `/roadmap-sync`: Propose private chunk advancement from completed work and current approved authority.
+- `/context-sync`: Enforces operational handoff state updates for agent memory and generates a visual HUD for the Human Orchestrator.
+- `/strategy-sync`: Read-only PM proposals for Strategy and Context, applied by a separately authorized orchestrator.
+- `/architecture-pivot`: Propose private planning reconciliation only after revised product authority is approved and valid.
 
-### Validation & Pipeline Commands
+### Implementation and recovery
 
-- `/review-standard [ID]`: Validates stateless UI and frontend code against project specifications.
-- `/review-critical [ID]`: Adversarially audits load-bearing backend code for race conditions.
-- `/security-review [ID]`: Enforces OWASP Top 10 mitigation and approved access-control constraints.
-- `/qa-validate [ID]`: Executes the derived compatible QA profile and records exact-commit evidence.
-- `/publish-pr [ID]`: Checks exact-candidate evidence and creates the PR; merge requires separate explicit human approval.
+- `/implement-junior`: UI/Tailwind implementation pipeline with automated Git and Linear handoff.
+- `/implement-mid`: Frontend component logic and client-side reactive state implementation pipeline.
+- `/implement-senior`: Secure data and server-authoritative logic implementation pipeline.
+- `/remediate-task`: Separate assigned-tier developer remediation followed by a fresh derived review route.
+- `/remediate-blocker`: Surgical JIT context healing for tasks halted by execution agents due to missing schemas or documentation gaps.
+- `/triage-bug`: Conversational, multi-turn bug diagnostic pipeline. The Lead Architect conducts an analytical root-cause interview with the Human Orchestrator before compiling a Linear bug ticket.
+- `/resolve-conflict`: Reconcile only an already identified, human-authorized merge conflict for an exact task candidate.
+
+### Review and publication
+
+- `/review-standard`: Independent read-only review-standard inspection of the exact classified candidate.
+- `/review-critical`: Independent read-only review-critical inspection of the exact classified candidate.
+- `/security-review`: Independent read-only security inspection of the exact classified candidate.
+- `/qa-validate`: Independent proportionate QA with reproducible exact-commit evidence and role postconditions.
+- `/refactor-audit`: Read-only architectural debt findings; no task creation or execution authority.
+- `/publish-pr`: Publish the exact evidenced feature head for human review after a read-only readiness check.
+
+### Derived documentation
+
+- `/sync-derived-docs`: Evaluate and synchronize one Development Phase's derived documents, or one explicitly classified immediate task exception.
+- `/review-derived-docs`: Independent read-only document review bound to the finalized documentation candidate.
+- `/verify-project-docs`: Verify current product documentation and handoff after all Development Phases have accepted documentation evidence.
 
 ## 🛑 Manual Implementation Sequences
 

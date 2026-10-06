@@ -33,46 +33,62 @@ The swarm uses specific roles with instructed scope boundaries and selected hook
 
 - **@agent-review-standard:** Validates stateless UI and frontend code against project specifications.
 - **@agent-review-critical:** Adversarially audits load-bearing backend code for race conditions and data leaks.
-- **@agent-security-auditor:** Enforces OWASP Top 10 mitigation and strict Row Level Security (RLS) constraints.
+- **@agent-security-auditor:** Reviews OWASP Top 10 mitigation and approved host access-control constraints.
 - **@agent-qa:** Follows the current QA workflow for applicable user-facing tasks. Methods derive from the validated task effects/capabilities; approval requires current exact-commit evidence.
 
 ---
 
-## 3. Workflow Commands & Model Matrix
+## 3. Active Commands & Model Selection
 
-Do NOT attempt to run implementation as an automated, continuous script. The Human Orchestrator manually orchestrates these commands and swaps the LLM model at each workflow transition.
+The static command catalog owns identity and contracts; this overview introduces all 30 active commands. Host `routingMatrix` owns model advice. Select models manually; invoking a command does not bypass its prerequisites or later human approvals.
 
-### Foundational Workflow Stage Commands
+### Project definition
 
-- `/project-define`, `/project-definition-review`, `/project-definition-finalize`: Optional draft → independent review → exact-candidate human approval. Models come from routingMatrix; review independence is human-supervised.
+- [`/project-define`](.agents/skills/project-define/SKILL.md): Prepare a bounded draft product documentation package from incomplete human input.
+- [`/project-definition-review`](.agents/skills/project-definition-review/SKILL.md): Independent read-only semantic review of the exact draft documentation candidate.
+- [`/project-definition-finalize`](.agents/skills/project-definition-finalize/SKILL.md): Finalize only a reviewed documentation candidate explicitly approved by the human.
 
-- `/workspace-init`: Validates the host and approved authority, then proposes private planning state.
-- `/architecture-pivot`: Halts swarm, recalculates master timeline, triages obsolete Linear tasks.
-- `/generate-readme`: Retired autonomous rewrite; use the explicit derived-document lifecycle.
+### Workspace setup
 
-### Standard Automation Workflows
+- [`/workspace-init`](.agents/skills/workspace-init/SKILL.md): Validate an existing supported host and approved package before proposing private roadmap and task state.
+- [`/workspace-attach`](.agents/skills/workspace-attach/SKILL.md): Read-only discovery and explicit proposed contract for an existing supported host.
+- [`/workspace-attach-assess`](.agents/skills/workspace-attach-assess/SKILL.md): Run only the explicitly authorized proposed host baseline and preserve failures honestly.
+- [`/workspace-attach-finalize`](.agents/skills/workspace-attach-finalize/SKILL.md): Explicit human approval and exact orchestrator application of an assessed attachment plan.
 
-- `/sprint-briefing`: Invokes `@agent-pm` to output the sprint briefing.
-- `/generate-sprint-tasks`: Invokes `@agent-architect` to JIT-compile the active sprint chunk.
-- `/roadmap-sync`: Synchronizes master timeline based on completed chunks.
-- `/context-sync` & `/strategy-sync`: Summarizes decisions and compresses state memory.
-- `/triage-bug [Log/Description]`: Invokes `@agent-architect` for a multi-turn diagnostic interview to forensically isolate root causes before generating a Linear bug ticket.
+### Planning and state
 
-### Implementation & Remediation Commands
+- [`/sprint-briefing`](.agents/skills/sprint-briefing/SKILL.md): Advisory read-only sprint briefing; no PM execution or state mutation.
+- [`/generate-sprint-tasks`](.agents/skills/generate-sprint-tasks/SKILL.md): Lead Architect task compilation targeting the Active Sprint Chunk, with strict context isolation and Just-In-Time (JIT) schema injection.
+- [`/generate-smoke-test`](.agents/skills/generate-smoke-test/SKILL.md): Generates the environment-specific CI/CD smoke test ticket in Linear.
+- [`/roadmap-sync`](.agents/skills/roadmap-sync/SKILL.md): Propose private chunk advancement from completed work and current approved authority.
+- [`/context-sync`](.agents/skills/context-sync/SKILL.md): Enforces operational handoff state updates for agent memory and generates a visual HUD for the Human Orchestrator.
+- [`/strategy-sync`](.agents/skills/strategy-sync/SKILL.md): Read-only PM proposals for Strategy and Context, applied by a separately authorized orchestrator.
+- [`/architecture-pivot`](.agents/skills/architecture-pivot/SKILL.md): Propose private planning reconciliation only after revised product authority is approved and valid.
 
-- `/implement-senior [ID]`: Invokes `@agent-senior-dev` to execute backend, database, or security tasks.
-- `/implement-mid [ID]`: Invokes `@agent-mid-dev` to execute reactive frontend logic and client state transformations.
-- `/implement-junior [ID]`: Invokes `@agent-junior-dev` to execute structural layouts and declared styling passes.
-- `/remediate-blocker [ID]`: Architect proposes extraction of missing schema context for a blocked task.
-- `/remediate-task [ID]`: Surgical Dev Tier fixes based on rejection comments.
+### Implementation and recovery
 
-### Validation & Pipeline Commands
+- [`/implement-junior`](.agents/skills/implement-junior/SKILL.md): UI/Tailwind implementation pipeline with automated Git and Linear handoff.
+- [`/implement-mid`](.agents/skills/implement-mid/SKILL.md): Frontend component logic and client-side reactive state implementation pipeline.
+- [`/implement-senior`](.agents/skills/implement-senior/SKILL.md): Secure data and server-authoritative logic implementation pipeline.
+- [`/remediate-task`](.agents/skills/remediate-task/SKILL.md): Separate assigned-tier developer remediation followed by a fresh derived review route.
+- [`/remediate-blocker`](.agents/skills/remediate-blocker/SKILL.md): Surgical JIT context healing for tasks halted by execution agents due to missing schemas or documentation gaps.
+- [`/triage-bug`](.agents/skills/triage-bug/SKILL.md): Conversational, multi-turn bug diagnostic pipeline. The Lead Architect conducts an analytical root-cause interview with the Human Orchestrator before compiling a Linear bug ticket.
+- [`/resolve-conflict`](.agents/skills/resolve-conflict/SKILL.md): Reconcile only an already identified, human-authorized merge conflict for an exact task candidate.
 
-- `/review-standard [ID]`: Validates stateless UI and frontend code against project specifications.
-- `/review-critical [ID]`: Adversarially audits load-bearing backend code for race conditions.
-- `/security-review [ID]`: Enforces OWASP Top 10 mitigation and approved access-control constraints.
-- `/qa-validate [ID]`: Applies the derived QA methods with exact-commit evidence.
-- `/publish-pr [ID]`: Checks candidate evidence and creates a PR for separate human merge approval.
+### Review and publication
+
+- [`/review-standard`](.agents/skills/review-standard/SKILL.md): Independent read-only review-standard inspection of the exact classified candidate.
+- [`/review-critical`](.agents/skills/review-critical/SKILL.md): Independent read-only review-critical inspection of the exact classified candidate.
+- [`/security-review`](.agents/skills/security-review/SKILL.md): Independent read-only security inspection of the exact classified candidate.
+- [`/qa-validate`](.agents/skills/qa-validate/SKILL.md): Independent proportionate QA with reproducible exact-commit evidence and role postconditions.
+- [`/refactor-audit`](.agents/skills/refactor-audit/SKILL.md): Read-only architectural debt findings; no task creation or execution authority.
+- [`/publish-pr`](.agents/skills/publish-pr/SKILL.md): Publish the exact evidenced feature head for human review after a read-only readiness check.
+
+### Derived documentation
+
+- [`/sync-derived-docs`](.agents/skills/sync-derived-docs/SKILL.md): Evaluate and synchronize one Development Phase's derived documents, or one explicitly classified immediate task exception.
+- [`/review-derived-docs`](.agents/skills/review-derived-docs/SKILL.md): Independent read-only document review bound to the finalized documentation candidate.
+- [`/verify-project-docs`](.agents/skills/verify-project-docs/SKILL.md): Verify current product documentation and handoff after all Development Phases have accepted documentation evidence.
 
 ---
 
@@ -95,7 +111,7 @@ The human orchestrator drives the swarm through distinct Workflow Stages. Do not
 These commands are run once at the beginning of a project, or immediately following a full `/architecture-pivot`.
 
 1. `/workspace-init`: Validates the host and selected approved package, then proposes private Roadmap/Context/Strategy initialization for human authorization.
-2. If product input is incomplete, use `/project-define`, independent `/project-definition-review`, and exact-candidate human-gated `/project-definition-finalize` before initialization. The retired `/generate-readme` command has no discoverable skill.
+2. If product input is incomplete, use `/project-define`, independent `/project-definition-review`, and exact-candidate human-gated `/project-definition-finalize` before initialization.
 
 Existing projects use `/workspace-attach`, explicitly authorized `/workspace-attach-assess`, and approval-gated `/workspace-attach-finalize`. Discovery writes nothing; assessment runs only declared host scripts and checks all exits for side effects. See [attachment](.agents/docs/workspace-attachment.md) and the [record contract](.agents/templates/workspace-attachment/README.md). Missing/legacy host config is reviewed in memory, never silently migrated.
 
@@ -330,6 +346,6 @@ See [.agents/docs/acceptance-evidence.md](.agents/docs/acceptance-evidence.md) f
 
 ### Command catalog and packaging
 
-The [static catalog](.agents/docs/command-catalog.json) defines 30 active commands, one retired redirect and 17 topical guidance skills. Host `.agents/tophat.config.json` routingMatrix owns model recommendations; choose models manually at role transitions. Use the [manual upgrade and compatibility probe](.agents/docs/command-migration.md) for owned-path conversion and recovery. No active legacy workflow files are shipped.
+The [static catalog](.agents/docs/command-catalog.json) defines 30 active commands, 17 topical guidance skills and historical retirement metadata. Host `.agents/tophat.config.json` routingMatrix owns model recommendations; choose models manually at role transitions. Use the [manual upgrade and compatibility probe](.agents/docs/command-migration.md) for owned-path conversion and recovery. No active legacy workflow files are shipped.
 
 Run `node .agents/scripts/validate-command-catalog.ts --root <pinned-source>` for vault validation; add `--host-root <host>` to inspect a configured installed copy. Shared dependencies, roles and helpers belong to the reviewed installation inventory. Source checks and Linux compiler/browser fixtures do not establish Antigravity activation, argument transport or interception: compatibility is pending live observations. Merge, real host acceptance and release remain separate approvals.

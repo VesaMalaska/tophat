@@ -1,3 +1,4 @@
+import {terminalViewportReason} from "../../../scripts/validate-terminal-environment.ts";
 import { mkdirSync, writeFileSync, readFileSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -11,10 +12,10 @@ export function git(root: string, args: string[]): string {
   const r = spawnSync("git", args, { cwd: root, encoding: "utf8" });
   if (r.error || r.status !== 0) throw Error(r.stderr); return r.stdout.trim();
 }
-export function host(kind = "web", framework = "react", script = 'node -e "console.log(\'unit passed\')"') {
+export function host(kind = "web", framework = "react", script = 'node -e "console.log(\'unit passed\')"', mode: 'cli'|'tui' = 'tui') {
   const f = docs(); approve(f.root); const root = f.root;
   const config = JSON.parse(readFileSync(join(root, ".agents/tophat.config.json"), "utf8"));
-  config.workspace = { kind, framework };
+  config.workspace = { kind, framework, ...(kind === "terminal" ? {mode} : {}) };
   writeFileSync(join(root, ".agents/tophat.config.json"), JSON.stringify(config));
   writeFileSync(join(root, "package.json"), JSON.stringify({ name: "slice6-fixture", private: true, scripts: { "test:unit": script } }));
   writeFileSync(join(root, ".gitignore"), "coverage/\n"); writeFileSync(join(root, "product.ts"), "export const value = 1;\n");
@@ -24,8 +25,8 @@ export function host(kind = "web", framework = "react", script = 'node -e "conso
   git(root, ["add", "."]); git(root, ["commit", "-m", "Synthetic Slice 6 candidate"]);
   const artifacts = mkdtempSync(join(tmpdir(), "tophat-qa-artifacts-"));
   const task: TaskClassification = { schemaVersion: 1, taskId: "task-1", authority: source,
-    guidance: { requestedSkills: [], taskTopics: kind === "web" ? ["browser-flow"] : kind === "desktop" ? ["desktop-flow"] : [], frameworkInstructions: [] },
-    workKinds: kind === "backend" ? ["internal"] : ["client-logic"], userEffects: kind === "web" ? ["web-flow"] : kind === "desktop" ? ["desktop-flow"] : ["no-user-facing-change"],
+    guidance: { requestedSkills: [], taskTopics: kind === "web" ? ["browser-flow"] : kind === "desktop" ? ["desktop-flow"] : kind === "terminal" ? ["terminal-flow"] : [], frameworkInstructions: [] },
+    workKinds: kind === "backend" || kind === "terminal" && mode === "cli" ? ["internal"] : kind === "terminal" ? ["terminal-logic"] : ["client-logic"], userEffects: kind === "web" ? ["web-flow"] : kind === "desktop" ? ["desktop-flow"] : kind === "terminal" ? ["terminal-flow"] : ["no-user-facing-change"],
     noUserFacingReason: kind === "backend" ? "Internal health utility; no interface change" : null, validationCategories: ["unit"],
     acceptanceChecks: [{ id: "check-1", sourceCriterion: "product#AC-001", text: "Synthetic behavior check", qaApplicable: kind !== "backend", ...(kind === "backend" ? { applicabilityReason: "Validated by host unit script" } : {}) }] };
   return { root, task, artifacts, close: () => { f.close(); rmSync(artifacts, { recursive: true, force: true }); } };
@@ -43,7 +44,7 @@ export function evidence(f: ReturnType<typeof host>, verdict: "APPROVED" | "CHAN
   writeFileSync(join(f.artifacts, "run.log"), JSON.stringify(validation) + "\n");
   const after = verifyRole(root, declaration, before, [{ category: "command", detail: "Declared pnpm unit gate", authorized: true }]);
   const report: QAReport = { schemaVersion: 1, identity: { taskId: task.taskId, attemptId: "attempt-1", sequence: 1, taskFingerprint: route.taskFingerprint, expectedBranch: "feature/qa", testedCommit: commit },
-    environment: { workspaceKind: route.capabilities.includes("electron") ? "desktop" : "web", framework: JSON.parse(readFileSync(join(root, ".agents/tophat.config.json"), "utf8")).workspace.framework,
+    environment: { workspaceKind: JSON.parse(readFileSync(join(root, ".agents/tophat.config.json"), "utf8")).workspace.kind, framework: JSON.parse(readFileSync(join(root, ".agents/tophat.config.json"), "utf8")).workspace.framework,
       nodeVersion: process.versions.node, pnpmVersion: "11.25.0", os: process.platform, applicationVersion: "synthetic-fixture", buildCommit: commit, buildEvidence: "Synthetic build identity; no browser run claimed",
       target: "fixture://behavior", configuration: "No secrets", roles: ["synthetic-user"], controlledData: "Fixture fixed input", resetProcedure: "New temporary fixture",
       externalDependencies: "None", states: ["success", "error"], statesReason: null, viewports: [], viewportsReason: "Synthetic evidence structure test; no browser executed", available: verdict !== "BLOCKED" },
@@ -53,6 +54,11 @@ export function evidence(f: ReturnType<typeof host>, verdict: "APPROVED" | "CHAN
     commands: [{ id: "unit-command", category: "unit", script: "test:unit", artifactId: "run-log", result: validation.status === "PASSED" ? "PASSED" : "FAILED", validation }],
     artifacts: [{ id: "run-log", path: "run.log", kind: "log", sha256: after.after.externalArtifacts[0].sha256! }], findings: [], preflight: before.snapshotFingerprint, postflight: after.postconditionFingerprint,
     reviewer: { role: "qa", sessionId: "qa-session", independentOf: ["developer-session"] }, startedAt: "2026-10-03T17:00:00.000Z", completedAt: "2026-10-03T17:00:01.000Z", verdict };
+  if (report.environment.workspaceKind === "terminal") {
+    const mode = JSON.parse(readFileSync(join(root, ".agents/tophat.config.json"), "utf8")).workspace.mode;
+    report.environment.viewportsReason = terminalViewportReason;
+    report.environment.terminal = {mode,terminalIdentity:"Synthetic evidence harness v1",term:{value:null,reason:"Structure fixture, no PTY executed"},locale:{value:null,reason:"Not observed by synthetic report"},runtimeInvocation:"Synthetic unit script",nativeDependencies:"None",ttyMode:mode === "tui" ? "pty" : "non-tty",sizes:mode === "tui" ? [{rows:24,columns:80}] : [],sizeReason:mode === "tui" ? null : "No screen dimensions in CLI structure fixture",captureLimitations:"Synthetic metadata only; no native journey acceptance"};
+  }
   if (validation.status !== "PASSED") { report.verdict = "CHANGES_REQUIRED"; report.criteria.forEach(c => c.result = "FAILED"); }
   const attemptIndex: AttemptIndex = { schemaVersion: 1, taskId: task.taskId, currentAttempt: "attempt-1", entries: [{ sequence: 1, attemptId: "attempt-1", reportSha256: fingerprint(report), report }] };
   const request = { schemaVersion: 1, operation: "validate", task, report, before, after, attemptIndex, stageRecords: stageRecords(root, task) };

@@ -1,3 +1,4 @@
+import { verifyTerminalEnvironment } from "./validate-terminal-environment.ts";
 import { readFileSync, realpathSync, lstatSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { resolve, isAbsolute, relative, sep } from "node:path";
@@ -165,7 +166,8 @@ function claims(root: string, c: DocCandidate, historical: boolean): void {
     const subject = fingerprint({ commit: c.identity.candidateCommit, id: q.id, source: q.sourceCriterion, methods, expected: q.expected });
     if (r.identity.testedCommit !== c.identity.candidateCommit || r.identity.taskFingerprint !== subject || r.identity.taskId !== q.id || r.identity.expectedBranch !== c.identity.expectedBranch || before.declaration.expectedBranch !== c.identity.expectedBranch || before.snapshot.branch !== c.identity.expectedBranch || r.preflight !== before.snapshotFingerprint || r.postflight !== post.postconditionFingerprint || r.verdict !== "APPROVED" || post.status !== "SESSION_UNCHANGED" || !r.environment.available || r.environment.buildCommit !== c.identity.candidateCommit || !/^\d+\.\d+\.\d+$/.test(r.environment.nodeVersion) || Number(r.environment.nodeVersion.split(".")[0]) < 24 || r.environment.workspaceKind !== cfg.workspace.kind || r.environment.framework !== cfg.workspace.framework || before.snapshot.commit !== c.identity.candidateCommit || before.declaration.role !== "qa" || r.reviewer.sessionId !== before.declaration.sessionId) fail("DOC_CLAIM_BLOCKED", "Claim QA is stale or blocked");
     cleanSnapshot(before.snapshot, c.identity.expectedBranch, before.declaration.inputPaths);
-    if ((methods.includes("e2e-web") && !cfg.capabilities.includes("web-qa")) || (methods.includes("e2e-desktop") && !cfg.capabilities.includes("desktop-qa")) || (methods.some(m => ["visual", "responsive", "accessibility", "human-design"].includes(m)) && !cfg.capabilities.some(k => ["web-ui", "renderer-ui"].includes(k)))) fail("QA_METHOD_INCOMPATIBLE", "Claim QA incompatible");
+    verifyTerminalEnvironment(r.environment as unknown as Record<string,unknown>, cfg, methods);
+    if ((methods.includes("e2e-web") && !cfg.capabilities.includes("web-qa")) || (methods.includes("e2e-desktop") && !cfg.capabilities.includes("desktop-qa")) || (methods.includes("e2e-terminal") && !cfg.capabilities.includes("terminal-qa")) || (methods.some(m => ["visual", "responsive", "accessibility", "human-design"].includes(m)) && !cfg.capabilities.some(k => ["web-ui", "renderer-ui", "terminal-ui"].includes(k)))) fail("QA_METHOD_INCOMPATIBLE", "Claim QA incompatible");
     const writer = c.writer?.before.declaration.sessionId;
     if (writer && (r.reviewer.sessionId === writer || !r.reviewer.independentOf.includes(writer))) fail("ROLE_BOUNDARY_VIOLATION", "Writer cannot QA own document claim");
     exact(r.methodResults.map(m => m.method), methods); exact(r.criteria.map(x => x.id), [q.sourceCriterion as string]);

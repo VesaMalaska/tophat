@@ -66,9 +66,7 @@ export function selectTaskGuidance(config: TophatConfig, request: TaskGuidanceRe
   if (request.frameworkInstructions.some((name) => !instructions.has(name))) throw new TaskGuidanceError("Unknown framework instruction");
   const caps = config.capabilities;
   for (const topic of request.taskTopics) {
-    if (topic === "backend" && !caps.includes("node-server")) throw new TaskGuidanceError("Backend topic requires node-server capability");
-    if (topic === "browser-flow" && !caps.includes("web-qa")) throw new TaskGuidanceError("Browser flow requires web-qa capability");
-    if (topic === "desktop-flow" && !caps.includes("desktop-qa")) throw new TaskGuidanceError("Desktop flow requires desktop-qa capability");
+    if (config.workspace.kind === "terminal" && ["backend", "browser-flow", "desktop-flow"].includes(topic)) throw new TaskGuidanceError("Terminal host cannot select server/browser/Electron topics");
     if (topic === "terminal-flow" && !caps.includes("terminal-qa")) throw new TaskGuidanceError("Terminal flow requires terminal-qa capability");
     if (topic === "terminal-presentation" && !caps.includes("terminal-ui")) throw new TaskGuidanceError("Terminal presentation requires terminal-ui capability");
     if (["server-component", "client-component", "route-handler", "server-action"].includes(topic) &&

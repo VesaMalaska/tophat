@@ -188,16 +188,44 @@ test('disposable live probe captures actual transport and keeps configuration hi
   assert.equal(generated.status, 0, generated.stderr); const f = JSON.parse(generated.stdout);
   try {
     const script = join(f.workspace, '.agents/scripts/probe.cjs');
-    for (const [event, target, decision] of [['pre', 'allow.txt', 'allow'], ['pre', 'deny-sentinel.txt', 'deny'], ['pre', 'force-ask-sentinel.txt', 'force_ask'], ['post', 'allow.txt', undefined]] as const) {
+    for (const [event, target, decision] of [['pre', 'allow.txt', 'allow'], ['pre', 'deny-sentinel.txt', 'deny'], ['pre', 'force-ask-sentinel.txt', 'force_ask'], ['pre', 'ask-sentinel.txt', 'ask'], ['post', 'allow.txt', undefined]] as const) {
       const input = JSON.stringify({ conversationId: 'fixture', stepIdx: 1, workspacePaths: [f.workspace], toolCall: { name: 'write_to_file', args: { TargetFile: join(f.workspace, target), CodeContent: 'fixture' } } });
       const r = spawnSync(process.execPath, [script, event, f.evidence], { cwd: join(f.workspace, '.agents'), input, encoding: 'utf8' });
       assert.equal(r.status, 0, r.stderr); const output = JSON.parse(r.stdout);
       if (decision) assert.equal(output.decision, decision); else assert.deepEqual(output, {});
     }
     const trace = readFileSync(join(f.evidence, 'trace.jsonl'), 'utf8').trim().split('\n').map(line => JSON.parse(line));
-    assert.equal(trace.length, 4); assert.equal(trace[0].cwd, join(f.workspace, '.agents')); assert.equal(trace[0].execPath, process.execPath); assert.equal(trace[0].node, process.version);
+    assert.equal(trace.length, 5); assert.equal(trace[0].cwd, join(f.workspace, '.agents')); assert.equal(trace[0].execPath, process.execPath); assert.equal(trace[0].node, process.version);
     const relative = spawnSync(process.execPath, [generator, '--base', f.base, '--relative'], { encoding: 'utf8' }); assert.equal(relative.status, 0, relative.stderr);
     const next = JSON.parse(relative.stdout); assert.notEqual(next.hooksSha256, f.hooksSha256); assert.ok(existsSync(join(f.evidence, `hooks-${f.hooksSha256}.json`))); assert.ok(existsSync(join(f.evidence, `hooks-${next.hooksSha256}.json`)));
     const foreign = spawnSync(process.execPath, [generator, '--base', tmpdir()], { encoding: 'utf8' }); assert.notEqual(foreign.status, 0);
+  } finally { rmSync(f.base, { recursive: true, force: true }); }
+});
+
+test('approval diagnostics preserve identical targets, decision settings and a neutral following handler', () => {
+  const generator = resolve('.agents/tests/antigravity-hook-probe.mjs');
+  const generated = spawnSync(process.execPath, [generator, '--relative', '--observe-next-handler', '--prompt-decision', 'ask'], { encoding: 'utf8' });
+  assert.equal(generated.status, 0, generated.stderr); const f = JSON.parse(generated.stdout);
+  try {
+    const config = JSON.parse(readFileSync(join(f.workspace, '.agents/hooks.json'), 'utf8'))['tophat-diagnostic'];
+    assert.equal(config.PreToolUse[0].hooks.length, 2);
+    assert.match(config.PreToolUse[0].hooks[1].command, /pre-observer/);
+    assert.equal(f.observeNextHandler, true); assert.equal(f.promptDecision, 'ask');
+    const input = JSON.stringify({ conversationId: 'fixture', stepIdx: 1, workspacePaths: [f.workspace], toolCall: { name: 'write_to_file', args: { TargetFile: join(f.workspace, 'approval-sentinel.txt'), CodeContent: 'fixture' } } });
+    const invoke = (event: string) => spawnSync(process.execPath, ['./scripts/probe.cjs', event, f.evidence], { cwd: join(f.workspace, '.agents'), input, encoding: 'utf8' });
+    assert.equal(JSON.parse(invoke('pre').stdout).decision, 'ask');
+    assert.equal(JSON.parse(invoke('pre-observer').stdout).decision, 'allow');
+    const nextRun = spawnSync(process.execPath, [generator, '--base', f.base, '--relative', '--prompt-decision', 'force_ask'], { encoding: 'utf8' });
+    assert.equal(nextRun.status, 0, nextRun.stderr); const next = JSON.parse(nextRun.stdout);
+    assert.equal(JSON.parse(invoke('pre').stdout).decision, 'force_ask');
+    assert.notEqual(next.scriptSha256, f.scriptSha256);
+    for (const hash of [f.scriptSha256, next.scriptSha256]) assert.ok(existsSync(join(f.evidence, `probe-${hash}.cjs`)));
+    const trace = readFileSync(join(f.evidence, 'trace.jsonl'), 'utf8').trim().split('\n').map(line => JSON.parse(line));
+    assert.equal(trace[0].settings.promptDecision, 'ask'); assert.equal(trace[1].event, 'pre-observer'); assert.equal(trace[2].settings.promptDecision, 'force_ask');
+    assert.deepEqual(trace[0].payload.toolCall, trace[2].payload.toolCall);
+    assert.equal(existsSync(join(f.workspace, '.git')), false);
+    for (const flags of [['--prompt-decision', 'allow'], ['--prompt-decision', 'ask', '--prompt-decision', 'ask'], ['--observe-next-handler', '--observe-next-handler']]) {
+      assert.notEqual(spawnSync(process.execPath, [generator, ...flags], { encoding: 'utf8' }).status, 0);
+    }
   } finally { rmSync(f.base, { recursive: true, force: true }); }
 });

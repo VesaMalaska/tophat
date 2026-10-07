@@ -75,18 +75,90 @@ The next physical test should target a specified, supported approval/lock handof
 
 Status: proposed for review, not implemented or established as a supported ordering contract. The documented hooks array permits multiple pre handlers, but the published IDE hook contract does not specify whether each decision is resolved before the next handler starts. The earlier ask/observer experiment cannot answer that question because no approval prompt appeared.
 
-The smallest candidate retains the existing native file tools and lock owner contract. One adapter invocation performs all read-only protected-write and framework checks. Any denial exits before the Git backend. A protected-write ask would be translated to force_ask only under an explicitly reviewed mandatory-approval transport rule; the policy evaluator itself stays unchanged. A second adapter invocation acquires the existing tophat reservation using the original native file-tool payload. Post release continues to receive that original tool call. No synthetic owner, new approval receipt, execution wrapper or lock backend change is proposed.
+The smallest candidate retains the existing native file tools and lock owner contract. One adapter invocation performs all read-only protected-write and framework checks. Any denial exits before the Git lock backend. A protected-write ask would be translated to force_ask only under an explicitly reviewed mandatory-approval transport rule; the policy evaluator itself stays unchanged. Before acquisition, a second invocation must repeat both read-only checks and reject target/configuration/Git state drift since the first invocation. Only then may it call the unchanged tophat backend with the original native file-tool payload. Post release continues to receive that original tool call. No synthetic owner, approval receipt, execution wrapper or lock backend change is proposed.
 
-This sequence is safe only if the IDE resolves the first decision before invoking the second handler. Do not implement or enable it based on array order alone. Qualify the candidate with the existing disposable generator using --relative --prompt-decision force_ask --observe-next-handler. The observer remains an allow-only logger, never a real reservation. Check a deny sentinel first, then the prompted target with rejection and with one-time approval; independently capture traces while approval is pending and file contents before/after each attempt.
+Per-handler approval ordering is necessary but insufficient: later handlers or native permission checks may still reject after acquisition. Do not implement or enable this candidate based on array order or successful approval alone. The revised qualification uses node .agents/tests/antigravity-hook-sequence-probe.mjs, which creates a fresh, marked disposable Git repository and copies the unchanged policy/lock modules. Its diagnostic acquisition handler actually repeats both policy checks before the backend and compares target/configuration fingerprints, branch, HEAD, index and Git location with the state captured before the prompt. The target check is additional to the protected-write evaluator, which inspects the proposed payload and does not read existing target contents. These external evidence snapshots are diagnostic state, not production approval receipts or a proposed lock-owner migration.
 
 Acceptance requires all of the following on the declared IDE installation:
 
-- A first-handler deny invokes neither the observer nor the tool.
-- A waiting force_ask prompt invokes neither the observer nor the tool, including after enough time for the observer normally to start.
-- Rejection invokes neither the observer nor the tool and leaves the target unchanged.
-- Approval invokes the observer before the tool, then produces the expected post event with unchanged original toolCall identity.
-- Adding the observer does not remove the force_ask prompt. Re-entry, missing handlers, unsupported tools or ambiguous observations are failures, not inferred acceptance.
+- A first-handler deny invokes neither the acquisition handler nor the tool and creates no lock.
+- A waiting force_ask prompt invokes neither the acquisition handler nor the tool and creates no lock, including after enough time for the next handler normally to start.
+- Rejection invokes neither acquisition nor the tool, leaves the target unchanged and creates no lock.
+- Approval with unchanged state repeats both policy checks, acquires before execution and produces the expected post release with unchanged original toolCall identity. Independent evidence must show the actual reservation; handler order alone is insufficient.
+- While the first prompt is pending, manually change the target, invalidate the configuration or switch the disposable branch. After approval, the acquisition handler must deny before any backend call or tool execution. Use a fresh repository for each drift case and retain before/pending/after evidence.
+- A separate --trailing fixture adds a third pre-handler returning force_ask after acquisition. Approve the first request and reject the third. Capture the real lock while the third prompt waits and after rejection. Acceptance requires the tool not to execute and no orphaned reservation. No post event, cleanup timer, Stop handler, TTL or manual deletion may be manufactured to make this pass.
+- The acquisition/trailing handlers must not suppress the first mandatory prompt. Re-entry, missing handlers, unsupported tools or ambiguous observations are failures, not inferred acceptance.
 
-If the observer runs while approval is pending, runs after rejection, is skipped after approval, or its allow suppresses the prompt, reject this candidate. Do not move reservation acquisition before the prompt or invent an after-approval event. If the observations meet these criteria, review the declared-version compatibility limitation and approve the adapter split/decision translation before implementation; do not generalize the result to other hosts or IDE versions. Revalidate the real adapter and its actual lock around rejection, approval, conflict and tool failure before cutover. The macro selector and other existing blockers remain unresolved by this proposal.
+If acquisition runs while approval is pending, runs after rejection, is skipped after approval, ignores drift, suppresses the prompt or leaves an orphan after trailing rejection, reject this candidate. Do not move acquisition before the prompt, invent an after-approval event or expand cleanup/concurrency scope to rescue it. Rejected calls in the existing diagnostic observations produced no post event; the trailing experiment is therefore expected to expose an orphan if acquisition has already occurred, but physical execution of that exact sequence is still unverified.
+
+Passing wait-time freshness checks does not establish an atomic compare-and-write boundary against an uncooperative process changing files after the final check. The existing Git reservation is cooperative, not an OS file lock. This residual check-to-write window and later native permission gates require an explicit review disposition; do not claim the entire TOCTOU problem solved by repeating pure payload checks. If all qualification requirements can be met, review the declared-version compatibility limitation before implementing the production adapter split/decision translation. Revalidate the actual adapter around rejection, approval, conflict and tool failure before cutover. The macro selector and other existing blockers remain unresolved by this proposal.
 
 If no supportable handler ordering can be established, retain the draft's compatibility blocker. A separate approval mechanism or controlled writer would be an architectural proposal outside this mechanical repair, not an implicit scope extension.
+
+## Running the revised disposable qualification
+
+Each generator invocation creates a new repository; it does not accept an existing host or delete existing reservations. It prints workspace/evidence paths and an evidence.env path. In an independent terminal, source that exact evidence.env to recover probe_base, probe_workspace and probe_evidence even while the launching terminal is occupied by the IDE. Evidence includes source/runtime hashes, original policy module copies, policy results, state comparisons, raw payload and actual lock contents before/after each event. Keep archives private; sanitize observations before adding them to this repository.
+
+Use write_to_file on the returned workspace's Strategy.md, proposing '# Approved synthetic strategy'. For the initial denial control, request deny-sentinel.svelte containing 'export let value;'. The fixture declares Svelte so the unchanged framework evaluator rejects that payload. Other file targets/tools are outside this closed diagnostic. Stop and preserve evidence if the acquisition stage runs during the first prompt or the prompt is suppressed.
+
+Run prompt rejection and ordinary approval in fresh fixtures. For separate target/configuration/branch drift trials, change the state from the independent terminal while the first prompt waits, then approve. The modified state must be preserved by denial. For the --trailing trial, approve the first prompt, capture the real lock before deciding the third prompt, reject the third and capture the lock again. Stop after any orphan; preserve the repository and record the route as incompatible. Never delete the lock or retry to disguise the failure.
+
+Subprocess qualification tests simulate handler invocations and prove repeated policy checks, freshness denial before acquisition, original backend ownership/release and preservation of an acquired lock when no post event occurs. They do not verify physical IDE scheduling or invent evidence of automatic recovery. Production antigravity-hook.ts and its installed hooks.json remain unchanged while this harness is qualified.
+
+### First decisive physical trial: trailing rejection
+
+Run from the reviewed source checkout, using Node >=24:
+
+```sh
+node .agents/tests/antigravity-hook-sequence-probe.mjs --trailing
+```
+
+Open only the printed workspace in the IDE. Start a fresh agent conversation. In a separate terminal, source the exact printed envFile (replace the example path below), then define this capture function. It reads evidence and never deletes a reservation:
+
+```sh
+source /tmp/tophat-sequence-probe-XXXXXX/evidence.env
+capture_sequence() {
+  cp "$probe_evidence/trace.jsonl" "$probe_evidence/$1.trace.jsonl"
+  sha256sum "$probe_workspace/Strategy.md" > "$probe_evidence/$1.target.sha256"
+  if [ -f "$probe_workspace/.git/locks/tophat.lock" ]; then
+    cp "$probe_workspace/.git/locks/tophat.lock" "$probe_evidence/$1.lock.txt"
+  else
+    printf 'ABSENT\n' > "$probe_evidence/$1.lock.txt"
+  fi
+}
+```
+
+Give the agent this instruction, substituting the actual printed workspace path:
+
+```text
+Use write_to_file exactly once to overwrite <workspace>/Strategy.md with:
+# Approved synthetic strategy
+Use Overwrite: true. This is a disposable hook qualification workspace.
+Do not change hook files or permissions. If permission is rejected or a hook
+denies the call, stop without retrying or using another tool to write the file.
+```
+
+Leave the first prompt waiting for at least ten seconds, then run `capture_sequence first-pending`. The trace must contain only pre-policy for this call, and first-pending.lock.txt must say ABSENT. If not, stop and record failure. Approve that first prompt once. A third-handler prompt must then appear. While it waits, run `capture_sequence trailing-pending`: the trace must show pre-policy, pre-acquire with repeated checks and LOCK_ACQUIRED, then pre-trailing, with the real reservation present and target unchanged. Reject this second visible prompt. Once the agent has stopped, run `capture_sequence rejected` and inspect the lock, target hashes and any post-release event.
+
+An orphaned lock rejects the route even if the denied write correctly left the target unchanged. Missing/suppressed prompts or acquisition before the first approval also reject it. Preserve the failed fixture; do not clear its lock. Archive evidence after capture:
+
+```sh
+tar -czf "$probe_base/sequence-evidence.tar.gz" -C "$probe_base" evidence
+```
+
+Supply that archive, declared IDE/Node versions, which prompts appeared and which were approved/rejected. Screenshots help establish UI timing but do not substitute for independent lock/target evidence. Run the remaining fresh-fixture denial, rejection, normal approval and drift cases only if this decisive trial does not already disqualify the route. Passing this one trial alone does not qualify the candidate.
+
+### Fresh-fixture drift trials
+
+For each drift type, generate a new fixture without --trailing and repeat the terminal setup and single-write request. While the first prompt waits, capture first-pending, then perform exactly one of these independent changes:
+
+```sh
+# Target drift:
+printf '# Changed during approval\n' > "$probe_workspace/Strategy.md"
+# Or configuration drift, in a different fresh fixture:
+printf '{}\n' > "$probe_workspace/.agents/tophat.config.json"
+# Or branch drift, in a different fresh fixture:
+git -C "$probe_workspace" switch -c probe-drift
+```
+
+Capture changed-pending before approving, then capture after-approval once the agent stops. The second handler must repeat both policy checks and deny before the backend: invalid config reports TOPHAT_CONFIG_INVALID; target/branch drift reports PROBE_STATE_DRIFT. There must be no reservation, no post-release event and no requested overwrite. For configuration/branch trials, also retain the changed configuration or branch output separately. Archive each evidence directory independently.

@@ -70,3 +70,23 @@ The agent reported list_permissions unavailable, so no effective grant inventory
 The repair remains COMPATIBILITY_PENDING. Required review decisions are now narrower: whether mandatory protected-file approval needs a separately authorized transport decision change, and which supported IDE lifecycle can acquire the existing reservation after approval but before execution. If no such lifecycle exists, the integration must explicitly remain unsupported rather than claim lock coverage. Mapping ask to force_ask alone does not solve the missing reservation, and acquiring before a waiting prompt violates the approved ordering constraint. Do not implement either as the fix.
 
 The next physical test should target a specified, supported approval/lock handoff after that review. No concurrency redesign, owner comparison change, reservation recovery, backend policy modification, catalog-equality exception or consumer-host change is included in this amendment. The positive macro discriminator and production/multi-root/interruption checks remain separate unresolved cutover requirements.
+
+## Conditional proposal: approval before a separate acquisition handler
+
+Status: proposed for review, not implemented or established as a supported ordering contract. The documented hooks array permits multiple pre handlers, but the published IDE hook contract does not specify whether each decision is resolved before the next handler starts. The earlier ask/observer experiment cannot answer that question because no approval prompt appeared.
+
+The smallest candidate retains the existing native file tools and lock owner contract. One adapter invocation performs all read-only protected-write and framework checks. Any denial exits before the Git backend. A protected-write ask would be translated to force_ask only under an explicitly reviewed mandatory-approval transport rule; the policy evaluator itself stays unchanged. A second adapter invocation acquires the existing tophat reservation using the original native file-tool payload. Post release continues to receive that original tool call. No synthetic owner, new approval receipt, execution wrapper or lock backend change is proposed.
+
+This sequence is safe only if the IDE resolves the first decision before invoking the second handler. Do not implement or enable it based on array order alone. Qualify the candidate with the existing disposable generator using --relative --prompt-decision force_ask --observe-next-handler. The observer remains an allow-only logger, never a real reservation. Check a deny sentinel first, then the prompted target with rejection and with one-time approval; independently capture traces while approval is pending and file contents before/after each attempt.
+
+Acceptance requires all of the following on the declared IDE installation:
+
+- A first-handler deny invokes neither the observer nor the tool.
+- A waiting force_ask prompt invokes neither the observer nor the tool, including after enough time for the observer normally to start.
+- Rejection invokes neither the observer nor the tool and leaves the target unchanged.
+- Approval invokes the observer before the tool, then produces the expected post event with unchanged original toolCall identity.
+- Adding the observer does not remove the force_ask prompt. Re-entry, missing handlers, unsupported tools or ambiguous observations are failures, not inferred acceptance.
+
+If the observer runs while approval is pending, runs after rejection, is skipped after approval, or its allow suppresses the prompt, reject this candidate. Do not move reservation acquisition before the prompt or invent an after-approval event. If the observations meet these criteria, review the declared-version compatibility limitation and approve the adapter split/decision translation before implementation; do not generalize the result to other hosts or IDE versions. Revalidate the real adapter and its actual lock around rejection, approval, conflict and tool failure before cutover. The macro selector and other existing blockers remain unresolved by this proposal.
+
+If no supportable handler ordering can be established, retain the draft's compatibility blocker. A separate approval mechanism or controlled writer would be an architectural proposal outside this mechanical repair, not an implicit scope extension.

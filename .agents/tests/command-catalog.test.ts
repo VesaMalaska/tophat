@@ -48,3 +48,20 @@ for(const kind of ['wrong-name-with-body-spoof','missing-close','unterminated-qu
  if(['boolean','null','number','comment'].includes(kind))body=body.replace(/^description: .+$/m,'description: '+({boolean:'true',null:'null',number:'42',comment:'# comment'} as any)[kind]);
  writeFileSync(path,body);assert.equal(validateCommandCatalog(f.root).status,'CATALOG_INVALID');}finally{f.close();}
 });
+
+test('hook adapter/support closure is explicit and installed tampering remains invalid', () => {
+ const resources = catalogResources(source);
+ for (const path of ['.agents/scripts/antigravity-hook.ts', '.agents/docs/antigravity-hook-support.md', '.agents/scripts/swarm-lock.ts', '.agents/scripts/enforce-strategy-lock.ts', '.agents/scripts/enforce-svelte-runes.ts']) assert.ok(resources.includes(path), path);
+ const f = fixture();
+ try {
+  const routingMatrix = Object.fromEntries(loadCommandCatalog(source).commands.filter(c => c.state === 'active').map(c => [c.modelKey!, 'Fixture model']));
+  writeFileSync(join(f.root, '.agents/tophat.config.json'), JSON.stringify({schemaVersion:1,workspace:{kind:'terminal',framework:'none',mode:'tui'},documentation:{package:'docs/product',manifest:'docs/product/manifest.json',derivedTargets:[]},validation:{scripts:{unit:'test'},commitGate:['unit'],developmentPhaseGate:[],projectCompletionGate:[]},routingMatrix}));
+  assert.equal(validateCommandCatalog(source, f.root).status, 'CATALOG_VALID');
+  const adapter = join(f.root, '.agents/scripts/antigravity-hook.ts'), original = readFileSync(adapter, 'utf8');
+  writeFileSync(adapter, original + '\n// altered fixture\n');
+  assert.match(validateCommandCatalog(source, f.root).issues[0].message, /Installed resource differs.*antigravity-hook/);
+  writeFileSync(adapter, original);
+  const hooks = join(f.root, '.agents/hooks.json'), h = JSON.parse(readFileSync(hooks, 'utf8')); h['macro-reset-gate'].enabled = false; writeFileSync(hooks, JSON.stringify(h));
+  assert.match(validateCommandCatalog(source, f.root).issues[0].message, /Installed resource differs.*hooks.json/);
+ } finally { f.close(); }
+});

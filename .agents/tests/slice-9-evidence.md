@@ -1,6 +1,6 @@
 # Slice 9 implementation evidence — progress only
 
-Baseline: merged Slice 8 development commit `16d40fa86a8cf293378334ef8120aeaeb7601362`, tree `008d2001b93c774c65beae259118dd873d8e8ce8`. Geogy approved the execution brief and Vesku separately authorized implementation. Slice 9 is not complete and no release preparation, merge, tag or publication is authorized here.
+Baseline: merged Slice 8 development commit `16d40fa86a8cf293378334ef8120aeaeb7601362`, tree `008d2001b93c774c65beae259118dd873d8e8ce8`. An independent reviewer approved the execution brief and the Human Orchestrator separately authorized implementation. Slice 9 is not complete and no release preparation, merge, tag or publication is authorized here.
 
 ## Implemented scope
 

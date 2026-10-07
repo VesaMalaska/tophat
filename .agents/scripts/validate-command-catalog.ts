@@ -70,7 +70,7 @@ export function loadCommandCatalog(rootInput:string, allowCustomSkills=false):Ca
 }
 /** Packaging closure includes transitive local module imports and explicit shared resources. No runtime interpreter. */
 export function catalogResources(rootInput:string, allowCustomSkills=false):string[] {
- const root=realpathSync(rootInput),c=loadCommandCatalog(root,allowCustomSkills),todo=['.agents/hooks.json','.agents/scripts/swarm-lock.ts','.agents/scripts/enforce-strategy-lock.ts','.agents/scripts/enforce-svelte-runes.ts','.agents/docs/command-catalog.json','.agents/schemas/command-catalog.schema.json','.agents/scripts/validate-command-catalog.ts',...c.commands.flatMap(x=>[...(x.entryPath?[x.entryPath]:[]),...x.roleRules,...x.mandatoryResources]),...c.guidanceSkills.map(x=>x.entryPath)],seen=new Set<string>();
+ const root=realpathSync(rootInput),c=loadCommandCatalog(root,allowCustomSkills),todo=['.agents/hooks.json','.agents/scripts/antigravity-hook.ts','.agents/docs/antigravity-hook-support.md','.agents/scripts/swarm-lock.ts','.agents/scripts/enforce-strategy-lock.ts','.agents/scripts/enforce-svelte-runes.ts','.agents/docs/command-catalog.json','.agents/schemas/command-catalog.schema.json','.agents/scripts/validate-command-catalog.ts',...c.commands.flatMap(x=>[...(x.entryPath?[x.entryPath]:[]),...x.roleRules,...x.mandatoryResources]),...c.guidanceSkills.map(x=>x.entryPath)],seen=new Set<string>();
  for(let i=0;i<todo.length;i++){
   const p=todo[i];if(seen.has(p))continue;if(seen.size>=512)fail('Resource closure exceeds bound');seen.add(p);const body=read(root,p);
   const refs=[...body.matchAll(/\.agents\/(?:scripts|docs|rules|schemas|templates|skills)\/[A-Za-z0-9_./-]+\.(?:ts|md|json|sh)/g)].map(x=>x[0]);

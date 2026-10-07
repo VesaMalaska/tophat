@@ -1,6 +1,6 @@
 # Slice 8 evidence — Git safety
 
-Baseline: development `30bfe4051372c97796ce773da3542cbdf083ff8e`, tree `f437c025e5de6724ff52d232eab91331a06608da`. Geogy approved the five brief decisions; Vesku separately authorized implementation. The implementation remains a PR awaiting independent review and separate merge approval.
+Baseline: development `30bfe4051372c97796ce773da3542cbdf083ff8e`, tree `f437c025e5de6724ff52d232eab91331a06608da`. An independent reviewer approved the five brief decisions; the Human Orchestrator separately authorized implementation. The implementation remains a PR awaiting independent review and separate merge approval.
 
 ## Acceptance mapping
 

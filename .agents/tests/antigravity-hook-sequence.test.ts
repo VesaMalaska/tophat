@@ -4,13 +4,17 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
-function fixture(trailing = false) {
-  const setup = spawnSync(process.execPath, [resolve('.agents/tests/antigravity-hook-sequence-probe.mjs'), ...(trailing ? ['--trailing'] : [])], { encoding: 'utf8' });
+function fixture(mode: boolean | string = false) {
+  const setup = spawnSync(process.execPath, [resolve('.agents/tests/antigravity-hook-sequence-probe.mjs'), ...(mode === true ? ['--trailing'] : mode === 'policy-only' ? ['--policy-only'] : [])], { encoding: 'utf8' });
   assert.equal(setup.status, 0, setup.stderr); const f = JSON.parse(setup.stdout);
   const input = (target = 'Strategy.md', content = '# Approved synthetic strategy\n', stepIdx = 1) => JSON.stringify({ conversationId: 'synthetic-sequence', stepIdx, workspacePaths: [f.workspace], toolCall: { name: 'write_to_file', args: { TargetFile: join(f.workspace, target), CodeContent: content, Overwrite: true } } });
   const run = (event: string, raw = input()) => {
     const r = spawnSync(process.execPath, ['./scripts/sequence-probe.ts', event, f.evidence], { cwd: join(f.workspace, '.agents'), input: raw, encoding: 'utf8', timeout: 15000 });
-    assert.equal(r.status, 0, r.stderr); return JSON.parse(r.stdout);
+    assert.equal(r.status, 0, r.stderr);
+    const output = JSON.parse(r.stdout), events = trace();
+    assert.deepEqual(Object.keys(output).sort(), event === 'post-release' ? [] : ['decision', 'reason']);
+    assert.equal(r.stdout, JSON.stringify(events.at(-1).wireOutput) + '\n');
+    return output;
   };
   const trace = () => readFileSync(join(f.evidence, 'trace.jsonl'), 'utf8').trim().split('\n').map(line => JSON.parse(line));
   return { ...f, input, run, trace, close: () => rmSync(f.base, { recursive: true, force: true }) };
@@ -19,7 +23,7 @@ test('qualification repeats unchanged policies before the unchanged backend and 
   const f = fixture();
   try {
     assert.equal(f.run('pre-policy').decision, 'force_ask'); assert.equal(existsSync(f.lock), false);
-    assert.equal(f.run('pre-acquire').status, 'LOCK_ACQUIRED');
+    assert.equal(f.run('pre-acquire').decision, 'allow'); assert.equal(f.trace().at(-1).backend.status, 'LOCK_ACQUIRED');
     const p = JSON.parse(f.input());
     const owner = createHash('sha256').update(JSON.stringify([p.conversationId, p.toolCall.name, p.toolCall.args])).digest('hex');
     assert.equal(JSON.parse(readFileSync(f.lock, 'utf8')).owner, owner);
@@ -48,14 +52,15 @@ for (const drift of ['target', 'branch', 'config', 'valid-config', 'index']) tes
       assert.equal(spawnSync('git', ['add', 'index-drift.txt'], { cwd: f.workspace }).status, 0);
     }
     const result = f.run('pre-acquire'); assert.equal(result.decision, 'deny');
-    assert.equal(result.status, drift === 'config' ? 'TOPHAT_CONFIG_INVALID' : 'PROBE_STATE_DRIFT');
+    assert.equal(f.trace().at(-1).output.status, drift === 'config' ? 'TOPHAT_CONFIG_INVALID' : 'PROBE_STATE_DRIFT');
     assert.equal(existsSync(f.lock), false); assert.equal(f.trace().at(-1).backend, undefined); assert.ok(f.trace().at(-1).checks);
   } finally { f.close(); }
 });
 test('policy denial and missing first-handler state cannot acquire a reservation', () => {
   const f = fixture();
   try {
-    assert.equal(f.run('pre-policy', f.input('deny-sentinel.svelte', 'export let value;')).status, 'SVELTE_5_CONSTRAINT_VIOLATION');
+    assert.equal(f.run('pre-policy', f.input('deny-sentinel.svelte', 'export let value;')).decision, 'deny');
+    assert.equal(f.trace().at(-1).output.status, 'SVELTE_5_CONSTRAINT_VIOLATION');
     assert.equal(f.run('pre-acquire', f.input('Strategy.md', 'fixture', 2)).decision, 'deny');
     assert.equal(existsSync(f.lock), false);
   } finally { f.close(); }
@@ -66,9 +71,20 @@ test('trailing force_ask preserves a real reservation when no post event occurs;
     const hooks = JSON.parse(readFileSync(join(f.workspace, '.agents/hooks.json'), 'utf8'))['tophat-sequence-diagnostic'];
     assert.equal(hooks.PreToolUse[0].hooks.length, 3);
     assert.equal(f.run('pre-policy').decision, 'force_ask');
-    assert.equal(f.run('pre-acquire').status, 'LOCK_ACQUIRED'); const held = readFileSync(f.lock, 'utf8');
+    assert.equal(f.run('pre-acquire').decision, 'allow'); assert.equal(f.trace().at(-1).backend.status, 'LOCK_ACQUIRED'); const held = readFileSync(f.lock, 'utf8');
     assert.equal(f.run('pre-trailing').decision, 'force_ask');
     assert.equal(readFileSync(f.lock, 'utf8'), held); assert.equal(f.trace().at(-1).lockAfter.present, true);
     assert.equal(f.trace().some(r => r.event === 'post-release'), false);
+  } finally { f.close(); }
+});
+test('policy-only control emits the documented envelope and has no acquisition or release handlers', () => {
+  const f = fixture('policy-only');
+  try {
+    const hooks = JSON.parse(readFileSync(join(f.workspace, '.agents/hooks.json'), 'utf8'))['tophat-sequence-diagnostic'];
+    assert.equal(f.policyOnly, true); assert.equal(hooks.PreToolUse[0].hooks.length, 1);
+    assert.equal(hooks.PostToolUse, undefined);
+    assert.equal(f.run('pre-policy').decision, 'force_ask');
+    assert.equal(f.trace().at(-1).output.status, 'PROBE_APPROVAL_REQUIRED');
+    assert.equal(f.trace().at(-1).backend, undefined); assert.equal(existsSync(f.lock), false);
   } finally { f.close(); }
 });

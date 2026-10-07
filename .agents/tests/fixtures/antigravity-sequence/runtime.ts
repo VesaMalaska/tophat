@@ -87,10 +87,12 @@ process.stdin.on('end', () => {
     output = event === 'post-release' ? {} : deny('PROBE_INPUT_OR_STATE_INVALID', (error as Error).message);
     if (event === 'post-release') exitCode = 1;
   }
+  // Keep diagnostic statuses in evidence. Only documented response fields cross the IDE boundary.
+  const wireOutput = event === 'post-release' ? {} : { decision: output.decision, reason: output.reason };
   if (marked) {
     const record = { event, at: new Date().toISOString(), cwd: process.cwd(), execPath: process.execPath, node: process.version,
-      raw, payload, checks, baseline, current, backend, lockBefore: before, lockAfter: lockState(), output };
+      raw, payload, checks, baseline, current, backend, lockBefore: before, lockAfter: lockState(), output, wireOutput };
     appendFileSync(join(evidence, 'trace.jsonl'), JSON.stringify(record) + '\n', { mode: 0o600 });
   }
-  process.stdout.write(JSON.stringify(output) + '\n'); process.exitCode = exitCode;
+  process.stdout.write(JSON.stringify(wireOutput) + '\n'); process.exitCode = exitCode;
 });

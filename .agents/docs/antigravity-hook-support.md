@@ -95,6 +95,18 @@ Passing wait-time freshness checks does not establish an atomic compare-and-writ
 
 If no supportable handler ordering can be established, retain the draft's compatibility blocker. A separate approval mechanism or controlled writer would be an architectural proposal outside this mechanical repair, not an implicit scope extension.
 
+## First sequence trial and response-envelope correction
+
+The first physical three-pre-handler trial used source f7d01c698f5d6210ce2f6fea82bae9b7f88e4c09. All eight archived resource hashes matched setup; the fixture runtime and five unchanged policy modules matched that source. The trace contained one pre-policy event with valid protected/framework results, no reservation and a recorded force_ask response. Two independent later snapshots retained the same trace, original target digest and absent lock. The Human Orchestrator observed no prompt; the agent reported the call intercepted/denied by the first pre hook and finished without retrying. Its "Created" UI label is not evidence that the denied write occurred.
+
+This trial did not reach acquisition, drift checking or trailing rejection. It failed to qualify the proposed route, but does not isolate a general IDE scheduling defect. Unlike the earlier working CJS diagnostic, the new fixture included an extra status field on stdout. The documented PreToolUse output lists decision, reason and optional permissionOverrides; status is not listed. Whether the extra field caused this installation to deny has not been established, and the documentation does not specify how unknown fields are handled.
+
+The corrected diagnostic retains full status/check/backend results in trace.output and emits only decision/reason on pre stdout, or an empty object on post stdout. trace.wireOutput records that exact serialized envelope. This is a fixture transport correction, not a change to policy/backend semantics or production adapter hooks. Audit the production adapter's response envelope separately before any cutover.
+
+A fresh --policy-only control configures one pre-policy handler and no acquisition or post-release handler. Request the same single native Strategy.md write, capture evidence while any prompt waits, then reject it. This control must display the forced approval request and retain the original target/no lock after rejection. Never approve this control as evidence of lock coverage: it deliberately has no reservation. If no prompt appears, capture no-prompt evidence and the terminal agent/error report and stop. If it works, qualify the corrected minimal-envelope three-handler sequence in another fresh fixture; retain every drift/trailing requirement above.
+
+Changing the envelope and handler count together in this control does not prove the cause of the failed trial. A successful single-handler control followed by an unsuccessful multi-handler fixture using the same envelope would narrow the remaining integration problem. An IDE-specific denial reason or controlled envelope comparison is needed before attributing the initial failure to the status field.
+
 ## Running the revised disposable qualification
 
 Each generator invocation creates a new repository; it does not accept an existing host or delete existing reservations. It prints workspace/evidence paths and an evidence.env path. In an independent terminal, source that exact evidence.env to recover probe_base, probe_workspace and probe_evidence even while the launching terminal is occupied by the IDE. Evidence includes source/runtime hashes, original policy module copies, policy results, state comparisons, raw payload and actual lock contents before/after each event. Keep archives private; sanitize observations before adding them to this repository.
@@ -105,7 +117,17 @@ Run prompt rejection and ordinary approval in fresh fixtures. For separate targe
 
 Subprocess qualification tests simulate handler invocations and prove repeated policy checks, freshness denial before acquisition, original backend ownership/release and preservation of an acquired lock when no post event occurs. They do not verify physical IDE scheduling or invent evidence of automatic recovery. Production antigravity-hook.ts and its installed hooks.json remain unchanged while this harness is qualified.
 
-### First decisive physical trial: trailing rejection
+### Single-handler response control before trailing rejection
+
+From the corrected reviewed checkout run:
+
+```sh
+node .agents/tests/antigravity-hook-sequence-probe.mjs --policy-only
+```
+
+Open its new workspace and source its printed evidence.env in the capture terminal. Use the capture function and single-write instruction below. Wait ten seconds with the prompt pending, capture first-pending, then reject and capture rejected after the agent finishes. If no prompt appears, capture no-prompt and stop. Archive the evidence as described below. This rejection-only control must pass before proceeding to the sequence trial.
+
+### Decisive physical sequence trial: trailing rejection
 
 Run from the reviewed source checkout, using Node >=24:
 

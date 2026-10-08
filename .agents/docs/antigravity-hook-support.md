@@ -129,6 +129,16 @@ Maintain COMPATIBILITY_PENDING. Do not implement the production split or decisio
 
 A controlled writer or explicit orchestrator command requires a separate architectural proposal defining approval, fresh-state validation, reservation, execution and rejection/failure behavior. No such route is approved or implemented here. It must also define how native writes are prevented from bypassing that contract; disabling native interception is not an authorized workaround.
 
+### Controlled-writer review disposition: deferred to CLI architecture
+
+The subsequent advisory review returned DEFER TO CLI ARCHITECTURE. A controlled writer requires a reviewed agent mutation boundary, a trusted human approval channel, legitimate writer reservation ownership and defined interrupted-operation behavior. Same-user terminal separation and instructions to use a writer do not establish these boundaries. No writer investigation or implementation is authorized by this disposition, and no native-tool identity may be synthesized to fit the existing backend.
+
+Record this as a deferred CLI architecture item, not an active TopHat 1.0 repair task. Its eventual design must distinguish ownership identifiers from authentication/authorization; a random or cryptographic identifier alone does not confer write authority. The choice of isolation mechanism, ownership schema and recovery policy remains open for that separate review. No particular container, user boundary, IPC protocol or backend redesign is selected here.
+
+The advisory recommendation is to exclude this Antigravity protected-write integration from TopHat 1.0 supported-host claims. Until a release-scope decision is approved, retain COMPATIBILITY_PENDING and do not claim this installation supported. The review does not establish qualification of other hosts, release readiness, permission to merge mechanical subsets or completion of the separate macro discriminator. PR #13 remains draft and blocked.
+
+The repository's root Roadmap.md is a generic host-derived template with unconfigured authority, not the authoritative TopHat CLI roadmap. Do not populate its active package or sprint fields with this deferred item. A separately approved CLI planning package must carry the item when that architecture work begins.
+
 ## Running the revised disposable qualification
 
 **Historical procedure: the corrected physical trial above rejected this route. Do not continue these rounds as current qualification instructions.** The diagnostic fixtures remain available to reproduce observations or test a separately reviewed capability.

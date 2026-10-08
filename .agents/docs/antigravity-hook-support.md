@@ -2,6 +2,8 @@
 
 Status: **COMPATIBILITY_PENDING — do not cut over or merge on subprocess evidence alone.**
 
+**Qualification disposition, 2026-10-08: multi-handler approval/acquisition route rejected on Antigravity 2.19.1.** Physical evidence shows acquisition while human approval was pending. Do not implement the production handler split or ask-to-force_ask translation as this repair, and do not run further qualification rounds for this rejected sequence. Historical proposal and probe instructions below are retained for audit, not as current next steps.
+
 TopHat is a reusable developer tool. Hook code, fixtures and documentation use generic host names and paths; they must not depend on a maintainer's company, consumer project or local account.
 
 ## Bootstrap and selected root
@@ -73,7 +75,7 @@ The next physical test should target a specified, supported approval/lock handof
 
 ## Conditional proposal: approval before a separate acquisition handler
 
-Status: proposed for review, not implemented or established as a supported ordering contract. The documented hooks array permits multiple pre handlers, but the published IDE hook contract does not specify whether each decision is resolved before the next handler starts. The earlier ask/observer experiment cannot answer that question because no approval prompt appeared.
+Status: rejected after physical qualification on 2026-10-08; retained as proposal history. The documented hooks array permits multiple pre handlers, but the published IDE hook contract does not specify whether each decision is resolved before the next handler starts. The earlier ask/observer experiment could not answer that question because no approval prompt appeared.
 
 The smallest candidate retains the existing native file tools and lock owner contract. One adapter invocation performs all read-only protected-write and framework checks. Any denial exits before the Git lock backend. A protected-write ask would be translated to force_ask only under an explicitly reviewed mandatory-approval transport rule; the policy evaluator itself stays unchanged. Before acquisition, a second invocation must repeat both read-only checks and reject target/configuration/Git state drift since the first invocation. Only then may it call the unchanged tophat backend with the original native file-tool payload. Post release continues to receive that original tool call. No synthetic owner, approval receipt, execution wrapper or lock backend change is proposed.
 
@@ -109,9 +111,27 @@ Changing the envelope and handler count together in this control does not prove 
 
 **Observed rejection-only single-handler control: passed on the declared installation.** The supplied fixture used source 1e5b62f2b050d7b69cf19133dbf922a2da5e1db6 with policyOnly: true. All eight archived resource hashes matched setup; the runtime and existing policy modules matched the reviewed source. One native Strategy.md call recorded pre-policy with minimal decision/reason force_ask output. The Human Orchestrator confirmed a visible approval prompt and rejection. Independent pending/rejected captures retained the original target digest and absent lock; their traces were identical. The fixture had no acquisition or post-release handlers, so this proves neither reservation coverage nor post delivery. Both this call and the earlier recorded sequence call used valid absolute target paths; an omitted prompt placeholder does not explain the first recorded sequence failure.
 
-The corrected same-envelope multi-handler sequence, wait-time drift and trailing-rejection criteria remain unqualified. Reuse the reviewed fixture source to generate a fresh --trailing repository; preserve the successful control separately. No production split/decision change, merge or host cutover follows from this control result.
+The single-handler control did not qualify the multi-handler sequence, wait-time drift or trailing rejection. The subsequent corrected sequence trial below rejected the route. No production split/decision change, merge or host cutover follows from this control result.
+
+## Corrected multi-handler trial and route rejection, 2026-10-08
+
+The physical --trailing fixture used source 74ea48a079ec231f1743d1537197c383caea5da2 on Antigravity 2.19.1, Linux and Node 26.10.0. All eight archived resource hashes matched setup; the runtime and five unchanged policy modules matched that source. The pending trace was preserved as a prefix of the final trace, and all four events retained the same original conversation/tool-call identity.
+
+While the visible approval prompt waited, the independent first-pending snapshot already contained pre-policy, pre-acquire and pre-trailing. Both prompt handlers emitted minimal decision/reason force_ask envelopes. The acquisition handler returned LOCK_ACQUIRED, and the independent lock capture confirmed the real reservation existed while the target still had its original digest. The three pre events completed within 174 ms; they were not separated by human approval. This proves that the runner did not await the first human decision before invoking acquisition in this trial; it does not establish parallel execution or a general decision-aggregation rule.
+
+The Human Orchestrator accepted the single visible prompt and observed no second prompt. The requested overwrite completed. The independent final digest matched the requested synthetic content, the trace contained post-release with LOCK_RELEASED and the final lock capture was ABSENT. No pre-handler reentry appeared between approval and tool execution. Successful release after this approved write does not repair acquisition before approval or establish post-approval freshness checking.
+
+The route fails the required approval-before-acquisition boundary and is rejected. Target/configuration/branch drift during approval was not exercised in this trial; the purported second-stage freshness check had already run before the human wait. Trailing rejection was not exercised either. Earlier rejection-only observations had no post event, and the subprocess fixture retains an acquired reservation when post is absent. These establish a serious orphan risk, not physical proof of orphaning for this exact rejected sequence. Do not describe that unperformed trial as confirmed or guaranteed.
+
+There is no verified post-approval, pre-execution handoff in the tested mapping. This rejects the reviewed multi-handler route on the declared installation; it is not proof that every possible IDE capability or future version lacks such a handoff. Existing native Git validation remains a separate boundary and is not a substitute for protected-write approval and reservation coverage.
+
+Maintain COMPATIBILITY_PENDING. Do not implement the production split or decision translation, merge the candidate or cut over a host. Keep the policy evaluators, lock backend, owner comparison, catalog equality and workspace-init orchestration unchanged. Preserve the private evidence without committing raw paths or payloads. Further tests of this rejected sequence are not required to establish its ordering failure.
+
+A controlled writer or explicit orchestrator command requires a separate architectural proposal defining approval, fresh-state validation, reservation, execution and rejection/failure behavior. No such route is approved or implemented here. It must also define how native writes are prevented from bypassing that contract; disabling native interception is not an authorized workaround.
 
 ## Running the revised disposable qualification
+
+**Historical procedure: the corrected physical trial above rejected this route. Do not continue these rounds as current qualification instructions.** The diagnostic fixtures remain available to reproduce observations or test a separately reviewed capability.
 
 Each generator invocation creates a new repository; it does not accept an existing host or delete existing reservations. It prints workspace/evidence paths and an evidence.env path. In an independent terminal, source that exact evidence.env to recover probe_base, probe_workspace and probe_evidence even while the launching terminal is occupied by the IDE. Evidence includes source/runtime hashes, original policy module copies, policy results, state comparisons, raw payload and actual lock contents before/after each event. Keep archives private; sanitize observations before adding them to this repository.
 

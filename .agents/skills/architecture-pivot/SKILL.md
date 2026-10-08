@@ -21,6 +21,12 @@ Read shared rules `.agents/rules/workflows.md`, `.agents/rules/workspace-context
 6. Do not run the disabled `/generate-readme` path or autonomously rewrite public documentation. Derived-document synchronization follows the approved lifecycle. Do not execute Git operations implicitly.
 7. Summarize exact changed private paths, package provenance and triage decisions for the human. Recommend the appropriate authorized workflow/model from routingMatrix.
 
+## Cooperative macro coordination
+
+TopHat 1.0 does not acquire an automatic global-pivot reservation from IDE command payloads. Before this workflow, the Human Orchestrator pauses concurrent mutating sessions and confirms the selected host/state. Human coordination is required to prevent concurrent mutations; the hook cannot identify or lock the slash workflow from ordinary run_command calls. Do not fabricate a native payload or assume command execution proves global lock coverage. Existing package, role, task, Git and explicit approval gates remain mandatory.
+
+Approval-required native writes are supervised and unreserved. While a prompt waits, do not mutate the target or relevant workspace state; cancel and propose again if state changes. Ordinary applicable native writes retain their existing reservation contract, but this does not protect an entire macro operation or terminal writes.
+
 ## Git mutation boundary
 
 Before every separately authorized Git action, the execution orchestrator invokes `node <pinned-TopHat-source>/.agents/scripts/git-preflight.ts` with the exact closed operation request on stdin; require GIT_PREFLIGHT_READY / ALLOW. Follow `.agents/docs/git-safety.md`: explicit branch/HEAD/base/remote, applicable clean or exact intended state, sequential checked results and operation-specific postchecks. This delegation does not grant Git authority to a read-only role or introduce implicit publication. Failure preserves actual state and halts; no automatic recovery. Candidate-changing commits require fresh applicable review/QA/document evidence.

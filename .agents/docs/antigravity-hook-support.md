@@ -1,8 +1,8 @@
 # Antigravity hook transport candidate
 
-Status: **COMPATIBILITY_PENDING — do not cut over or merge on subprocess evidence alone.**
+Status: **COMPATIBILITY_PENDING — cooperative 1.0 candidate; production-adapter live verification and review still required.**
 
-**Qualification disposition, 2026-10-08: multi-handler approval/acquisition route rejected on Antigravity 2.19.1.** Physical evidence shows acquisition while human approval was pending. Do not implement the production handler split or ask-to-force_ask translation as this repair, and do not run further qualification rounds for this rejected sequence. Historical proposal and probe instructions below are retained for audit, not as current next steps.
+**Current contract: supervised and cooperative.** The Human Orchestrator accepts reliance on agent cooperation and human supervision for TopHat 1.0; the revised contract received architectural approval. The multi-handler approval/acquisition sequence remains rejected. The new single-handler force_ask mapping is an unreserved approval guardrail, not that rejected reservation route. Controlled execution and isolation stay deferred to 2.0/CLI architecture. Historical strict proposals and probe procedures below are audit records, not current qualification instructions.
 
 TopHat is a reusable developer tool. Hook code, fixtures and documentation use generic host names and paths; they must not depend on a maintainer's company, consumer project or local account.
 
@@ -14,15 +14,25 @@ The module location identifies the installed host. Mounted directories corrobora
 
 ## Routing and output
 
-The context-io-gate adapter includes the existing protected-write and Svelte checks in one pre-write handler. Deny/ask returns before lock acquisition. Their evaluators and the swarm-lock backend remain unchanged; ask has not been upgraded to force_ask. A valid terminal host retains Svelte non-applicability. An allowed write needs the existing initialized-Git lock backend; its original denial/status is preserved with a prerequisite explanation.
+The enabled context-io-gate uses one pre-write handler. It validates the installed root and target, evaluates the unchanged protected-write policy, returns any denial, then runs the unchanged framework/configuration check before prompting or acquisition. A policy ask becomes force_ask at the transport boundary. That path is supervised and unreserved: no Git prerequisite, no acquisition and no after-approval handler. Invalid configuration still denies. Non-prompted allowed writes acquire the existing tophat reservation and require an initialized host Git worktree; the adapter never initializes Git.
 
-The enabled macro-reset-gate uses a closed neutral list: supported exploration tools, plain ls/pwd/version commands, and well-shaped invocations of this installation's read-only documentation/package catalog validators. No host pnpm script is inferred read-only from its name. No prefix-based exemption covers shell operators, substitutions or redirections. This is not a general authorization mechanism for shell writes or Git mutations.
+Post-write evaluates the same protected-write rule from the original native tool arguments. This evaluator is independent of live target/configuration state. An ask identifies the unreserved path and returns `{}` successfully without invoking the backend. It never suppresses LOCK_OWNER_MISMATCH or LOCK_RELEASE_FAILED: ordinary reserved writes still use exact original owner release, and real failures remain stderr diagnostics with a nonzero exit. Post payload fidelity remains required. Malformed or contradictory tool identities are not invented or repaired.
 
-**Macro identity is unverified.** Generic run_command payloads do not establish human slash-workflow intent. Other command calls return MACRO_APPLICABILITY_UNVERIFIED before any global lock call; post-command reports the blocker on stderr and exits nonzero. This draft deliberately cannot replace a working command-hook integration. No invented workflow field/environment variable or all-command pass-through is provided. A positive macro selector and applicable acquire/release delegation require a supported observed transport or a separately reviewed lifecycle proposal before cutover.
+The enabled macro-reset-gate distinguishes closed exploration/known read-only validators for non-applicability. Other valid host run_command calls return allow with internal status UNMANAGED_COMMAND. This is explicit absence of automatic macro coverage, not a claim that arbitrary commands are read-only or safe. Shell operators, script bodies, pnpm names and undocumented workflow/environment fields never establish global-pivot ownership. Pre-Git commands do not touch the lock backend. Malformed payloads or invalid selected-host cwd still deny. Post-command returns `{}` for valid unmanaged commands without acquisition/release.
 
-Pre responses contain one decision JSON object. Post responses contain `{}`; a failed existing release yields a diagnostic on stderr and nonzero adapter exit. This cannot undo the tool or guarantee the runner halts. Post release preserves the exact original owner comparison, including its argument-order sensitivity. There is no expiry, stale-lock deletion, Stop cleanup, step-identity migration or mutual-exclusion redesign.
+The CLI emits only decision/reason for pre responses and `{}` for post responses; internal evaluator statuses remain available to tests. Existing lock/policy implementations remain unchanged. No owner canonicalization, cross-type exclusion, TTL, Stop cleanup or recovery is added. Missing post events can leave ordinary reservations requiring human inspection; never delete a lock solely by PID or swallow ownership errors.
 
-A policy prompt acquires no lock. In the physical force_ask diagnostic, approval executed the tool and produced a post event without rerunning the pre handler. The production evaluator emits ask; a subsequent single-handler diagnostic emitted ask and completed the write without a visible prompt or pre-handler reentry. Consequently neither mandatory human approval nor a required post-approval reservation can be assumed from the current ask path; prompt sequencing remains a merge blocker. Missing post identity, timeout and interruption also remain integration blockers; the adapter does not guess or manufacture a matching owner. Native Git pre-commit validation remains a separate installed boundary.
+### Human supervision
+
+A supported transport requests human review for approval-required protected-document writes. TopHat 1.0 promises no universal mutation interception, post-approval freshness or automatic reservation coverage for prompted writes. While approval waits, avoid editing the target, changing branch/configuration or permitting another session to mutate related state. If state changes, cancel and propose again. This is instructed workflow discipline, not race prevention.
+
+Terminal commands and other mutation surfaces can bypass native-file guardrails. For workspace initialization and architecture pivots, the human pauses concurrent mutating sessions and coordinates the operation; no automatic global macro lock is claimed. Native Git validation remains a separate commit boundary. Catalog equality remains mandatory; cooperative operation is not permission to disable hooks or accept altered pinned resources.
+
+## Current qualification requirements
+
+The revised candidate needs one disposable production-adapter session on the declared IDE/version: ordinary exploration/unmanaged command execution before Git, a denied native write, a prompted write rejected and then approved without a reservation or release error, and an ordinary reserved native write with exact-owner post release. Record exact installed-resource hashes, original payloads, runtime/cwd and independent target/lock evidence. Diagnostic prompt observations do not substitute for this candidate's execution. Do not broaden file grants or change production-host files for the test.
+
+Subprocess tests verify policy/configuration ordering, every supported prompted-tool shape, unreserved post behavior despite configuration changes, preservation of another call's reservation, ordinary release errors, command non-applicability and catalog tamper rejection. They do not prove cached-grant bypass, human authentication, arbitrary tools, multi-root IDE behavior or interrupted-operation recovery. Qualify additional host claims separately. No further rounds of the rejected handler sequence are required.
 
 ## Packaging and verification
 
@@ -30,7 +40,7 @@ The catalog explicitly includes the adapter and this support document, then foll
 
 Automated adapter tests execute real Node subprocesses and existing evaluator calls in disposable hosts, including paths with spaces. They observe policy-before-lock behavior, exact owner preservation, root selection, pre-Git reads, malformed input, post failure and catalog tamper rejection. They are not evidence of physical IDE interception.
 
-Before merge to development or host cutover, independently capture the declared IDE/version, raw pre/post JSON, actual hook cwd/execPath/Node version, target tool cwd, mounted-root order and sentinel outcomes. Verify an actual deny prevents execution, reject/approve a prompt and inspect whether a required reservation exists before execution, and record cached approval/force_ask behavior without changing production policy. Probe success, tool error, pre-denial, prompt rejection, timeout, crash and missing post events separately. Resolve the macro selector and verify relative script launch; failures remain blockers. Never treat an agent declining to make a call as hook enforcement.
+Before merge or host cutover, complete the current qualification requirements above and independent implementation review. No positive macro discriminator is required for the explicitly unmanaged command path, but workflow argument transport and existing command prerequisites remain separate checks. Never treat an agent declining to make a call as hook enforcement. Unsupported error/interruption/multi-root cases must not be advertised as qualified.
 
 Concurrency follow-ups are separate: cross-type mutual exclusion, canonical owner identity, interrupted-operation recovery and macro transaction lifetime. No consumer-project acceptance or release is claimed here.
 
@@ -41,6 +51,10 @@ Run `node .agents/tests/antigravity-hook-probe.mjs` from the source checkout. It
 Request actual agent calls for ls, an allow-sentinel.txt write, a deny-sentinel.txt write, a force-ask-sentinel.txt write and `printf TOPHAT_DENY`. Initially reject the approval request. Independently check which actions occurred. Inspect trace.jsonl for exact raw payload, cwd, execPath, Node version, emitted response and post events; an agent choosing not to call a tool is inconclusive. Inputs must be synthetic. Only presence of the legacy environment variable is captured, not its value or the process environment.
 
 Repeat using `node .agents/tests/antigravity-hook-probe.mjs --base <returned-base> --relative`, reload customizations and capture the same observations. The generator only accepts its marked disposable base and retains config history. Repeat with nested target cwd, paths with spaces and multiple workspace mounts. Separate fixtures test cached approval, timeout/crash/bad-output and a Git-backed candidate installation. Keep failed traces. Physical IDE experiments are executed by the Human Orchestrator; implementation-environment subprocesses alone cannot establish interception.
+
+## Historical diagnostic evidence and superseded strict proposals
+
+The remainder preserves observations and rejected/conditional proposals from the earlier strict contract. Statements requiring a post-approval reservation, a positive macro discriminator for all commands, or excluding the integration solely for lack of isolation are historical dispositions superseded by the current cooperative scope. Actual failed test outcomes remain unchanged. Do not follow the old sequence instructions as current next steps.
 
 ## Observed diagnostic evidence, 2026-10-07
 

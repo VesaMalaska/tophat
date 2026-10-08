@@ -1,4 +1,4 @@
-# TopHat boundary registry — through Slice 8
+# TopHat boundary registry
 
 This registry distinguishes current mechanisms from instructions and planned work. A registered hook is not automatically a reliable fail-closed control.
 
@@ -52,6 +52,12 @@ The human-approved terminal amendment adds deterministic profile/capability, hig
 
 Generic native Linux fixtures observe Node input/resize, normal/error/SIGINT exits and PTY termios restoration using util-linux script and GNU stty. Renderer/glyph/font behavior, real product integration, other OS execution and IDE interception remain unverified. No new command, universal OS sandbox, renderer engine, automatic dependency installation or receipt migration is supplied. See `.agents/docs/terminal-host-support.md`.
 
-## Hook transport candidate
+## Cooperative 1.0 hook transport candidate
 
-The direct Node adapter derives the selected host from its own module and preserves unchanged lock/policy contracts. Its pre-write handler checks protected-write/framework decisions before locking; post output is event-specific. Closed exploration and known read-only validator calls do not require Git. Positive macro identity is still unverified, so other command calls visibly block with MACRO_APPLICABILITY_UNVERIFIED; there is no automatic macro reservation or all-command exemption. Physical synthetic probes on Antigravity 2.19.1 observed deny enforcement, relative Node/CJS launch and force_ask rejection/approval. Single-handler ask allowed a write without a visible prompt; single-handler force_ask rejection preserved the file and produced no post event. Approval did not rerun the pre handler, so mandatory approval and the required reservation after approval remain blockers. Force_ask alone is not a complete repair. Production adapter integration, multi-root, explicit cached-grant and broader error/interruption handling also need observation before merge or cutover. See `.agents/docs/antigravity-hook-support.md`. Concurrency redesign and recovery remain separate proposals.
+TopHat 1.0 relies on agent cooperation and human supervision. Deterministic validators, existing policy rules and installed-catalog equality remain intact; instructions and selected hook checks are not an OS sandbox. Controlled execution and isolation are deferred to 2.0/CLI architecture.
+
+The direct Node >=24 adapter derives the installed host from its module and runs protected-write/framework checks before prompting or acquisition. The supported transport requests human review for protected documents: the adapter maps ask to force_ask and leaves those writes supervised and unreserved. No universal mutation interception, post-approval freshness or automatic reservation coverage is promised for prompted writes. Post identifies that path from the unchanged policy's original tool arguments and skips the backend; it does not hide real ownership/release failures. Non-prompted applicable native writes retain the existing exact-owner reservation/release contract and its interruption limitations.
+
+Valid unmanaged run_command payloads allow execution without any global-pivot reservation. Exploration and read-only validators remain pre-Git non-applicable. Command text does not prove slash-workflow identity; terminal writes can bypass native-file guardrails. The human coordinates workspace initialization and architecture pivots, pauses concurrent mutation and cancels/reproposes if state changes while approval waits. Policy rules and native Git gates retain their own invoked checks.
+
+COMPATIBILITY_PENDING: Antigravity 2.19.1 diagnostic probes observed deny interception, relative Node/CJS launches and force_ask rejection/approval. The rejected three-handler trial acquired while approval waited; it is not revived. Production-adapter verification of this revised single-handler cooperative path remains required before merge/cutover. A passing subprocess suite does not qualify additional IDE versions, mounts, cached grants, arbitrary tools or crashes. See `.agents/docs/antigravity-hook-support.md` for current qualification requirements and preserved historical evidence.

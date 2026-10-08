@@ -31,7 +31,8 @@ test('direct Node launch from customization cwd uses installed root and original
   const f = fixture();
   try {
     const input = f.write(), r = f.cli('pre-write', input);
-    assert.equal(r.status, 0, r.stderr); assert.equal(JSON.parse(r.stdout).status, 'LOCK_ACQUIRED');
+    assert.equal(r.status, 0, r.stderr); assert.equal(JSON.parse(r.stdout).decision, 'allow');
+    assert.deepEqual(Object.keys(JSON.parse(r.stdout)).sort(), ['decision', 'reason']);
     const p = JSON.parse(input), owner = createHash('sha256').update(JSON.stringify([p.conversationId, p.toolCall.name, p.toolCall.args])).digest('hex');
     assert.equal(JSON.parse(readFileSync(f.lock, 'utf8')).owner, owner);
     const post = f.cli('post-write', input); assert.equal(post.status, 0, post.stderr); assert.deepEqual(JSON.parse(post.stdout), {}); assert.equal(existsSync(f.lock), false);
@@ -64,9 +65,15 @@ test('known validator routing works before Git without executing policy or valid
 });
 
 for (const command of ['ls; touch file', 'ls > notes.txt', 'ls | cat', 'pwd && true', 'ls $(touch file)', 'ls\npwd', 'node -e "process.exit(0)"', 'pnpm run docs:draft', 'echo /workspace-init', 'node .agents/scripts/validate-doc-package.ts invalid'])
-  test(`unknown command cannot silently bypass macro gate: ${JSON.stringify(command)}`, () => {
+  test(`unmanaged command does not invent a macro reservation: ${JSON.stringify(command)}`, () => {
     const f = fixture(false);
-    try { assert.equal(status(f.evaluate('pre-command', f.command(command))), 'MACRO_APPLICABILITY_UNVERIFIED'); assert.equal(existsSync(join(f.root, '.git')), false); }
+    try {
+      rmSync(join(f.root, '.agents/tophat.config.json'));
+      const r = f.evaluate('pre-command', f.command(command));
+      assert.equal(status(r), 'UNMANAGED_COMMAND'); assert.equal((r.output as any).decision, 'allow');
+      assert.equal(existsSync(join(f.root, '.git')), false);
+      const post = f.evaluate('post-command', f.command(command)); assert.deepEqual(post.output, {}); assert.equal(post.exitCode, 0); assert.equal(post.diagnostic, undefined);
+    }
     finally { f.close(); }
   });
 
@@ -74,19 +81,60 @@ test('invented macro metadata is not an applicability discriminator', () => {
   const f = fixture();
   try {
     const r = f.evaluate('pre-command', f.command('echo fixture', f.root, { workflow: '/workspace-init', ANTIGRAVITY_CMD: '/architecture-pivot' }));
-    assert.equal(status(r), 'MACRO_APPLICABILITY_UNVERIFIED'); assert.equal(existsSync(join(f.root, '.git/locks')), false);
-    const post = f.evaluate('post-command', f.command('echo fixture')); assert.deepEqual(post.output, {}); assert.equal(post.exitCode, 1); assert.match(post.diagnostic!, /MACRO_APPLICABILITY_UNVERIFIED/);
+    assert.equal(status(r), 'UNMANAGED_COMMAND'); assert.equal(existsSync(join(f.root, '.git/locks')), false);
+    const post = f.evaluate('post-command', f.command('echo fixture')); assert.deepEqual(post.output, {}); assert.equal(post.exitCode, 0); assert.equal(post.diagnostic, undefined);
   } finally { f.close(); }
 });
 
-test('protected denial and ask return before config loading or lock acquisition', () => {
+test('protected denial and invalid config stop before prompting or lock acquisition', () => {
   const f = fixture();
   try {
     writeFileSync(join(f.root, '.agents/tophat.config.json'), 'invalid');
     assert.equal(status(f.evaluate('pre-write', f.write('Context.md', 'missing marker'))), 'ACTIVE_CHUNK_MISSING');
-    const asked = f.evaluate('pre-write', f.write('Strategy.md')); assert.equal((asked.output as any).decision, 'ask');
+    const asked = f.evaluate('pre-write', f.write('Strategy.md')); assert.equal(status(asked), 'TOPHAT_CONFIG_INVALID'); assert.equal((asked.output as any).decision, 'deny');
     assert.equal(existsSync(join(f.root, '.git/locks')), false);
-    const post = f.evaluate('post-write', f.write('Strategy.md')); assert.equal(post.exitCode, 1); assert.deepEqual(post.output, {}); assert.match(post.diagnostic!, /LOCK_RELEASE_FAILED/);
+  } finally { f.close(); }
+});
+
+test('all prompted native tools are unreserved before Git and post skips release despite config drift', () => {
+  const f = fixture(false);
+  try {
+    const calls = [f.write('Strategy.md'),
+      f.payload('replace_file_content', { TargetFile: join(f.root, 'Context.md'), ReplacementContent: 'fixture' }),
+      f.payload('multi_replace_file_content', { TargetFile: join(f.root, 'Context.md'), ReplacementChunks: [{ TargetContent: '### 🎯 Active Sprint Chunk:', ReplacementContent: 'fixture' }] })];
+    for (const input of calls) {
+      const pre = f.cli('pre-write', input); assert.equal(pre.status, 0, pre.stderr);
+      const wire = JSON.parse(pre.stdout); assert.equal(wire.decision, 'force_ask'); assert.deepEqual(Object.keys(wire).sort(), ['decision', 'reason']);
+      assert.match(wire.reason, /unreserved/); assert.equal(existsSync(join(f.root, '.git')), false);
+    }
+    rmSync(join(f.root, '.agents/tophat.config.json'));
+    for (const input of calls) {
+      const post = f.cli('post-write', input); assert.equal(post.status, 0, post.stderr); assert.equal(post.stderr, ''); assert.deepEqual(JSON.parse(post.stdout), {});
+    }
+    assert.equal(existsSync(join(f.root, '.git')), false);
+  } finally { f.close(); }
+});
+
+test('prompted post never releases another ordinary call reservation or hides its release errors', () => {
+  const f = fixture();
+  try {
+    const ordinary = f.write(); assert.equal(status(f.evaluate('pre-write', ordinary)), 'LOCK_ACQUIRED');
+    const before = readFileSync(f.lock, 'utf8'), prompted = f.write('Strategy.md');
+    assert.equal((f.evaluate('pre-write', prompted).output as any).decision, 'force_ask');
+    const failedTool = JSON.parse(prompted); failedTool.error = 'fixture error';
+    const post = f.cli('post-write', JSON.stringify(failedTool)); assert.equal(post.status, 0, post.stderr); assert.equal(post.stderr, '');
+    assert.equal(readFileSync(f.lock, 'utf8'), before);
+    assert.equal(f.evaluate('post-write', ordinary).exitCode, 0); assert.equal(existsSync(f.lock), false);
+    const missing = f.cli('post-write', ordinary); assert.equal(missing.status, 1); assert.match(missing.stderr, /LOCK_RELEASE_FAILED/);
+  } finally { f.close(); }
+});
+
+test('malformed command and unmanaged command roots still deny without macro locking', () => {
+  const f = fixture(false);
+  try {
+    assert.equal(status(f.evaluate('pre-command', f.payload('run_command', { Cwd: f.root }))), 'HOOK_INPUT_INVALID');
+    assert.equal(status(f.evaluate('pre-command', f.command('echo fixture', '/unselected/directory'))), 'HOOK_ROOT_INVALID');
+    assert.equal(existsSync(join(f.root, '.git')), false);
   } finally { f.close(); }
 });
 

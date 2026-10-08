@@ -129,8 +129,9 @@ export function evaluateAntigravityHook(mode: string, input: string, moduleUrl =
         return transport(mode, allow('SKIPPED_NOT_APPLICABLE', 'Known read-only TopHat validator does not acquire a macro lock'));
       }
     } catch (error) { return transport(mode, deny('HOOK_ROOT_INVALID', (error as Error).message)); }
-    // No documented positive macro discriminator has been observed. Do not invent one or silently disable this gate.
-    return transport(mode, deny('MACRO_APPLICABILITY_UNVERIFIED', 'Macro identity transport is unverified; this candidate is not ready for command-hook cutover'));
+    // A native command is not evidence of slash-workflow identity. Cooperative 1.0
+    // leaves it unmanaged rather than inventing a global reservation or shell policy.
+    return transport(mode, allow('UNMANAGED_COMMAND', 'No automatic macro reservation; human coordination is required for concurrent mutations'));
   }
   if (!writeTools.includes(name)) return transport(mode, deny('HOOK_INPUT_INVALID', 'Expected a supported write tool'));
   let root: string;
@@ -139,11 +140,22 @@ export function evaluateAntigravityHook(mode: string, input: string, moduleUrl =
     hostPath(root, args.TargetFile);
     if (mode === 'pre-write') hostPath(root, join(root, '.agents/tophat.config.json'));
   } catch (error) { return transport(mode, deny('HOOK_ROOT_INVALID', (error as Error).message)); }
-  if (mode === 'post-write') return transport(mode, evaluateSwarmLock('release', 'tophat', input, root));
   const protectedWrite = evaluateProtectedWrite(input);
-  if (protectedWrite.decision !== 'allow') return transport(mode, protectedWrite);
+  if (mode === 'post-write') {
+    // This unchanged evaluator depends only on original tool arguments, not live
+    // target/config state. Every ask path below is unreserved. Never call release
+    // for it, even if another operation currently holds a reservation.
+    if (protectedWrite.decision === 'ask') return transport(mode, allow('SUPERVISED_UNRESERVED', 'Prompted write has no automatic reservation to release'));
+    if (protectedWrite.decision === 'deny') return transport(mode, protectedWrite);
+    return transport(mode, evaluateSwarmLock('release', 'tophat', input, root));
+  }
+  if (protectedWrite.decision === 'deny') return transport(mode, protectedWrite);
   const framework = evaluateSvelteWrite(input, root);
   if (framework.decision !== 'allow') return transport(mode, framework);
+  if (protectedWrite.decision === 'ask') return transport(mode, {
+    ...protectedWrite, decision: 'force_ask',
+    reason: `${protectedWrite.reason} Supervised and unreserved: cancel and propose again if workspace state changes while approval waits.`,
+  });
   const lock = evaluateSwarmLock('acquire', 'tophat', input, root);
   if (lock.status === 'LOCK_ACQUIRE_FAILED') return transport(mode, { ...lock, reason: `${lock.reason}. An initialized host Git worktree is required; the adapter does not initialize Git.` });
   return transport(mode, lock);
@@ -154,7 +166,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const finish = (result: HookResult): void => {
     if (finished) return; finished = true;
     if (result.diagnostic) process.stderr.write(`${result.diagnostic}\n`);
-    process.stdout.write(`${JSON.stringify(result.output)}\n`); process.exitCode = result.exitCode;
+    // IDE wire output is the documented decision/reason envelope. Internal status
+    // remains available to evaluators/tests; post failures are reported on stderr.
+    const output = 'decision' in result.output ? { decision: result.output.decision, reason: result.output.reason } : {};
+    process.stdout.write(`${JSON.stringify(output)}\n`); process.exitCode = result.exitCode;
   };
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', (chunk: string) => {

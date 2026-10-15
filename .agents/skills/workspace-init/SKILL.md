@@ -24,6 +24,12 @@ Read shared rules `.agents/rules/workflows.md`, `.agents/rules/workspace-context
 9. **Foundational task:** Load `/generate-smoke-test` separately. It must use the same package/task gates and its own proposal/human issue-creation gate; no blanket authorization to create a ticket. Do not invoke `/generate-readme`; its legacy autonomous path is retired; use the explicit derived-document lifecycle.
 10. **Handoff:** Summarize validated authority, approved private-state changes, applicable blockers and any explicitly authorized task. Recommend `/sprint-briefing` with its configured model. There is no automatic Git commit, branch creation or PR into main. If human-requested publication is needed, declare the intended host base and intended paths explicitly; shared Git safety applies.
 
+## Cooperative macro coordination
+
+TopHat 1.0 does not acquire an automatic global-pivot reservation from IDE command payloads. Before this workflow, the Human Orchestrator pauses concurrent mutating sessions and confirms the selected host/state. Human coordination is required to prevent concurrent mutations; the hook cannot identify or lock the slash workflow from ordinary run_command calls. Do not fabricate a native payload or assume command execution proves global lock coverage. Existing package, role, task, Git and explicit approval gates remain mandatory.
+
+Approval-required native writes are supervised and unreserved. While a prompt waits, do not mutate the target or relevant workspace state; cancel and propose again if state changes. Ordinary applicable native writes retain their existing reservation contract, but this does not protect an entire macro operation or terminal writes.
+
 ## Git mutation boundary
 
 Before every separately authorized Git action, the execution orchestrator invokes `node <pinned-TopHat-source>/.agents/scripts/git-preflight.ts` with the exact closed operation request on stdin; require GIT_PREFLIGHT_READY / ALLOW. Follow `.agents/docs/git-safety.md`: explicit branch/HEAD/base/remote, applicable clean or exact intended state, sequential checked results and operation-specific postchecks. This delegation does not grant Git authority to a read-only role or introduce implicit publication. Failure preserves actual state and halts; no automatic recovery. Candidate-changing commits require fresh applicable review/QA/document evidence.

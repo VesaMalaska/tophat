@@ -71,3 +71,7 @@ Execution probes ran only in Antigravity, not Antigravity IDE. Tool traces suppo
 ## Additive terminal support
 
 Terminal support adds one topical guidance skill (18 total) without changing the 30 public command identities. Earlier observations of 17 guidance entries describe the pre-extension candidate; they do not establish discovery or transport for the new entry. Use the approved terminal host contract, pinned full closure and fresh host validation; do not reinterpret or upgrade historical evidence automatically.
+
+## Hook transport candidate installation
+
+The direct Node adapter and hook support document are explicit catalog resources; unchanged backend imports remain in the closure. Re-pin and compare every installed resource exactly; disabling a handler or editing installed hooks alone remains invalid. This candidate is COMPATIBILITY_PENDING for relative launch, actual decision enforcement, prompt continuation and macro identity. Do not merge or cut over before the applicable declared-IDE probes pass. Preserve host scripts, product authority, custom skills/routing and existing native Git integration. See `.agents/docs/antigravity-hook-support.md` for the closed exploratory subset and command-route blocker.

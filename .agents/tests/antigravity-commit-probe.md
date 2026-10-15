@@ -2,11 +2,11 @@
 
 ## Observed result — 2026-10-02
 
-Vesa ran this probe in a temporary Antigravity IDE workspace. The agent reported that the attempted `run_command` completed with exit status 0 and created commit `5836484` (`must-not-exist`). No `.agents/observed-payload.json` was created. Vesa independently ran `git log -1 --format=%s` and saw `must-not-exist`.
+The Human Orchestrator ran this probe in a temporary Antigravity IDE workspace. The agent reported that the attempted `run_command` completed with exit status 0 and created commit `5836484` (`must-not-exist`). No `.agents/observed-payload.json` was created. The Human Orchestrator independently ran `git log -1 --format=%s` and saw `must-not-exist`.
 
 This **fails** the required pre-operation denial test for that IDE session and configuration. It does not establish whether the IDE lacks the capability altogether or the workspace hook was not loaded or activated. Until a successful host probe is observed, TopHat cannot claim IDE-level pre-commit prevention.
 
-Follow-up: the screenshot shows the expected named hook, `enabled: true`, `PreToolUse`, `matcher: "run_command"`, and a command handler. Vesa could not find the advertised Hooks management view in the standalone IDE. Google's download page and changelog list **v2.5.5 as the latest standalone Antigravity IDE** on this date; v2.19.1 is a different Antigravity 2.0 product. Updating the standalone IDE is therefore not an available correction for this probe result.
+Follow-up: the screenshot shows the expected named hook, `enabled: true`, `PreToolUse`, `matcher: "run_command"`, and a command handler. The Human Orchestrator could not find the advertised Hooks management view in the standalone IDE. Google's download page and changelog list **v2.5.5 as the latest standalone Antigravity IDE** on this date; v2.19.1 is a different Antigravity 2.0 product. Updating the standalone IDE is therefore not an available correction for this probe result.
 
 Run this in a **separate temporary repository** opened as a project in the actual Antigravity IDE. It makes one empty Git commit only if the hook fails to deny. Do not run it in the TopHat repository.
 

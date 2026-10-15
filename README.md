@@ -162,7 +162,13 @@ Instead, pull the diagnostic emergency brake by initiating `/triage-bug`. This t
 
 The native Git hook runs `.agents/scripts/run-validation.ts` before a commit when installed. It verifies the configured categories and host `package.json` scripts before executing `pnpm run <script-name>` in declared order. A missing script, failed command, unreadable config, or tracked-file mutation during validation denies the commit. A passing report identifies the pre-commit snapshot and the existing `HEAD`; it does not claim that a new commit already exists. Git's `--no-verify`, an uninstalled hook, or a different `core.hooksPath` bypasses this local gate.
 
-`.agents/hooks.json` also declares IDE handlers for locks, protected writes, and Svelte syntax. Their scripts deny malformed calls and errors when invoked. A live test of a correctly shaped `PreToolUse` command hook in standalone Antigravity IDE v2.5.5 did not invoke it, so registration alone does not prove these handlers intercept writes. See [the boundary registry](.agents/BOUNDARIES.md) for their exact status. The obsolete post-command static analysis handler has been removed.
+TopHat 1.0 is a **supervised, cooperative workflow**. Agent instructions, selected IDE guardrails and invoked validators help the human coordinate work; they do not isolate the agent or prevent every mutation. Controlled execution and stronger capability boundaries belong to 2.0/CLI architecture.
+
+`.agents/hooks.json` keeps its direct Node handlers enabled. The adapter derives the installed host from its own module and runs unchanged protected-write/framework policy checks. Approval-required writes use force_ask and are **supervised and unreserved**: no automatic acquisition, post-approval freshness check or release is claimed. The post path skips release based on the original protected-write arguments; genuine ordinary-write ownership/release failures remain visible. Other applicable native writes retain the existing initialized-Git reservation contract.
+
+Ordinary and unmanaged commands proceed without automatic global-pivot coverage; command text is not slash-workflow identity, and terminal writes can bypass native-file guardrails. The human pauses concurrent mutations during `/workspace-init` and `/architecture-pivot`. If state changes while approval waits, cancel and make a fresh proposal. No universal mutation interception, post-approval freshness or automatic reservation coverage is promised for prompted writes.
+
+This revised production adapter is **COMPATIBILITY_PENDING**, not a supported cutover yet. Physical Antigravity 2.19.1 diagnostics established selected deny/prompt behavior, while a multi-handler lock trial failed approval ordering. That route remains rejected. See [hook support](.agents/docs/antigravity-hook-support.md) for the bounded production verification still needed, and [the boundary registry](.agents/BOUNDARIES.md) for the exact limits. Catalog equality, validators and native Git gates are unchanged.
 
 ---
 
@@ -221,13 +227,10 @@ To deploy this workflow on a fresh repository, ensure your local environment and
 The TopHat swarm does not initialize package managers or install base frameworks. **Before running `/workspace-init`**, the Human Orchestrator must bootstrap the execution stack, configure the vault, and supply an approved valid package.
 
 1. **Initialize the Framework:** Generate your base application scaffolding (e.g., SvelteKit, Vite, Electron).
-2. **Install Core Tooling:** You must install the dependencies required by the Antigravity `hooks.json` interception scripts. Run the following command:
-   ```bash
-   pnpm add -D typescript tsx
-   ```
+2. **Verify Hook Runtime:** The IDE runner must inherit Node >=24. Registered hooks use native Node TypeScript execution and require no pnpm/tsx bootstrap. Install host TypeScript or other development dependencies only as required by the host project.
 3. **Verify Lockfile:** Ensure `package.json` and `pnpm-lock.yaml` are present at the workspace root.
 
-Install a test runner, browser tooling, and styling framework only when the host project and its task contract require them. Existing hook scripts use `tsx`; the TopHat repository's own tests use Node 24 directly.
+Install a test runner, browser tooling, and styling framework only when the host project and its task contract require them. Other workflow instructions still use `pnpm exec tsx`; install tsx explicitly if using those entry points. Registered hooks and the TopHat repository's own tests use Node >=24 directly.
 
 ### 7.3. Documentation package and private state
 
@@ -354,4 +357,4 @@ Run `node .agents/scripts/validate-command-catalog.ts --root <pinned-source>` fo
 
 Read the [terminal host contract](.agents/docs/terminal-host-support.md) before onboarding. CLI has process/I/O/QA capabilities; TUI adds interactive screen capability. Static TUI layout routes junior, localized input/state routes mid, and process/filesystem/secret/internal work routes senior; mixed work takes the highest tier. The new topical `terminal-qa-flows` skill covers only selected flow/presentation methods. Terminal dimensions live exclusively in typed rows/columns, with no browser viewport projection.
 
-The generic Linux PTY fixtures require existing util-linux `script` and GNU `stty`. They observe input, resize, exit and termios restoration using Node; they do not certify native renderer/glyph behavior, every OS, Antigravity hooks or a real SparkleWire installation. Product pilot and release acceptance remain separate.
+The generic Linux PTY fixtures require existing util-linux `script` and GNU `stty`. They observe input, resize, exit and termios restoration using Node; they do not certify native renderer/glyph behavior, every OS, Antigravity hooks or a real consumer-host installation. Product pilot and release acceptance remain separate.

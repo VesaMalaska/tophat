@@ -1,88 +1,56 @@
 {
-    "context-io-gate": {
-        "enabled": true,
-        "PreToolUse": [
-            {
-                "matcher": "replace_file_content|multi_replace_file_content|write_to_file",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "pnpm exec tsx .agents/scripts/swarm-lock.ts acquire tophat",
-                        "timeout": 5
-                    }
-                ]
-            }
-        ],
-        "PostToolUse": [
-            {
-                "matcher": "replace_file_content|multi_replace_file_content|write_to_file",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "pnpm exec tsx .agents/scripts/swarm-lock.ts release tophat",
-                        "timeout": 5
-                    }
-                ]
-            }
+  "context-io-gate": {
+    "enabled": true,
+    "PreToolUse": [
+      {
+        "matcher": "^(replace_file_content|multi_replace_file_content|write_to_file)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./scripts/antigravity-hook.ts pre-write",
+            "timeout": 30
+          }
         ]
-    },
-    "macro-reset-gate": {
-        "enabled": true,
-        "PreToolUse": [
-            {
-                "matcher": "run_command",
-                "condition": "process.env.ANTIGRAVITY_CMD.match(/\\/(architecture-pivot|workspace-init)/)",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "pnpm exec tsx .agents/scripts/swarm-lock.ts acquire global-pivot",
-                        "timeout": 10
-                    }
-                ]
-            }
-        ],
-        "PostToolUse": [
-            {
-                "matcher": "run_command",
-                "condition": "process.env.ANTIGRAVITY_CMD.match(/\\/(architecture-pivot|workspace-init)/)",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "pnpm exec tsx .agents/scripts/swarm-lock.ts release global-pivot",
-                        "timeout": 5
-                    }
-                ]
-            }
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "^(replace_file_content|multi_replace_file_content|write_to_file)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./scripts/antigravity-hook.ts post-write",
+            "timeout": 30
+          }
         ]
-    },
-    "protect-strategy-memory": {
-        "enabled": true,
-        "PreToolUse": [
-            {
-                "matcher": "replace_file_content|multi_replace_file_content|write_to_file",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "pnpm exec tsx .agents/scripts/enforce-strategy-lock.ts",
-                        "timeout": 15
-                    }
-                ]
-            }
+      }
+    ]
+  },
+  "macro-reset-gate": {
+    "enabled": true,
+    "PreToolUse": [
+      {
+        "matcher": "^run_command$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./scripts/antigravity-hook.ts pre-command",
+            "timeout": 30
+          }
         ]
-    },
-    "enforce-svelte-runes": {
-        "enabled": true,
-        "PreToolUse": [
-            {
-                "matcher": "replace_file_content|multi_replace_file_content|write_to_file",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "pnpm exec tsx .agents/scripts/enforce-svelte-runes.ts",
-                        "timeout": 15
-                    }
-                ]
-            }
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "^run_command$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./scripts/antigravity-hook.ts post-command",
+            "timeout": 30
+          }
         ]
-    }
+      }
+    ]
+  }
 }

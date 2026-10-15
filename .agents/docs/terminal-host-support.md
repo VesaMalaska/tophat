@@ -1,6 +1,6 @@
 # Terminal host support
 
-This additive TopHat 1.0 scope amendment implements the human-approved Terminal Support Implementation Brief revision 2 (2026-10-06, decisions D01–D09). It extends generic Node.js/TypeScript/pnpm host support; SparkleWire onboarding, product authority approval, merge and release remain separate decisions. Existing criterion IDs and host shapes are retained. Configuration, task and QA contracts remain schemaVersion 1; older validators deny the new profiles, and old receipts are never automatically upgraded.
+This additive TopHat 1.0 scope amendment implements the human-approved Terminal Support Implementation Brief revision 2 (2026-10-06, decisions D01–D09). It extends generic Node.js/TypeScript/pnpm host support; Consumer-host onboarding, product authority approval, merge and release remain separate decisions. Existing criterion IDs and host shapes are retained. Configuration, task and QA contracts remain schemaVersion 1; older validators deny the new profiles, and old receipts are never automatically upgraded.
 
 ## Profiles and classification
 

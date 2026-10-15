@@ -277,3 +277,79 @@ test('approval diagnostics preserve identical targets, decision settings and a n
     }
   } finally { rmSync(f.base, { recursive: true, force: true }); }
 });
+
+test('IDE presentation metadata does not change reservation identity for native writes', () => {
+  const f = fixture();
+  try {
+    const tools = [
+      ['write_to_file', { CodeContent: 'ordinary probe\n', Description: 'Create notes', Overwrite: true }],
+      ['replace_file_content', { TargetContent: 'before', ReplacementContent: 'after' }],
+      ['multi_replace_file_content', { ReplacementChunks: [{ TargetContent: 'before', ReplacementContent: 'after' }] }],
+    ] as const;
+    for (const [name, operation] of tools) {
+      const args = { ...operation, TargetFile: join(f.root, 'notes.txt') };
+      for (const [before, after] of [
+        [{}, { toolAction: 'Writing file', toolSummary: 'Create notes' }],
+        [{ toolAction: 'Before', toolSummary: 'Before' }, { toolAction: 'After', toolSummary: 'After' }],
+        [{ toolAction: 'Before', toolSummary: 'Before' }, {}],
+      ]) {
+        const pre = f.cli('pre-write', f.payload(name, { ...args, ...before }));
+        assert.equal(pre.status, 0, pre.stderr);
+        assert.equal(JSON.parse(pre.stdout).decision, 'allow');
+        const owner = createHash('sha256').update(JSON.stringify(['fixture-session', name, args])).digest('hex');
+        assert.equal(JSON.parse(readFileSync(f.lock, 'utf8')).owner, owner);
+        const post = f.cli('post-write', f.payload(name, { ...args, ...after }, { error: '' }));
+        assert.equal(post.status, 0, post.stderr);
+        assert.equal(post.stderr, ''); assert.deepEqual(JSON.parse(post.stdout), {});
+        assert.equal(existsSync(f.lock), false);
+      }
+    }
+  } finally { f.close(); }
+});
+
+test('presentation filtering preserves genuine operation mismatches and lock ownership', () => {
+  const f = fixture();
+  try {
+    const args = { CodeContent: 'ordinary probe\n', Description: 'Create notes', Overwrite: true, TargetFile: join(f.root, 'notes.txt') };
+    const input = f.payload('write_to_file', { ...args, toolAction: 'Before' });
+    assert.equal(status(f.evaluate('pre-write', input)), 'LOCK_ACQUIRED');
+    const lock = readFileSync(f.lock, 'utf8');
+    const variants = [
+      f.payload('write_to_file', { ...args, CodeContent: 'changed' }),
+      f.payload('write_to_file', { ...args, TargetFile: join(f.root, 'other.txt') }),
+      f.payload('write_to_file', { ...args, Overwrite: false }),
+      f.payload('write_to_file', { ...args, Description: 'changed' }),
+      f.payload('write_to_file', { ...args, futureField: 'unrecognized' }),
+      f.payload('write_to_file', args, { conversationId: 'another-session' }),
+      f.payload('replace_file_content', { ...args, ReplacementContent: 'changed' }),
+      f.payload('write_to_file', { TargetFile: args.TargetFile, CodeContent: args.CodeContent, Description: args.Description, Overwrite: args.Overwrite }),
+    ];
+    for (const variant of variants) {
+      const p = JSON.parse(variant); p.toolCall.args.toolSummary = 'After';
+      const result = f.evaluate('post-write', JSON.stringify(p));
+      assert.equal(result.exitCode, 1); assert.match(result.diagnostic!, /LOCK_OWNER_MISMATCH/);
+      assert.equal(readFileSync(f.lock, 'utf8'), lock);
+    }
+    assert.equal(f.evaluate('post-write', f.payload('write_to_file', args)).exitCode, 0);
+    assert.equal(existsSync(f.lock), false);
+  } finally { f.close(); }
+});
+
+test('only top-level presentation fields are excluded from replacement ownership', () => {
+  const f = fixture();
+  try {
+    const args = { TargetFile: join(f.root, 'notes.txt'), ReplacementChunks: [{
+      TargetContent: 'before', ReplacementContent: 'after', toolSummary: 'nested operation data',
+    }], toolAction: 'Before' };
+    const input = f.payload('multi_replace_file_content', args);
+    assert.equal(status(f.evaluate('pre-write', input)), 'LOCK_ACQUIRED');
+    const lock = readFileSync(f.lock, 'utf8');
+    const changed = JSON.parse(input);
+    changed.toolCall.args.ReplacementChunks[0].toolSummary = 'changed nested data';
+    const result = f.evaluate('post-write', JSON.stringify(changed));
+    assert.equal(result.exitCode, 1); assert.match(result.diagnostic!, /LOCK_OWNER_MISMATCH/);
+    assert.equal(readFileSync(f.lock, 'utf8'), lock);
+    assert.equal(f.evaluate('post-write', input).exitCode, 0);
+    assert.equal(existsSync(f.lock), false);
+  } finally { f.close(); }
+});

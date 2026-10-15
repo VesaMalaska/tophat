@@ -107,7 +107,17 @@ function validator(argv: string[], root: string, cwd: string): boolean {
   return flags.has('--root');
 }
 
-/** Evaluators receive the original bytes. Lock ownership and lifecycle semantics are unchanged. */
+/** Remove only observed IDE presentation fields from the backend's operation input.
+ * Preserve all other arguments and their order; policies still receive original bytes.
+ */
+function lockInput(payload: Payload): string {
+  const args = { ...payload.toolCall.args };
+  delete args.toolAction;
+  delete args.toolSummary;
+  return JSON.stringify({ ...payload, toolCall: { ...payload.toolCall, args } });
+}
+
+/** Policy and backend contracts remain unchanged; lock input omits IDE presentation. */
 export function evaluateAntigravityHook(mode: string, input: string, moduleUrl = import.meta.url, nodeVersion = process.versions.node): HookResult {
   if (!hookModes.includes(mode as HookMode)) return transport(mode, deny('HOOK_MODE_INVALID', 'Use one configured hook event mode'));
   if (!/^\d+\./.test(nodeVersion) || Number(nodeVersion.split('.')[0]) < 24)
@@ -147,7 +157,7 @@ export function evaluateAntigravityHook(mode: string, input: string, moduleUrl =
     // for it, even if another operation currently holds a reservation.
     if (protectedWrite.decision === 'ask') return transport(mode, allow('SUPERVISED_UNRESERVED', 'Prompted write has no automatic reservation to release'));
     if (protectedWrite.decision === 'deny') return transport(mode, protectedWrite);
-    return transport(mode, evaluateSwarmLock('release', 'tophat', input, root));
+    return transport(mode, evaluateSwarmLock('release', 'tophat', lockInput(payload), root));
   }
   if (protectedWrite.decision === 'deny') return transport(mode, protectedWrite);
   const framework = evaluateSvelteWrite(input, root);
@@ -156,7 +166,7 @@ export function evaluateAntigravityHook(mode: string, input: string, moduleUrl =
     ...protectedWrite, decision: 'force_ask',
     reason: `${protectedWrite.reason} Supervised and unreserved: cancel and propose again if workspace state changes while approval waits.`,
   });
-  const lock = evaluateSwarmLock('acquire', 'tophat', input, root);
+  const lock = evaluateSwarmLock('acquire', 'tophat', lockInput(payload), root);
   if (lock.status === 'LOCK_ACQUIRE_FAILED') return transport(mode, { ...lock, reason: `${lock.reason}. An initialized host Git worktree is required; the adapter does not initialize Git.` });
   return transport(mode, lock);
 }

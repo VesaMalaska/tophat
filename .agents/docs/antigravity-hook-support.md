@@ -1,6 +1,6 @@
 # Antigravity hook transport candidate
 
-Status: **COMPATIBILITY_PENDING — cooperative 1.0 candidate; production-adapter live verification and review still required.**
+Status: **COOPERATIVE_1_0 — independently reviewed; corrected ordinary-write lifecycle physically verified within the installation and coverage limits below.**
 
 **Current contract: supervised and cooperative.** The Human Orchestrator accepts reliance on agent cooperation and human supervision for TopHat 1.0; the revised contract received architectural approval. The multi-handler approval/acquisition sequence remains rejected. The new single-handler force_ask mapping is an unreserved approval guardrail, not that rejected reservation route. Controlled execution and isolation stay deferred to 2.0/CLI architecture. Historical strict proposals and probe procedures below are audit records, not current qualification instructions.
 
@@ -38,9 +38,21 @@ Terminal commands and other mutation surfaces can bypass native-file guardrails.
 
 ## Current qualification requirements
 
-The revised candidate needs one disposable production-adapter session on the declared IDE/version: ordinary exploration/unmanaged command execution before Git, a denied native write, a prompted write rejected and then approved without a reservation or release error, and an ordinary reserved native write with exact-owner post release. Record exact installed-resource hashes, original payloads, runtime/cwd and independent target/lock evidence. Diagnostic prompt observations do not substitute for this candidate's execution. Do not broaden file grants or change production-host files for the test.
+Qualification records must identify the declared IDE/version and distinguish these cases: ordinary exploration/unmanaged command execution before Git, a denied native write, a prompted write rejected and then approved without a reservation or release error, and an ordinary reserved native write with exact-owner post release. Record exact installed-resource hashes, original payloads, runtime/cwd and independent target/lock evidence. Diagnostic prompt observations do not substitute for this candidate's execution. Do not broaden file grants or change production-host files for the test.
 
 Subprocess tests verify policy/configuration ordering, every supported prompted-tool shape, unreserved post behavior despite configuration changes, preservation of another call's reservation, ordinary release errors, command non-applicability and catalog tamper rejection. They do not prove cached-grant bypass, human authentication, arbitrary tools, multi-root IDE behavior or interrupted-operation recovery. Qualify additional host claims separately. No further rounds of the rejected handler sequence are required.
+
+## Bounded qualification record — 2026-10-15
+
+The Human Orchestrator declared **Antigravity IDE 2.5.5**, Linux, and Request Review for the corrected ordinary-write session. Do not relabel this result as Antigravity 2.19.1 qualification. The IDE was launched from the intended Node 26 environment; the independent observer recorded Node 26.10.0. The unmodified production adapter was used, with no diagnostic recorder or added hook handlers.
+
+At implementation commit `619640593803ed9b077b0a9c9370424d5c75e17e`, the evidence archive's 28 installed production-resource fingerprints match the reviewed source. Independent samples recorded the ordinary reservation absent, then present before file creation, then absent with the expected file present approximately 2.14 seconds later. The final snapshot retained both protected-document baselines, the exact ordinary file contents and no automatic reservations. The native write succeeded; the agent reported no hook errors. No claim of independent stderr capture is made for that final session.
+
+Earlier production evidence at `f8d7fb52499de2892cee406c44d216e01348958a` recorded pre-Git command execution, protected-write denial, the ordinary-write Git prerequisite denial, and rejection/approval of supervised unreserved writes. Its ordinary-write release failure remains a failed result. A subsequent instrumented diagnostic identified the two added presentation fields; it is diagnostic evidence, not unchanged-production qualification. The corrected ordinary-write session closes that observed defect. The earlier cases were not all physically repeated on the corrected commit; unchanged policy routing and the focused regression suite provide the bounded additional coverage.
+
+Independent advisory review approved the metadata correction. Automated verification on Node 24.19.0 / pnpm 11.25.0 passed 62 focused adapter/backend/catalog tests, then all **388/388** repository tests with zero failures and zero skips using `node --test --test-concurrency=2 .agents/tests/*.test.ts`. Both files containing the earlier failures also passed separately, 9/9. No test timeout or assertion was relaxed. The historical 383/385 run remains recorded; its original failure cause was not established. The clean current full run supersedes that attempt for this candidate without proving the absence of future intermittent failures.
+
+This record does not establish cached Always Allow bypass, every native replacement-tool lifecycle, all permission presets, other IDE versions, multi-root execution or interrupted-operation recovery. It does not qualify a downstream host installation or complete TopHat 1.0 release acceptance. The cooperative supervision and mutation-surface limits remain in force. Private paths, raw payloads and evidence archives are retained outside the repository.
 
 ## Packaging and verification
 
@@ -48,7 +60,7 @@ The catalog explicitly includes the adapter and this support document, then foll
 
 Automated adapter tests execute real Node subprocesses and existing evaluator calls in disposable hosts, including paths with spaces. They observe policy-before-lock behavior, exact owner preservation, root selection, pre-Git reads, malformed input, post failure and catalog tamper rejection. They are not evidence of physical IDE interception.
 
-Before merge or host cutover, complete the current qualification requirements above and independent implementation review. No positive macro discriminator is required for the explicitly unmanaged command path, but workflow argument transport and existing command prerequisites remain separate checks. Never treat an agent declining to make a call as hook enforcement. Unsupported error/interruption/multi-root cases must not be advertised as qualified.
+Independent implementation review and cumulative physical verification are recorded below. Any host cutover still requires exact reviewed installation resources and its own prerequisite checks. No positive macro discriminator is required for the explicitly unmanaged command path, but workflow argument transport and existing command prerequisites remain separate checks. Never treat an agent declining to make a call as hook enforcement. Unsupported error/interruption/multi-root cases must not be advertised as qualified.
 
 Concurrency follow-ups are separate: cross-type mutual exclusion, canonical owner identity, interrupted-operation recovery and macro transaction lifetime. No consumer-project acceptance or release is claimed here.
 

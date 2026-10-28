@@ -63,7 +63,17 @@ The static command catalog owns identity and contracts; this overview introduces
 
 ## 🛑 Manual Implementation Sequences
 
-Do NOT attempt to run implementation as an automated workflow. The Human Orchestrator must manually swap the LLM model at each workflow transition to enforce Heterogeneous Model Validation.
+Do NOT attempt to run implementation as an automated workflow. The Human Orchestrator selects the host-configured model at each workflow transition and keeps required role sessions separate. A model change is not required when consecutive stages use the same configured model.
+
+### Model selection and independent validation
+
+- Every review, security audit and QA stage uses its own role session, independent of the author/implementation session. Load the applicable rules and inspect the exact candidate against its required authority and evidence. An independent reviewer may review a developer's remediation again; the developer cannot approve its own correction.
+- Cross-family validation is required at `/review-critical`: the reviewer must use a different model family from the implementation, including any remediation. The default profile pairs Gemini implementation with Claude critical review. If a host override or escalation makes those families the same, stop for an explicit human routing decision before critical review; do not silently waive the requirement.
+- Other review stages may use an independent session of the same family or model as the author. This provides less model diversity than cross-family review and must not be described as equivalent. Standard review, security, definition review and document review retain their separate roles and existing prerequisites.
+- Read model values from the active host `routingMatrix`. An unavailable required model or missing mapping blocks the stage until an explicit human-approved routing change is recorded in the host config. Quota exhaustion never authorizes skipping a stage or silently choosing a fallback. Sonnet and Opus escalations are explicit decisions, not mandatory duplicate passes.
+- `/remediate-task` defaults conservatively to Argon because corrections can include senior work; the assigned developer role still comes from validated task classification. Model strength does not expand that role's permissions.
+
+Model availability, family differences and session independence remain human-supervised. The config/catalog validators check mappings and resources; they do not authenticate the selected live model or enforce cross-family execution. Required stage order, read-only review boundaries, QA evidence and human approvals remain unchanged.
 
 ### Standard Implementation Sequence:
 

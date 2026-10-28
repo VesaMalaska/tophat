@@ -42,6 +42,27 @@ The swarm uses specific roles with instructed scope boundaries and selected hook
 
 The static command catalog owns identity and contracts; this overview introduces all 30 active commands. Host `routingMatrix` owns model advice. Select models manually; invoking a command does not bypass its prerequisites or later human approvals.
 
+### Default model routing profile
+
+The [vault routing matrix](.agents/tophat.config.json) uses the paid Google AI Pro catalog observed on 28 October 2026. It replaces the former Gemini Pro routes and generic model labels with explicit model/version/effort selections. This table summarizes the defaults; the installed host's `routingMatrix` remains the source of model values.
+
+| Model | Default commands | Purpose |
+| --- | ---: | --- |
+| Gemini 3.8 Flash Medium | 9 | Sprint briefing, strategy/context updates, junior/mid implementation, PR publication, approved definition/attachment finalization and bounded attachment assessment. |
+| Gemini 4 Argon High | 20 | Architecture, project definition and definition review, task planning, senior implementation, remediation, diagnostics, standard/security review, QA and derived documentation. |
+| Claude Sonnet 5.5 High | 1 | `/review-critical`: concentrate limited Claude allowance on adversarial review of higher-risk work. |
+| Claude Opus 5.5 | None | Explicit escalation for a bounded unresolved architectural problem; no automatic default or duplicate pass. |
+
+Review independence comes from separate role sessions and candidate-bound evidence. Every review, security audit and QA stage uses its own role session, independent of the author/implementation session. Cross-family validation is required at `/review-critical`; the default pairs Gemini implementation with Claude review. Other reviews, including `/project-definition-review`, may use an independent session of the same model or family as the author. That is less model diversity than cross-family review. See the [workflow policy](.agents/rules/workflows.md#model-selection-and-independent-validation) for overrides, remediation and supervised enforcement limits.
+
+The typical model sequence is Flash → Argon for junior implementation and standard review, and Flash/Argon → Sonnet → Argon for mid/senior implementation, critical review and the separate security audit. Required QA follows in its own Argon session. Re-select the model from the host config at every transition; when two stages use the same model, start the independent role session without an unnecessary model swap. The task classifier still owns which stages apply.
+
+`/remediate-task` uses Argon conservatively because it can carry senior-level corrections; classification still determines the permitted developer tier. Definition and attachment finalization use Flash to apply an already reviewed, explicitly approved candidate, without granting authority to invent scope or approval.
+
+Budget against the actual account's **Models & Usage** panel. It may expose a general Gemini/Flash allowance, a Claude/GPT allowance, and a separate Argon weekly limit. Use Flash for routine work to preserve the displayed Argon budget, and reserve Claude for critical review and explicit second opinions. Do not assume shared accounting from older documentation or infer a fixed quota multiplier from API prices, elapsed time or percentages of differently sized pools. Missing mappings or unavailable required models block the stage until the human records an explicit routing change; quota exhaustion does not permit a skipped review or silent fallback.
+
+Existing installations preserve host model overrides during upgrades. Adopting this profile in a host is a deliberate config change: preserve its workspace/documentation/validation declarations and custom routing keys, update the selected routes, check the critical reviewer still differs from the actual implementation family, and validate the installed catalog against the pinned source. Updating this vault does not automatically update an installed host.
+
 ### Project definition
 
 - [`/project-define`](.agents/skills/project-define/SKILL.md): Prepare a bounded draft product documentation package from incomplete human input.

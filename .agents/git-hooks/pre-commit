@@ -1,0 +1,6 @@
+#!/bin/sh
+# TopHat 1.0 commit gate. Installed explicitly by install-git-hook.ts.
+set -eu
+root=$(git rev-parse --show-toplevel) || exit 1
+cd "$root"
+node .agents/scripts/run-validation.ts '{"gate":"commitGate"}'

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "surfaces": [
+    {
+      "path": ".agents/skills/git-linear-workflow/SKILL.md",
+      "classification": "mutation"
+    },
+    {
+      "path": ".agents/scripts/install-git-hook.ts",
+      "classification": "internal-preflight"
+    },
+    {
+      "path": ".agents/docs/workspace-detachment.md",
+      "classification": "manual-integration"
+    }
+  ]
+}

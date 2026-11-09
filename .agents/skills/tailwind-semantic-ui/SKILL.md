@@ -14,7 +14,7 @@ When building view layers, adhere to these structural constraints:
 
 ## 2. Tailwind Implementation
 
-- Utilize utility classes exclusively; ban the creation of custom CSS classes unless handling complex 2.5D parallax or specific mesh-weighting animations.
+- Follow approved host styling policy and permitted CSS exceptions. Use Tailwind utilities where declared; accessibility and safe rendering remain required.
 - Maintain responsive design hierarchies using `sm:`, `md:`, and `lg:` prefixes reliably.
 
 ## 3. Text & Localization
@@ -22,3 +22,7 @@ When building view layers, adhere to these structural constraints:
 - Before adding text to the UI, explicitly check the Localization setting in the `[GLOBAL_CONSTRAINTS]` of `Context.md`.
 - **If set to i18n Required:** Do not hardcode localized display text. Wrap user-facing strings in appropriate i18n placeholders.
 - **If set to Hardcoded UI Authorized:** You may write hardcoded UI copy directly into the markup.
+
+## Approved host policy and security bounds
+
+Implementation choices follow the approved host package supplied through authorized task extracts; this does not expand ordinary execution roles into full product docs browsing. Shared `.agents/docs` safety contracts remain mandatory resources. Validation at trust boundaries, authorization, secret protection, safe IPC and declared isolation remain security invariants. If approved host choices conflict with these bounds, halt for human resolution rather than silently waive them.

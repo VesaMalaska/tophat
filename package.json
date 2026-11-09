@@ -1,0 +1,11 @@
+{
+  "name": "tophat-vault-tests",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "test:tophat": "node --test .agents/tests/*.test.ts"
+  }
+}

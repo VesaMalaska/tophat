@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "proposalId": "REPLACE_WITH_ACTUAL_ID",
+  "proposalFingerprint": "REPLACE_WITH_ACTUAL_PROPOSAL_SHA256",
+  "assessmentFingerprint": "REPLACE_WITH_ACTUAL_ASSESSMENT_SHA256",
+  "hostSnapshotFingerprint": "REPLACE_WITH_ACTUAL_HOST_SHA256",
+  "authorityFingerprint": "REPLACE_WITH_APPROVED_AUTHORITY_SHA256",
+  "candidateFingerprint": "REPLACE_WITH_ACTUAL_PACKAGE_CANDIDATE_SHA256",
+  "installationMode": "tracked/shared",
+  "signal": "REPLACE_WITH_ACTUAL_EXPLICIT_HUMAN_SIGNAL",
+  "human": "REPLACE_WITH_ACTUAL_HUMAN",
+  "approvedAt": "REPLACE_WITH_ACTUAL_UTC_TIME_AFTER_ASSESSMENT",
+  "evidenceLocator": "REPLACE_WITH_GENUINE_ATTACHMENT_APPROVAL"
+}

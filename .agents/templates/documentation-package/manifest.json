@@ -1,0 +1,121 @@
+{
+  "$schema": "./manifest.schema.json",
+  "schemaVersion": 1,
+  "packageId": "sample-service",
+  "version": "1.0.0",
+  "approvalStatus": "draft",
+  "entryGuide": "README.md",
+  "readingOrder": [
+    "decisions",
+    "product",
+    "contracts",
+    "usage"
+  ],
+  "scope": {
+    "active": [
+      "core"
+    ],
+    "inactive": [
+      "future"
+    ]
+  },
+  "documents": [
+    {
+      "id": "decisions",
+      "path": "01-decisions.md",
+      "version": "1.0.0",
+      "status": "active",
+      "role": "authoritative",
+      "authority": [
+        "decisions"
+      ],
+      "dependsOn": [],
+      "scope": [
+        "core"
+      ],
+      "items": [
+        {
+          "id": "DEC-001",
+          "kind": "decision",
+          "authority": "decisions",
+          "scope": "core",
+          "decisionState": "accepted"
+        }
+      ]
+    },
+    {
+      "id": "product",
+      "path": "02-product.md",
+      "version": "1.0.0",
+      "status": "active",
+      "role": "authoritative",
+      "authority": [
+        "requirements",
+        "acceptance-criteria"
+      ],
+      "dependsOn": [
+        "decisions"
+      ],
+      "scope": [
+        "core"
+      ],
+      "items": [
+        {
+          "id": "REQ-001",
+          "kind": "requirement",
+          "authority": "requirements",
+          "scope": "core",
+          "acceptanceCriteria": [
+            "product#AC-001"
+          ]
+        },
+        {
+          "id": "AC-001",
+          "kind": "acceptance-criterion",
+          "authority": "acceptance-criteria",
+          "scope": "core"
+        }
+      ]
+    },
+    {
+      "id": "contracts",
+      "path": "03-contracts.md",
+      "version": "1.0.0",
+      "status": "active",
+      "role": "authoritative",
+      "authority": [
+        "public-contracts"
+      ],
+      "dependsOn": [
+        "decisions"
+      ],
+      "scope": [
+        "core"
+      ],
+      "items": [
+        {
+          "id": "CON-001",
+          "kind": "contract",
+          "authority": "public-contracts",
+          "scope": "core"
+        }
+      ]
+    },
+    {
+      "id": "usage",
+      "path": "04-usage.md",
+      "version": "1.0.0",
+      "status": "active",
+      "role": "derived",
+      "authority": [],
+      "dependsOn": [
+        "product",
+        "contracts"
+      ],
+      "scope": [
+        "core"
+      ],
+      "items": []
+    }
+  ]
+}

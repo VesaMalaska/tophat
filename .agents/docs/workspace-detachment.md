@@ -1,0 +1,20 @@
+# Manual TopHat detachment
+
+This is a human-reviewed procedure. `inspect-tophat-detachment.ts` reads and checks only; it never removes files, installs tools or changes Git. Keep the pinned tool checkout, ownership/preservation records and human approval outside the host so they survive removal.
+
+1. Select the host root/expected attached branch. Capture commit/history/index, hooks and exclusions. Refuse tracked/index changes, conflicts/operations and unclassified relevant untracked files. Classify any intentionally retained private/shared material explicitly.
+2. Supply the exact ownership record, `removePaths`, human-confirmed current per-file hashes, `preservePaths`, hook removal selection and exact appended exclusion block. Invoke the read-only helper in `mode: plan`. The preservation list supplements all tracked files and known retained untracked inputs. Product code, public README/docs, scripts, dependencies and lockfile cannot be removal paths. Prefixes alone prove no ownership.
+3. A shared/unknown selected path or stale current hash denies the plan. Mutable state can legitimately differ from installation hashes: review actual bytes and reconfirm ownership. Do not recursively delete `.agents`, its directories, Git metadata or unknown content. Narrowed inventories need renewed review.
+4. STOP for explicit human APPROVED binding planFingerprint, human, approvedAt after plan creation and evidenceLocator. These are workflow evidence, not identity authentication. Apply the exact removals manually with one confirmed file at a time; do not add automatic deletion logic to the helper. Tracked deletions remain visible worktree changes for separately authorized later publication.
+5. Remove a native hook only when its current digest matches the confirmed exact TopHat-only versioned source, with no redirected hooksPath. Leave mixed hooks/config untouched for manual integration. Remove only the unchanged confirmed TopHat exclusion block at the end of info/exclude. Preserve preceding host rules. No automatic clean/reset/stash or rollback.
+6. Invoke the helper in `mode: verify` with the exact plan and approval. Require DETACHED_VERIFIED: selected files removed, retained product/docs/scripts/lockfile bytes/modes and Git history/index/branch unchanged, nominated hook/exclusion delta exact, no unexplained untracked files. Separately authorize any retained host validation commands. Report intentionally retained shared/private material for client handoff review.
+
+Fixtures simulate human-confirmed file removal using test code. That demonstrates the manual plan and preservation rules; it is not an automated detach feature. A denial never performs remediation.
+
+## Shared Git integration boundary
+
+The separately authorized human/execution orchestrator runs `node <pinned-external-TopHat-source>/.agents/scripts/git-preflight.ts` and requires GIT_PREFLIGHT_READY before each nominated hook/exclude removal. Bind exact current branch/HEAD/index, retained classified inputs and original metadata digest using the git-integration profile. Use the pinned external source while host tooling is removed. Preserve prior ownership/removal approval and all host rules. Reinspect the remaining state immediately before each action and verify its exact delta afterwards. Tracked private-file removal/untracking is separate approved normal stage/commit work; detachment performs no history/index mutation.
+
+## Command packaging integration
+
+Consult [command migration](command-migration.md) and the pinned command catalog. Fresh installation requires the full catalog resource closure; upgrade/detachment uses exact confirmed ownership/digests, preserves host routing overrides/custom skills and historical receipts, and stops visibly on partial application. No broad directory removal or automatic rollback. Handoff writes precede final candidate sealing. Map actual applicable criterion IDs to behavior and meaningful evidence, and map every changed behavior back to approved scope; independent review judges relevance.

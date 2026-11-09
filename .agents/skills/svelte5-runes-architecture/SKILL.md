@@ -15,7 +15,7 @@ When implementing frontend components, strictly enforce the following paradigms:
 
 ## 2. State Encapsulation
 
-- For complex state shared across components, extract `$state()` into standard `.ts` or `.js` modules (Svelte 5 universal reactivity) rather than relying on legacy Svelte stores (`writable`, `readable`) unless interfacing with third-party legacy libraries.
+- For complex state shared across components, extract `$state()` into `.svelte.ts` or `.svelte.js` modules (compiler-transformed Svelte 5 universal reactivity; ordinary .ts/.js modules remain valid for non-rune logic) rather than relying on legacy Svelte stores (`writable`, `readable`) unless interfacing with third-party legacy libraries.
 
 ## 3. Side-Effect Hygiene
 

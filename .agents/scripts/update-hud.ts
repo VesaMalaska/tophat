@@ -1,8 +1,47 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+import { inspectDocPackage, isMain, type DocReport } from "./validate-doc-package.ts";
+import { attachmentReadiness } from "./validate-workspace-attachment.ts";
+import { reviewEvidence } from "./finalize-doc-package.ts";
+import { classifyTask, inputJson, fail } from "./classify-task.ts";
+import { validateDerivedDocs, acceptedDocumentHistory } from "./validate-derived-docs.ts";
 
+export function derivedDocumentationOverlay(workspaceRoot: string, evidencePath = process.env.TOPHAT_DOC_EVIDENCE): string {
+  if (!evidencePath) return "Derived documentation: DOCUMENTATION_PENDING — no selected evidence.\n";
+  try {
+    const request = inputJson(fs.readFileSync(evidencePath, "utf8")), result = validateDerivedDocs(workspaceRoot, request);
+    const cfg = JSON.parse(fs.readFileSync(path.join(workspaceRoot, ".agents/tophat.config.json"), "utf8"));
+    const check = cfg.validation?.scripts?.documentation ? "DECLARED" : "DOCUMENTATION_CHECK_NOT_DECLARED";
+    const historical = result.approvalAllowed ? null : acceptedDocumentHistory(workspaceRoot, (request as {receipt?: unknown}).receipt);
+    return `Derived documentation: ${result.status}\nCurrent readiness: ${result.approvalAllowed ? "yes" : "no"}\n${historical ? `Historical accepted candidate: ${historical.candidateCommit} (${historical.mode}; does not grant current readiness)\n` : ""}Documentation check: ${check}\nBlockers: ${result.issues.map(i => `${i.code}: ${i.message}`).join("; ") || "None recorded"}\n`;
+  } catch { return "Derived documentation: DOCUMENTATION_BLOCKED — evidence unavailable; current readiness denied.\n"; }
+}
+
+export function documentationReadiness(workspaceRoot: string): { report: DocReport; reviewRequired: boolean } {
+  const approved = inspectDocPackage(workspaceRoot);
+  if (approved.report.planningAllowed || approved.report.documentationState === "INVALIDATED")
+    return { report: approved.report, reviewRequired: false };
+  const draft = inspectDocPackage(workspaceRoot, "draft");
+  if (!draft.snapshot) return { report: draft.report, reviewRequired: true };
+  try {
+    reviewEvidence(draft.snapshot, `.agents/project-definition/${draft.snapshot.manifest.packageId}/review.json`);
+    return { report: draft.report, reviewRequired: false };
+  } catch {
+    return { report: draft.report, reviewRequired: true };
+  }
+}
+export function overlayDocumentation(content: string, workspaceRoot: string): string {
+  const { report, reviewRequired } = documentationReadiness(workspaceRoot);
+  const attachment = attachmentReadiness(workspaceRoot);
+  const state = report.documentationState ?? "UNAVAILABLE — VALIDATION DENIED";
+  let previous = content.replace(/\n(?:#{1,6} )?📚 Documentation Authority[\s\S]*$/, "").trimEnd();
+  if (!report.planningAllowed || attachment.state === "ATTACHMENT_INVALIDATED") previous = previous.replace(/None\. Workspace is clean and ready\./g, "Documentation readiness denied; inspect the authority report.");
+  return `${previous}\n\n📚 Documentation Authority\n  - State: ${state}\n  - Package: ${report.packageId ?? "Unavailable"} / ${report.packageVersion ?? "Unavailable"}\n  - Planning allowed: ${report.planningAllowed && attachment.state !== "ATTACHMENT_INVALIDATED" ? "yes" : "no"}\n  - Authority fingerprint: ${report.authorityFingerprint ?? "Unavailable"}\n  - Validation: ${report.status} at ${new Date().toISOString()}\n  - Attachment: ${attachment.state} (historical completion evidence; current authority checked separately)\n  - Attachment blockers: ${attachment.issues.join("; ") || "None recorded"}\n  - Review: ${reviewRequired ? "REVIEW REQUIRED" : "No review blocker recorded"}\n  - Blockers: ${report.issues.map(i => `${i.code}: ${i.message}`).join("; ") || (report.planningAllowed ? "None" : "Explicit matching human approval is required before planning")}\n\n${derivedDocumentationOverlay(workspaceRoot)}`;
+}
+export function renderHud(args: string[], workspaceRoot = process.cwd()): string {
+if (args.includes("--sec") || args.includes("--qa")) fail("ROUTING_METADATA_CONFLICT", "Legacy HUD routing bypass flags are unsupported");
 // Zero-dependency CLI argument parser
-const args = process.argv.slice(2);
+
 const getArg = (flag: string, fallback: string = "N/A"): string => {
   const index = args.indexOf(flag);
   return index !== -1 && args[index + 1] ? args[index + 1] : fallback;
@@ -10,14 +49,14 @@ const getArg = (flag: string, fallback: string = "N/A"): string => {
 
 const task = getArg("--task", "No Active Task");
 const title = getArg("--title", "Task Execution");
-const tier = getArg("--tier", "mid");
+let tier = getArg("--tier", "Unverified");
 const status = getArg("--status", "In Progress");
 const nextCmd = getArg("--next", "/sprint-briefing");
 
 // Read the Single Source of Truth Config
 let resolvedModel = "Fallback Model";
 try {
-  const configPath = path.join(process.cwd(), ".agents", "tophat.config.json");
+  const configPath = path.join(workspaceRoot, ".agents", "tophat.config.json");
   if (fs.existsSync(configPath)) {
     const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 
@@ -35,9 +74,12 @@ try {
   resolvedModel = "Config Parse Error";
 }
 
-// New Bypass Flags
-const secReq = getArg("--sec", "yes").toLowerCase();
-const qaReq = getArg("--qa", "yes").toLowerCase();
+const routingFile = getArg("--routing-file", "");
+const route = routingFile ? classifyTask(workspaceRoot, inputJson(fs.readFileSync(path.resolve(workspaceRoot, routingFile), "utf8"))) : null;
+if (route) {
+  if (args.includes("--tier") && tier !== route.devTier) fail("ROUTING_METADATA_CONFLICT", "HUD tier differs from task classification");
+  tier = route.devTier;
+}
 
 type Emojis = "🟢" | "🟡" | "⚪" | "🔴" | "➖";
 interface StageStates {
@@ -75,20 +117,9 @@ const calculateStages = (currentStatus: string): StageStates => {
       break;
   }
 
-  // INDESTRUCTIBLE BYPASS PARSER
-  const isSecSkipped =
-    secReq.includes("no") ||
-    secReq.includes("false") ||
-    secReq.includes("n/a") ||
-    secReq.includes("none");
-  const isQASkipped =
-    qaReq.includes("no") ||
-    qaReq.includes("false") ||
-    qaReq.includes("n/a") ||
-    qaReq.includes("none");
-
-  if (isSecSkipped) base.sec = "➖";
-  if (isQASkipped) base.qa = "➖";
+  if (route && !route.securityRequired) base.sec = "➖";
+  if (route && !route.qaRequired) base.qa = "➖";
+  if (!route) base = { impl: "⚪", rev: "⚪", sec: "⚪", qa: "⚪", pr: "⚪" };
 
   return base;
 };
@@ -103,6 +134,7 @@ Last Updated: ${timestamp}
   - Task: ${task} - ${title}
   - Dev Tier: ${tier}
   - Linear Status: ${status}
+  - Routing: ${route ? route.taskFingerprint : "UNVERIFIED — supply the current task classification"}
 
 🚦 Pipeline Status
   - [${stages.impl}] Implementation
@@ -110,18 +142,23 @@ Last Updated: ${timestamp}
   - [${stages.sec}] Security Audit
   - [${stages.qa}] QA Validation
   - [${stages.pr}] PR Generation
+  - Indicators reflect reported workflow status; they are not approval evidence.
 
 🚀 Immediate Next Action
   - Command: \`${nextCmd}\`
   - Model: \`${resolvedModel}\`
 
 🚧 Active Blockers
-  - None. Workspace is clean and ready.`;
+  - Publication readiness requires the evidence validator; HUD status cannot authorize publication.`;
 
-fs.writeFileSync(path.join(process.cwd(), "HUD.md"), hudContent);
-console.log(
-  JSON.stringify({
-    status: "HUD Updated Successfully",
-    next_model: resolvedModel,
-  }),
-);
+return overlayDocumentation(hudContent, workspaceRoot);
+}
+
+if (isMain(import.meta.url)) {
+  try {
+    fs.writeFileSync(path.join(process.cwd(), "HUD.md"), renderHud(process.argv.slice(2)));
+    console.log(JSON.stringify({ status: "HUD Updated Successfully" }));
+  } catch {
+    console.log(JSON.stringify({ status: "HUD_UPDATE_FAILED", message: "HUD could not be written" })); process.exitCode = 1;
+  }
+}

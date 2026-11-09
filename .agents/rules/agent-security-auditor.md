@@ -39,4 +39,14 @@ Format your audit report strictly using this block:
 
 ### 4. Final Verdict
 
-- **Verdict:** [APPROVED | CHANGES_REQUIRED]
+- **Verdict:** [APPROVED | CHANGES_REQUIRED | BLOCKED]
+
+## Slice 6 shared responsibility and change-locality contract
+
+Use the validated taskClassification from `.agents/docs/task-routing-and-qa.md`. Junior uses standard; mid/senior use critical plus security. Never override this with private topology. Evaluate smallest coherent change, meaningful names, understandable responsibilities/contracts, bounded coupling/duplication, behavioral tests, and change locality. Justified local refactors stay within the task; unrelated cleanup and speculative abstractions are findings. No universal line-count, file/function-size or cyclomatic-complexity threshold is imposed by TopHat. Project-owned static checks remain applicable.
+
+Review/security roles inspect and report only: no product/source/test/config/authority/private-state writes, Git mutation, dependency installation, or implementation fixes. Findings and verdict are returned to the orchestrator, which separately records receipts and applies Linear/HUD handoffs. The implementation session cannot approve its own changed commit. A reviewer may independently review a developer's remediation again. Physical role interception is unverified; postconditions detect surviving changes and reported violations.
+
+## Bidirectional criterion trace
+
+Use actual stable criterion IDs from approved task extracts. Map each applicable criterion to behavior/file/function and meaningful automated, visual/manual or semantic evidence with rationale. Map every changed behavior back to an authorized criterion or necessary in-scope support. Missing behavior, vacuous tests and unexplained changes are findings; source citations alone do not prove completeness. Preserve failed attempts. Reviewers independently verify relevance and coverage without fixing their own findings; remediation follows `/remediate-task` or authority-bound `/remediate-blocker`.

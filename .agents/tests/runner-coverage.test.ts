@@ -33,8 +33,8 @@ test('actual Node coverage enforces host-owned passing and failing thresholds th
 test('actual Vitest V8 coverage enforces different host policies through the same pnpm runner', () => {
   const f = host(true); try {
     const passed = f.run('coverage', 'coverage:vitest:pass'), failed = f.run('coverage', 'coverage:vitest:fail');
-    assert.equal(passed.status, 'PASSED', JSON.stringify(passed)); assert.match(passed.results[0].stdout!, /Coverage report from v8/);
-    assert.equal(failed.status, 'FAILED', JSON.stringify(failed)); assert.notEqual(failed.results[0].exitStatus, 0); assert.match(failed.results[0].stdout! + failed.results[0].stderr!, /does not meet global threshold/);
+    assert.equal(passed.status, 'PASSED', JSON.stringify(passed)); assert.match(passed.results[0].stdout!.replace(/\u001b\[[0-9;]*m/g, ''), /Coverage report from v8/);
+    assert.equal(failed.status, 'FAILED', JSON.stringify(failed)); assert.notEqual(failed.results[0].exitStatus, 0); assert.match((failed.results[0].stdout! + failed.results[0].stderr!).replace(/\u001b\[[0-9;]*m/g, ''), /does not meet global threshold/);
   } finally { f.close(); }
 });
 test('both actual runners reproduce red then green without changing the shared executor', () => {

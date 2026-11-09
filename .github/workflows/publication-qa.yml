@@ -1,0 +1,45 @@
+name: TopHat publication QA
+
+on:
+  push:
+    branches:
+      - docs/publication-readiness
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-vault:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+          run_install: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Install locked runner fixture dependencies
+        run: pnpm --dir .agents/tests/fixtures/runner-neutral install --frozen-lockfile
+      - name: Install locked guidance-runtime fixture dependencies
+        run: pnpm --dir .agents/tests/fixtures/guidance-runtime install --frozen-lockfile
+      - name: Run full TopHat fixture suite
+        run: pnpm test:tophat
+
+  scan-git-history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Inspect all reachable refs for secrets (redacted output)
+        run: |
+          docker run --rm -v "$PWD:/repo:ro" ghcr.io/gitleaks/gitleaks@sha256:b109bc5f8f76a38196a3e413704fc5b9e3c32360bce4e4b603bd6f45b3721dbb git --redact --log-opts="--all --full-history" /repo

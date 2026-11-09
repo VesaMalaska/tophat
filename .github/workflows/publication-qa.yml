@@ -27,6 +27,8 @@ jobs:
           package-manager-cache: false
       - name: Install locked runner fixture dependencies
         run: pnpm --dir .agents/tests/fixtures/runner-neutral install --frozen-lockfile
+      - name: Install locked guidance-runtime fixture dependencies
+        run: pnpm --dir .agents/tests/fixtures/guidance-runtime install --frozen-lockfile
       - name: Run full TopHat fixture suite
         run: pnpm test:tophat
 

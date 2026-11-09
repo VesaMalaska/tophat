@@ -1,5 +1,11 @@
 # TopHat Multi-Agent Workflow
 
+> **Project status — experimental / portfolio reference (November 2026).** TopHat documents my exploration of structured, human-orchestrated AI-assisted development. It is **not** a production-ready agent platform, an autonomous swarm, or a certified security boundary. The commands and tests are useful reference material, but live host integration and release acceptance remain pending. The `development` branch is the active TopHat 1.0 candidate; published artifacts are not yet a validated 1.0 release.
+>
+> **What I learned:** Clear tasks, human approvals, independent review and useful validation matter more than agent count. Building TopHat also convinced me that simpler agent workflows are often better for everyday projects. Today I favor lighter approaches informed by these experiments.
+>
+> **License:** [MIT](LICENSE). See [release readiness](.agents/docs/release-readiness.md) for validation boundaries and outstanding work.
+
 This repository contains a reusable TopHat workflow vault for the Google Antigravity IDE. It supplies agent instructions, templates, and selected tool hooks for a human-orchestrated development process. The 1.0 foundation adds a validated workspace declaration, conditional framework guidance, and a shared executor for host-declared validation.
 
 ---
